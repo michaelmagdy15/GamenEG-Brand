@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { useTexture, Float, PresentationControls } from '@react-three/drei';
+import { useRef, useMemo } from 'react';
+import { useTexture, Float } from '@react-three/drei';
 import * as THREE from 'three';
 import { brandAssets } from '../../brandAssets';
 
@@ -7,33 +7,34 @@ export default function BowTieElement() {
   const texture = useTexture(brandAssets.heroBowTie);
   const planeRef = useRef<THREE.Mesh>(null);
 
+  // Calculate plane dimensions from actual texture aspect ratio
+  // so the bow tie is never stretched
+  const planeArgs = useMemo<[number, number]>(() => {
+    if (!texture.image) return [3.5, 3.5];
+    const aspect = texture.image.width / texture.image.height;
+    const height = 3; // base height in 3D units
+    return [height * aspect, height];
+  }, [texture]);
+
   return (
-    <PresentationControls
-      global
-      config={{ mass: 2, tension: 500 }}
-      snap={{ mass: 4, tension: 1500 }}
-      rotation={[0, 0, 0]}
-      polar={[-Math.PI / 6, Math.PI / 6]}
-      azimuth={[-Math.PI / 4, Math.PI / 4]}
+    <Float
+      speed={1.8}
+      rotationIntensity={0.4}
+      floatIntensity={0.5}
+      floatingRange={[-0.06, 0.06]}
     >
-      <Float
-        speed={1.5}
-        rotationIntensity={0.3}
-        floatIntensity={0.6}
-        floatingRange={[-0.08, 0.08]}
-      >
-        <mesh ref={planeRef}>
-          <planeGeometry args={[4, 2.5]} />
-          <meshStandardMaterial
-            map={texture}
-            transparent
-            alphaTest={0.05}
-            roughness={0.5}
-            metalness={0.05}
-          />
-        </mesh>
-      </Float>
-    </PresentationControls>
+      <mesh ref={planeRef}>
+        <planeGeometry args={planeArgs} />
+        <meshStandardMaterial
+          map={texture}
+          transparent
+          alphaTest={0.05}
+          roughness={0.5}
+          metalness={0.05}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </Float>
   );
 }
 
