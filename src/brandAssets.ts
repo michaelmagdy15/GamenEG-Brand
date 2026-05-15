@@ -1,8 +1,8 @@
-import heroBowTie from '../Images/TRANSPARENT/IMG-2217.png';
-import pharaohBowTie from '../Images/TRANSPARENT/IMG-2211.png';
-import ankhBowTie from '../Images/TRANSPARENT/IMG-2215-JPG.png';
-import signatureBowTie from '../Images/TRANSPARENT/IMG-2220-JPG.png';
-import twoToneBowTie from '../Images/TRANSPARENT/IMG-2212-JPG.png';
+import heroBowTie from '../Images/TRANSPARENT/PNG/IMG-2217_transparent.png';
+import pharaohBowTie from '../Images/TRANSPARENT/PNG/IMG-2211_transparent.png';
+import ankhBowTie from '../Images/TRANSPARENT/PNG/IMG_2215_transparent.png';
+import signatureBowTie from '../Images/TRANSPARENT/PNG/IMG_2220_transparent.png';
+import twoToneBowTie from '../Images/TRANSPARENT/PNG/IMG_2212_transparent.png';
 
 export const brandAssets = {
   heroBowTie,

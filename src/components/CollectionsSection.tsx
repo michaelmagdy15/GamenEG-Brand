@@ -1,30 +1,6 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useRef } from 'react';
-import { brandAssets } from '../brandAssets';
-
-const collections = [
-  {
-    id: 1,
-    name: 'GAMÉN Signature',
-    tagline: 'Quiet luxury, loud identity.',
-    image: brandAssets.signatureBowTie,
-    wood: 'Walnut & Brass',
-  },
-  {
-    id: 2,
-    name: 'Two-Tone Grain',
-    tagline: 'Contrast carved into form.',
-    image: brandAssets.twoToneBowTie,
-    wood: 'Walnut & Blonde Wood',
-  },
-  {
-    id: 3,
-    name: 'Eye of Horus',
-    tagline: 'The Egyptian soul, held close.',
-    image: brandAssets.ankhBowTie,
-    wood: 'Mahogany & Brass',
-  },
-];
+import { collections } from '../data/products';
 
 export default function CollectionsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,10 +12,10 @@ export default function CollectionsSection() {
     <section ref={containerRef} className="relative h-[300vh] bg-warm-cream">
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 z-20 h-px bg-deep-walnut/15">
-          <motion.div className="h-full bg-deep-walnut origin-left" style={{ width: progressWidth }} />
+          <motion.div className="h-full bg-deep-walnut origin-left" style={{ width: progressWidth, willChange: 'width' }} />
         </div>
 
-        <motion.div style={{ x }} className="flex h-full w-[300vw]">
+        <motion.div style={{ x, willChange: 'transform' }} className="flex h-full w-[300vw]">
           {collections.map((item, index) => {
             const imageRotate = index % 2 === 0 ? '-2deg' : '2deg';
 

@@ -21,8 +21,18 @@
   --background-image-wood-grain: repeating-linear-gradient(45deg, #462718, #462718 2px, #5a3220 2px, #5a3220 4px);
 }
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: var(--color-warm-cream);
+  background-image: url('/luxury_wood_texture.png');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
   color: var(--color-espresso);
   font-family: var(--font-body);
   overflow-x: hidden;

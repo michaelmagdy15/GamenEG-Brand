@@ -1,17 +1,28 @@
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useProgress } from '@react-three/drei';
 import BrandWordmark from './BrandWordmark';
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [complete, setComplete] = useState(false);
+  const { progress } = useProgress();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setComplete(true);
-      setTimeout(onComplete, 1000);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+    // We enforce a minimum loading time for aesthetics, but also wait for Three.js assets
+    let timer: NodeJS.Timeout;
+    
+    if (progress === 100) {
+      // Once assets are 100% loaded, wait 800ms before dismissing for smooth transition
+      timer = setTimeout(() => {
+        setComplete(true);
+        setTimeout(onComplete, 1000);
+      }, 800);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [progress, onComplete]);
 
   return (
     <motion.div
@@ -30,6 +41,11 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         <p className="text-champagne-gold font-french italic text-xl text-center">
           L'élégance taillée en bois
         </p>
+        <div className="mt-8 flex justify-center">
+          <p className="text-champagne-gold/50 font-mono text-sm tracking-widest">
+            {Math.round(progress)}%
+          </p>
+        </div>
       </motion.div>
     </motion.div>
   );

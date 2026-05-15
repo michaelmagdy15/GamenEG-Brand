@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Menu, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import BrandWordmark from './BrandWordmark';
 
 export default function Navbar() {
@@ -35,15 +36,15 @@ export default function Navbar() {
           <Menu size={24} strokeWidth={1} />
         </button>
 
-        <a href="#" className="flex-shrink-0 text-center mr-auto lg:mr-0 pl-4 lg:pl-0">
+        <Link to="/" className="flex-shrink-0 text-center mr-auto lg:mr-0 pl-4 lg:pl-0">
           <BrandWordmark className="block text-2xl tracking-[0.3em] text-champagne-gold" />
-        </a>
+        </Link>
 
         <div className="hidden lg:flex items-center gap-12 font-accent text-[10px] tracking-[0.2em] font-medium uppercase text-champagne-gold">
-          <a href="#" className="hover:text-warm-cream transition-colors">Collections</a>
-          <a href="#" className="hover:text-warm-cream transition-colors">The Atelier</a>
-          <a href="#" className="hover:text-warm-cream transition-colors">Custom</a>
-          <a href="#" className="hover:text-warm-cream transition-colors">Bespoke</a>
+          <Link to="/" className="hover:text-warm-cream transition-colors">Home</Link>
+          <Link to="/shop" className="hover:text-warm-cream transition-colors">Shop</Link>
+          <Link to="/services" className="hover:text-warm-cream transition-colors">Services</Link>
+          <Link to="/about" className="hover:text-warm-cream transition-colors">About Us</Link>
         </div>
 
         <div className="hidden lg:block bg-gold-gradient w-12 h-[1px]" />

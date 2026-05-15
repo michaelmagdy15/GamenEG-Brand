@@ -2,6 +2,7 @@ import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'moti
 import { useRef } from 'react';
 import { brandAssets } from '../brandAssets';
 import BrandWordmark from './BrandWordmark';
+import HeroScene from './canvas/HeroScene';
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -53,41 +54,36 @@ export default function HeroSection() {
           </motion.h1>
         </div>
 
+        <div className="absolute inset-0 flex items-center justify-center">
+          <HeroScene />
+        </div>
+
         <motion.div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          className="absolute inset-0 flex items-center justify-center"
           style={{
             scale: productScale,
             opacity: productOpacity,
-            rotateZ: productRotate,
-            rotateX,
-            rotateY,
-            transformStyle: 'preserve-3d',
+            willChange: 'transform, opacity',
           }}
         >
-          <div className="relative w-[320px] h-[320px] md:w-[520px] md:h-[520px] rounded-full bg-espresso shadow-inner flex items-center justify-center border border-champagne-gold/30">
-            <div className="w-[280px] h-[280px] md:w-[450px] md:h-[450px] rounded-full bg-wood-grain shadow-2xl flex items-center justify-center border-[6px] border-champagne-gold overflow-hidden">
-              <div className="absolute inset-0 bg-espresso/20 mix-blend-overlay" />
-              <img
-                src={brandAssets.heroBowTie}
-                alt="GAMÉN wooden bow tie"
-                className="w-[130%] max-w-none h-auto object-contain opacity-95 drop-shadow-2xl"
-              />
-            </div>
-
-            <div className="absolute -left-20 md:-left-40 top-10 text-right space-y-4 hidden sm:block">
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Walnut Origin</p>
-                <p className="font-french italic text-lg leading-tight text-champagne-gold">Cairo hand-selected<br />ancient timber</p>
+          
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div className="relative w-[320px] h-[320px] md:w-[520px] md:h-[520px]">
+              <div className="absolute -left-20 md:-left-40 top-10 text-right space-y-4 hidden sm:block">
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Walnut Origin</p>
+                  <p className="font-french italic text-lg leading-tight text-champagne-gold">Cairo hand-selected<br />ancient timber</p>
+                </div>
+                <div className="h-[1px] w-24 bg-champagne-gold/30 ml-auto" />
               </div>
-              <div className="h-[1px] w-24 bg-champagne-gold/30 ml-auto" />
-            </div>
 
-            <div className="absolute -right-20 md:-right-40 bottom-10 text-left space-y-4 hidden sm:block">
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Signature</p>
-                <p className="font-french italic text-lg leading-tight text-champagne-gold">Brass initials<br />poli à la main</p>
+              <div className="absolute -right-20 md:-right-40 bottom-10 text-left space-y-4 hidden sm:block">
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Signature</p>
+                  <p className="font-french italic text-lg leading-tight text-champagne-gold">Brass initials<br />poli à la main</p>
+                </div>
+                <div className="h-[1px] w-24 bg-champagne-gold/30 mr-auto" />
               </div>
-              <div className="h-[1px] w-24 bg-champagne-gold/30 mr-auto" />
             </div>
           </div>
         </motion.div>
