@@ -25,7 +25,7 @@ export default function OurStory() {
     <main className="min-h-screen bg-deep-walnut pt-36 pb-24">
       {/* Hero */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto text-center mb-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: '-50px' }} transition={{ duration: 0.8 }}>
           <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 block mb-4">Our Origin</span>
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl text-champagne-gold leading-[0.9] tracking-tighter mb-6">
             Carved from <span className="italic font-light">Heritage</span>
@@ -57,7 +57,7 @@ export default function OurStory() {
               key={item.year}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
+              viewport={{ once: false, margin: '-100px' }}
               transition={{ duration: 0.7, delay: i * 0.1 }}
               className="flex flex-col md:flex-row gap-8 md:gap-16"
             >

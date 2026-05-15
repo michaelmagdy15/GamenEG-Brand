@@ -51,7 +51,7 @@ export default function CareInstructions() {
               key={tip.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              viewport={{ once: false, margin: '-60px' }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
               className="flex gap-6 p-6 rounded-xl border border-champagne-gold/10"
             >

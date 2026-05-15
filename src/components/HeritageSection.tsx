@@ -8,7 +8,7 @@ export default function HeritageSection() {
         className="absolute left-1/2 top-24 h-[78%] w-px bg-deep-walnut/10 hidden lg:block"
         initial={{ scaleY: 0 }}
         whileInView={{ scaleY: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         style={{ transformOrigin: 'top' }}
       />
@@ -37,7 +37,7 @@ export default function HeritageSection() {
               key={symbol.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-15%' }}
+              viewport={{ once: false, margin: '-15%' }}
               transition={{ type: 'spring', stiffness: 60, damping: 20, delay: index * 0.15 }}
               className={`group space-y-12 ${index === 1 ? 'lg:pt-64' : ''}`}
             >
@@ -69,7 +69,7 @@ export default function HeritageSection() {
           className="mt-48 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-10%' }}
+          viewport={{ once: false, margin: '-10%' }}
           transition={{ duration: 0.7 }}
         >
           <h2 className="font-display text-4xl lg:text-6xl text-taupe max-w-4xl mx-auto leading-normal">

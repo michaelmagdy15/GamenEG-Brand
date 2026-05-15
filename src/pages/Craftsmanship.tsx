@@ -62,7 +62,7 @@ export default function Craftsmanship() {
               key={step.num}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
+              viewport={{ once: false, margin: '-80px' }}
               transition={{ duration: 0.7, delay: i * 0.05 }}
               className="flex flex-col md:flex-row gap-8 md:gap-16"
             >

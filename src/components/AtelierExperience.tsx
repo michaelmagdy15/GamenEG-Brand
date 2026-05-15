@@ -30,7 +30,7 @@ export default function AtelierExperience() {
   const [activeId, setActiveId] = useState(pieces[0].id);
   const activePiece = pieces.find((piece) => piece.id === activeId) ?? pieces[0];
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const isInView = useInView(sectionRef, { once: false, margin: '-100px' });
 
   // Scroll-based parallax for decorative elements
   const { scrollYProgress: rawScrollYProgress } = useScroll({

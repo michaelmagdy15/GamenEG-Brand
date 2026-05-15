@@ -20,19 +20,15 @@ export default function HeroSection() {
   const brandOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25], [1, 1, 0]);
   const brandScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.92]);
 
-  // Phase 2: Tagline slides in (0.15-0.35)
-  const taglineOpacity = useTransform(scrollYProgress, [0.15, 0.25, 0.45], [0, 1, 0]);
+  // Phase 2: Tagline slides in (0.15-0.45)
+  const taglineOpacity = useTransform(scrollYProgress, [0.15, 0.25, 0.55], [0, 1, 0]);
   const taglineY = useTransform(scrollYProgress, [0.15, 0.25], [60, 0]);
 
-  // Phase 3: Statement (0.35-0.55)
-  const statementOpacity = useTransform(scrollYProgress, [0.35, 0.45, 0.65], [0, 1, 0]);
-  const statementY = useTransform(scrollYProgress, [0.35, 0.45], [50, 0]);
+  // Phase 3: Craft detail (0.45-0.75)
+  const craftOpacity = useTransform(scrollYProgress, [0.45, 0.55, 0.85], [0, 1, 0]);
+  const craftY = useTransform(scrollYProgress, [0.45, 0.55], [40, 0]);
 
-  // Phase 4: Craft detail (0.55-0.75)
-  const craftOpacity = useTransform(scrollYProgress, [0.55, 0.65, 0.85], [0, 1, 0]);
-  const craftY = useTransform(scrollYProgress, [0.55, 0.65], [40, 0]);
-
-  // Phase 5: CTA (0.75-1.0)
+  // Phase 4: CTA (0.75-1.0)
   const ctaOpacity = useTransform(scrollYProgress, [0.75, 0.85, 0.95], [0, 1, 0]);
 
   // Background text parallax
@@ -68,7 +64,7 @@ export default function HeroSection() {
         {/* 3D Scene — fades down as scroll progresses */}
         <motion.div
           style={{ opacity: sceneOpacity }}
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center -translate-y-16 sm:-translate-y-24 md:-translate-y-32"
         >
           <HeroScene />
         </motion.div>
@@ -76,7 +72,7 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-24 sm:translate-y-32 md:translate-y-48">
           <div className="text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name */}
@@ -85,7 +81,7 @@ export default function HeroSection() {
                 Atelier du Caire
               </p>
               <h1 className="font-display text-5xl sm:text-8xl md:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
-                GAMÉN
+                G<span className="font-lambda">Λ</span>MÉN
               </h1>
               <motion.div
                 style={{ scaleX: dividerScale }}
@@ -104,21 +100,7 @@ export default function HeroSection() {
               </p>
             </motion.div>
 
-            {/* Phase 3: Statement */}
-            <motion.div
-              style={{ opacity: statementOpacity, y: statementY }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4"
-            >
-              <p className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-champagne-gold/50">
-                Born & Raised in Cairo, Egypt
-              </p>
-              <p className="font-display text-2xl sm:text-5xl md:text-6xl text-champagne-gold font-light leading-tight">
-                Where ancient wood<br />
-                meets modern <em className="font-french">ceremony</em>
-              </p>
-            </motion.div>
-
-            {/* Phase 4: Craft */}
+            {/* Phase 3: Craft */}
             <motion.div
               style={{ opacity: craftOpacity, y: craftY }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-6"
@@ -136,7 +118,7 @@ export default function HeroSection() {
               </p>
             </motion.div>
 
-            {/* Phase 5: CTA */}
+            {/* Phase 4: CTA */}
             <motion.div
               style={{ opacity: ctaOpacity }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-8"

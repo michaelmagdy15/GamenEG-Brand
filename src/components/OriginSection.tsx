@@ -75,14 +75,14 @@ export default function OriginSection() {
         </div>
 
         {/* Text overlays */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-center px-4">
-          <motion.h2 style={{ opacity: rawWoodOpacity }} className="absolute font-header text-4xl md:text-7xl text-warm-cream">
+        <div className="absolute inset-x-0 bottom-[15vh] flex items-end justify-center pointer-events-none text-center px-4">
+          <motion.h2 style={{ opacity: rawWoodOpacity }} className="absolute font-header text-3xl md:text-5xl lg:text-6xl text-warm-cream drop-shadow-xl">
             Sélectionné à la main
           </motion.h2>
-          <motion.h2 style={{ opacity: carvedOpacity }} className="absolute font-header text-4xl md:text-7xl text-warm-cream">
+          <motion.h2 style={{ opacity: carvedOpacity }} className="absolute font-header text-3xl md:text-5xl lg:text-6xl text-warm-cream drop-shadow-xl">
             Sculpté avec intention
           </motion.h2>
-          <motion.h2 style={{ opacity: finishedOpacity }} className="absolute font-header text-4xl md:text-7xl text-champagne-gold">
+          <motion.h2 style={{ opacity: finishedOpacity }} className="absolute font-header text-3xl md:text-5xl lg:text-6xl text-champagne-gold drop-shadow-xl">
             Poli jusqu'à la perfection
           </motion.h2>
         </div>

@@ -54,7 +54,7 @@ export default function AcquisitionSection() {
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
+              viewport={{ once: false, margin: '-10%' }}
               transition={{ type: 'spring', stiffness: 50, damping: 20, delay: idx * 0.15 }}
               className="group cursor-pointer flex flex-col"
             >

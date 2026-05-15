@@ -76,19 +76,15 @@ export default function Shop() {
                     </div>
                     
                     {/* The Box Lid */}
-                    <motion.div
-                      initial={{ rotateY: 0 }}
-                      whileInView={{ rotateY: -105 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: i * 0.1 }}
+                    <div
                       style={{ transformOrigin: 'left center' }}
-                      className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-xl flex items-center justify-center overflow-hidden"
+                      className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-xl flex items-center justify-center overflow-hidden transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:rotateY(-105deg)]"
                     >
                       <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-20 mix-blend-overlay pointer-events-none" />
-                      <div className="w-12 h-12 rounded-full border border-champagne-gold/30 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full border border-champagne-gold/30 flex items-center justify-center transition-transform duration-700 group-hover:scale-90">
                         <span className="font-display text-lg text-champagne-gold">G</span>
                       </div>
-                    </motion.div>
+                    </div>
                     
                     <div className="absolute inset-0 bg-espresso/10 transition-opacity group-hover:opacity-0 pointer-events-none rounded-xl" />
                   </div>

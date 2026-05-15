@@ -55,7 +55,7 @@ export default function CollectionsSection() {
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true, margin: "-100px" }}
+                      viewport={{ once: false, margin: "-100px" }}
                       transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
                       className="absolute inset-0 flex items-center justify-center p-6 lg:p-12"
                     >
@@ -68,19 +68,15 @@ export default function CollectionsSection() {
                     </motion.div>
                     
                     {/* The Box Lid (Front cover that swings open) */}
-                    <motion.div
-                      initial={{ rotateY: 0 }}
-                      whileInView={{ rotateY: -105 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                    <div
                       style={{ transformOrigin: 'left center' }}
-                      className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-2xl flex items-center justify-center overflow-hidden"
+                      className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-2xl flex items-center justify-center overflow-hidden transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:rotateY(-105deg)]"
                     >
                       <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-20 mix-blend-overlay" />
-                      <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full border border-champagne-gold/30 flex items-center justify-center">
+                      <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full border border-champagne-gold/30 flex items-center justify-center transition-transform duration-700 group-hover:scale-90">
                         <span className="font-display text-xl lg:text-2xl text-champagne-gold">G</span>
                       </div>
-                    </motion.div>
+                    </div>
                     
                     <div className="absolute inset-0 bg-espresso/10 transition-opacity group-hover:opacity-0 pointer-events-none" />
                   </div>
