@@ -38,7 +38,7 @@ export default function HeritageSection() {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-15%' }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ type: 'spring', stiffness: 60, damping: 20, delay: index * 0.15 }}
               className={`group space-y-12 ${index === 1 ? 'lg:pt-64' : ''}`}
             >
               {index === 1 && (

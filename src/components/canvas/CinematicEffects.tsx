@@ -3,7 +3,7 @@ import { useThree } from '@react-three/fiber';
 
 export default function CinematicEffects() {
   return (
-    <EffectComposer disableNormalPass multisampling={0}>
+    <EffectComposer enableNormalPass={false} multisampling={0}>
       <Bloom 
         intensity={1.2} 
         luminanceThreshold={0.8} 

@@ -1,92 +1,171 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { useRef } from 'react';
-import { brandAssets } from '../brandAssets';
-import BrandWordmark from './BrandWordmark';
 import HeroScene from './canvas/HeroScene';
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: rawScrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  const titleOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.9], [0, 1, 0]);
-  const taglineOpacity = useTransform(scrollYProgress, [0.6, 0.8, 0.9], [0, 1, 0]);
-  const titleY = useTransform(scrollYProgress, [0.3, 0.9], [30, -30]);
-  const taglineY = useTransform(scrollYProgress, [0.6, 0.9], [20, -20]);
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  // Apply spring physics to scroll progress for fluid inertia
+  const scrollYProgress = useSpring(rawScrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  // Phase 1: Initial view (0-0.15) — bow tie + brand reveal
+  const brandOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25], [1, 1, 0]);
+  const brandScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.92]);
+
+  // Phase 2: Tagline slides in (0.15-0.35)
+  const taglineOpacity = useTransform(scrollYProgress, [0.15, 0.25, 0.45], [0, 1, 0]);
+  const taglineY = useTransform(scrollYProgress, [0.15, 0.25], [60, 0]);
+
+  // Phase 3: Statement (0.35-0.55)
+  const statementOpacity = useTransform(scrollYProgress, [0.35, 0.45, 0.65], [0, 1, 0]);
+  const statementY = useTransform(scrollYProgress, [0.35, 0.45], [50, 0]);
+
+  // Phase 4: Craft detail (0.55-0.75)
+  const craftOpacity = useTransform(scrollYProgress, [0.55, 0.65, 0.85], [0, 1, 0]);
+  const craftY = useTransform(scrollYProgress, [0.55, 0.65], [40, 0]);
+
+  // Phase 5: CTA (0.75-1.0)
+  const ctaOpacity = useTransform(scrollYProgress, [0.75, 0.85, 0.95], [0, 1, 0]);
+
+  // Background text parallax
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 0.5], [0.06, 0.06, 0]);
+
+  // Bow tie scene fades slightly as text takes over
+  const sceneOpacity = useTransform(scrollYProgress, [0, 0.12, 0.5, 0.8], [1, 1, 0.4, 0.2]);
+
+  // Divider line grows
+  const dividerScale = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
   return (
-    <section ref={containerRef} className="relative h-[200vh] bg-deep-walnut">
+    <section ref={containerRef} className="relative h-[300vh] bg-deep-walnut grain-overlay">
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Subtle radial glow — pure CSS, no JS */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(207,197,178,0.18),transparent_58%)]" />
 
-        {/* Background text — parallax via transform, no pointer events */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-          <motion.h1
-            style={{ y: bgY }}
-            className="font-display text-[84px] md:text-[180px] text-champagne-gold font-light leading-none opacity-10"
-          >
+        {/* Ambient radial glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(207,197,178,0.12),transparent_58%)]" />
+
+        {/* Giant background typography — parallax drift */}
+        <motion.div
+          style={{ y: bgY, opacity: bgOpacity }}
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none"
+        >
+          <span className="font-display text-[72px] md:text-[180px] text-champagne-gold font-light leading-none">
             ÉLÉGANCE
-          </motion.h1>
-          <motion.h1
-            style={{ y: bgY }}
-            className="font-display text-[84px] md:text-[180px] text-champagne-gold font-light leading-none opacity-10"
-          >
+          </span>
+          <span className="font-display text-[72px] md:text-[180px] text-champagne-gold font-light leading-none">
             TAILLÉE
-          </motion.h1>
-        </div>
+          </span>
+        </motion.div>
 
-        {/* 3D Scene */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* 3D Scene — fades down as scroll progresses */}
+        <motion.div
+          style={{ opacity: sceneOpacity }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
           <HeroScene />
-        </div>
+        </motion.div>
 
-        {/* Product annotations — static, no scroll-linked transforms */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="relative w-[320px] h-[320px] md:w-[520px] md:h-[520px]">
-            <div className="absolute -left-20 md:-left-40 top-10 text-right space-y-4 hidden sm:block">
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Walnut Origin</p>
-                <p className="font-french italic text-lg leading-tight text-champagne-gold">Cairo hand-selected<br />ancient timber</p>
-              </div>
-              <div className="h-[1px] w-24 bg-champagne-gold/30 ml-auto" />
-            </div>
+        {/* ============================================
+            SCROLL TEXT SEQUENCE — centered, layered
+            ============================================ */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          <div className="text-center px-6 max-w-3xl">
 
-            <div className="absolute -right-20 md:-right-40 bottom-10 text-left space-y-4 hidden sm:block">
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold">Signature</p>
-                <p className="font-french italic text-lg leading-tight text-champagne-gold">Brass initials<br />poli à la main</p>
+            {/* Phase 1: Brand name */}
+            <motion.div style={{ opacity: brandOpacity, scale: brandScale }}>
+              <p className="font-accent text-[10px] md:text-xs uppercase tracking-[0.35em] text-champagne-gold/60 mb-4">
+                Atelier du Caire
+              </p>
+              <h1 className="font-display text-6xl sm:text-8xl md:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
+                GAMÉN
+              </h1>
+              <motion.div
+                style={{ scaleX: dividerScale }}
+                className="h-px w-32 bg-champagne-gold/40 mx-auto mt-6 origin-center"
+              />
+            </motion.div>
+
+            {/* Phase 2: Tagline */}
+            <motion.div
+              style={{ opacity: taglineOpacity, y: taglineY }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <p className="font-french italic text-2xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
+                L'élégance taillée<br />
+                <span className="text-champagne-gold/60">en bois.</span>
+              </p>
+            </motion.div>
+
+            {/* Phase 3: Statement */}
+            <motion.div
+              style={{ opacity: statementOpacity, y: statementY }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+            >
+              <p className="font-accent text-[10px] uppercase tracking-[0.3em] text-champagne-gold/50">
+                Handcrafted in Egypt
+              </p>
+              <p className="font-display text-3xl sm:text-5xl md:text-6xl text-champagne-gold font-light leading-tight">
+                Where ancient wood<br />
+                meets modern <em className="font-french">ceremony</em>
+              </p>
+            </motion.div>
+
+            {/* Phase 4: Craft */}
+            <motion.div
+              style={{ opacity: craftOpacity, y: craftY }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6"
+            >
+              <div className="flex items-center gap-6">
+                <div className="h-px w-12 bg-champagne-gold/30" />
+                <p className="font-accent text-[10px] uppercase tracking-[0.3em] text-champagne-gold/50">
+                  The Details
+                </p>
+                <div className="h-px w-12 bg-champagne-gold/30" />
               </div>
-              <div className="h-[1px] w-24 bg-champagne-gold/30 mr-auto" />
-            </div>
+              <p className="font-body text-lg md:text-xl text-champagne-gold/70 max-w-md leading-relaxed">
+                Hand-selected walnut. Brass insignias cast from pharaonic moulds.
+                Each piece signed, numbered, and unrepeatable.
+              </p>
+            </motion.div>
+
+            {/* Phase 5: CTA */}
+            <motion.div
+              style={{ opacity: ctaOpacity }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-8"
+            >
+              <p className="font-display text-4xl sm:text-6xl text-champagne-gold font-light">
+                Discover the Collection
+              </p>
+              <div className="h-px w-16 bg-champagne-gold/30" />
+              <p className="font-accent text-[10px] uppercase tracking-[0.25em] text-champagne-gold/40">
+                Scroll to continue
+              </p>
+            </motion.div>
+
           </div>
         </div>
 
-        {/* Scroll title overlay */}
-        <div className="absolute z-10 flex flex-col items-center text-center px-4">
-          <motion.h1
-            style={{ opacity: titleOpacity, y: titleY }}
-            className="text-champagne-gold text-[72px] sm:text-[112px] font-light mb-2 uppercase leading-none"
-          >
-            <BrandWordmark />
-          </motion.h1>
-          <motion.p
-            style={{ opacity: taglineOpacity, y: taglineY }}
-            className="text-champagne-gold font-french italic text-3xl font-light"
-          >
-            L'élégance taillée en bois.
-          </motion.p>
-        </div>
+        {/* Scroll indicator — visible only at start */}
+        <motion.div
+          style={{ opacity: brandOpacity }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        >
+          <p className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold/30">
+            Scroll
+          </p>
+          <div className="w-px h-16 bg-champagne-gold/15 overflow-hidden">
+            <div className="w-full h-1/2 bg-champagne-gold/50 animate-scroll-hint" />
+          </div>
+        </motion.div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-[1px] h-24 bg-champagne-gold/20 overflow-hidden">
-          <div
-            className="w-full h-1/2 bg-champagne-gold animate-scroll-hint"
-          />
-        </div>
       </div>
     </section>
   );

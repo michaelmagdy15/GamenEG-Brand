@@ -55,7 +55,7 @@ export default function AcquisitionSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
-              transition={{ delay: idx * 0.1 }}
+              transition={{ type: 'spring', stiffness: 50, damping: 20, delay: idx * 0.15 }}
               className="group cursor-pointer flex flex-col"
             >
               <div className="aspect-[4/5] bg-void-end mb-6 overflow-hidden relative rounded-sm">

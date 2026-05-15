@@ -1,33 +1,178 @@
 import { brandAssets } from '../brandAssets';
 
+export type ProductCategory = 'bow-tie' | 'watch';
+
 export interface Product {
-  id: number;
+  id: string;
+  slug: string;
   name: string;
+  category: ProductCategory;
+  price: number;
   tagline: string;
-  image: string;
+  description: string;
+  image: string;        // transparent PNG
+  heroImage: string;    // full JPG
   wood: string;
+  details: string[];
+  careNote: string;
 }
 
-export const collections: Product[] = [
+export const products: Product[] = [
   {
-    id: 1,
+    id: 'bt-signature',
+    slug: 'signature-bow-tie',
     name: 'GAMÉN Signature',
+    category: 'bow-tie',
+    price: 149,
     tagline: 'Quiet luxury, loud identity.',
+    description: 'The GAMÉN Signature is where it all began — a hand-carved walnut bow tie crowned with a solid brass MF monogram. Every curve is sculpted to sit naturally at the collar, turning the ordinary into the unmistakable. Finished with a satin-matte lacquer that deepens with time.',
     image: brandAssets.signatureBowTie,
+    heroImage: brandAssets.signatureBowTieJpg,
     wood: 'Walnut & Brass',
+    details: [
+      'Hand-selected Egyptian walnut',
+      'Solid brass MF monogram — sand-cast & polished',
+      'Adjustable elastic neckband',
+      'Satin-matte lacquer finish',
+      'Comes in signature GAMÉN presentation box',
+    ],
+    careNote: 'Wipe gently with a dry microfiber cloth. Avoid prolonged moisture exposure. Store in the included wooden case.',
   },
   {
-    id: 2,
+    id: 'bt-two-tone',
+    slug: 'two-tone-grain',
     name: 'Two-Tone Grain',
+    category: 'bow-tie',
+    price: 159,
     tagline: 'Contrast carved into form.',
+    description: 'A study in duality — the Two-Tone Grain pairs the warmth of blonde sycamore with the gravity of dark walnut. The seamless join is invisible to the eye but unmistakable to the touch, a testament to millimetre-precision hand fitting.',
     image: brandAssets.twoToneBowTie,
-    wood: 'Walnut & Blonde Wood',
+    heroImage: brandAssets.twoToneBowTieJpg,
+    wood: 'Walnut & Blonde Sycamore',
+    details: [
+      'Two-wood inlay construction',
+      'Hand-fitted grain alignment',
+      'Natural oil finish — no synthetic coatings',
+      'Adjustable elastic neckband',
+      'Comes in signature GAMÉN presentation box',
+    ],
+    careNote: 'Apply a drop of tung oil every 6 months to maintain lustre. Avoid direct sunlight for extended periods.',
   },
   {
-    id: 3,
+    id: 'bt-eye-of-horus',
+    slug: 'eye-of-horus',
     name: 'Eye of Horus',
+    category: 'bow-tie',
+    price: 169,
     tagline: 'The Egyptian soul, held close.',
+    description: 'Carved from premium mahogany and adorned with a hand-engraved Eye of Horus brass inlay, this bow tie carries the weight of pharaonic heritage. The Eye symbol — representing protection, royal power, and good health — is micro-etched then filled with antiqued brass.',
     image: brandAssets.ankhBowTie,
-    wood: 'Mahogany & Brass',
+    heroImage: brandAssets.ankhBowTieJpg,
+    wood: 'Mahogany & Antiqued Brass',
+    details: [
+      'Premium African mahogany',
+      'Hand-engraved Eye of Horus brass inlay',
+      'Antiqued brass finish for heritage depth',
+      'Adjustable elastic neckband',
+      'Comes in signature GAMÉN presentation box',
+    ],
+    careNote: 'The antiqued brass patina will evolve naturally over time. To preserve the original finish, avoid contact with water or cologne.',
+  },
+  {
+    id: 'bt-pharaoh',
+    slug: 'pharaoh-bow-tie',
+    name: 'The Pharaoh',
+    category: 'bow-tie',
+    price: 179,
+    tagline: 'Worn by the chosen. Crafted for the bold.',
+    description: 'Our most commanding piece — The Pharaoh draws from the geometry of ancient temple columns. Deep walnut is sculpted into an assertive silhouette with sharper wing angles, finished with a high-gloss coat that catches light like polished stone.',
+    image: brandAssets.pharaohBowTie,
+    heroImage: brandAssets.pharaohBowTieJpg,
+    wood: 'Deep Walnut & High Gloss',
+    details: [
+      'Architectural wing geometry',
+      'Deep walnut with multi-layer gloss finish',
+      'Gold-plated clasp mechanism',
+      'Adjustable elastic neckband',
+      'Comes in premium collector\'s presentation box',
+    ],
+    careNote: 'High-gloss pieces should be stored face-up in the presentation box. Use a soft cloth to remove fingerprints.',
+  },
+  {
+    id: 'bt-dark-classic',
+    slug: 'dark-classic',
+    name: 'Dark Classic',
+    category: 'bow-tie',
+    price: 139,
+    tagline: 'One detail. All the attention.',
+    description: 'Stripped of embellishment, the Dark Classic lets the wood speak. A single piece of hand-oiled ebony-stained walnut, sculpted into the purest bow tie form. For the man who needs nothing more than impeccable material.',
+    image: brandAssets.darkClassicBowTie,
+    heroImage: brandAssets.detailBowTieJpg,
+    wood: 'Ebony-Stained Walnut',
+    details: [
+      'Single-block construction — no joins',
+      'Ebony wood stain with hand-oiled finish',
+      'Minimalist silhouette',
+      'Adjustable elastic neckband',
+      'Comes in signature GAMÉN presentation box',
+    ],
+    careNote: 'Re-oil with natural tung oil every 3–4 months for optimal depth. Avoid chemical cleaners.',
+  },
+  {
+    id: 'bt-hero',
+    slug: 'classic-walnut',
+    name: 'Classic Walnut',
+    category: 'bow-tie',
+    price: 129,
+    tagline: 'Stand out without saying a word.',
+    description: 'The entry point to the GAMÉN universe. Carved from selected walnut with a natural matte finish, the Classic Walnut is understated yet undeniable. The proportions are calibrated for a clean silhouette that complements any collar.',
+    image: brandAssets.heroBowTie,
+    heroImage: brandAssets.lifestyleBowTieJpg,
+    wood: 'Natural Walnut',
+    details: [
+      'Hand-selected walnut grain',
+      'Natural matte finish',
+      'Classic proportions',
+      'Adjustable elastic neckband',
+      'Comes in signature GAMÉN presentation box',
+    ],
+    careNote: 'Wipe with a dry cloth after wear. Store in a cool, dry place away from direct heat.',
+  },
+  {
+    id: 'w-epoque',
+    slug: 'epoque-watch',
+    name: 'GAMÉN Époque',
+    category: 'watch',
+    price: 249,
+    tagline: 'Time, carved from nature.',
+    description: 'The GAMÉN Époque extends our woodcraft philosophy to the wrist. A fully handcrafted wooden timepiece featuring a walnut case, stainless steel movement housing, and a multi-link wooden bracelet. The dial face uses a geometric wood inlay pattern that catches light differently with every glance.',
+    image: brandAssets.epoqueWatch,
+    heroImage: brandAssets.epoqueWatchJpg,
+    wood: 'Walnut & Stainless Steel',
+    details: [
+      'Handcrafted walnut case — 42mm diameter',
+      'Japanese Miyota quartz movement',
+      'Geometric wood inlay dial',
+      'Multi-link wooden bracelet with fold-over clasp',
+      'Water resistant to 3 ATM',
+      'Comes in luxury GAMÉN collector\'s box',
+    ],
+    careNote: 'Avoid submerging in water. Wipe with a slightly damp cloth if needed. Apply wood conditioner every 6 months. Store in the included box when not worn.',
   },
 ];
+
+export const getProductBySlug = (slug: string): Product | undefined =>
+  products.find((p) => p.slug === slug);
+
+export const getProductsByCategory = (category: ProductCategory): Product[] =>
+  products.filter((p) => p.category === category);
+
+// Derived collections for the horizontal-scroll carousel (CollectionsSection)
+export const collections = products.map((p, i) => ({
+  id: i + 1,
+  name: p.name,
+  tagline: p.tagline,
+  image: p.image,
+  wood: p.wood,
+  slug: p.slug,
+}));

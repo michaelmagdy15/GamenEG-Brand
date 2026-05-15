@@ -1,18 +1,21 @@
 import { Canvas } from '@react-three/fiber';
-import BowTieElement from './BowTieElement';
+import { lazy, Suspense } from 'react';
+
+const BowTieElement = lazy(() => import('./BowTieElement'));
 
 export default function HeroScene() {
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 45 }}
       dpr={[1, 1.5]}
-      frameloop="always"
+      frameloop="demand"
       gl={{
         antialias: false,
         powerPreference: 'high-performance',
         alpha: true,
         stencil: false,
         depth: true,
+        failIfMajorPerformanceCaveat: true,
       }}
       className="!absolute inset-0 pointer-events-auto z-0"
     >
@@ -22,8 +25,10 @@ export default function HeroScene() {
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 5, 5]} intensity={1.5} />
 
-      {/* Main Object */}
-      <BowTieElement />
+      {/* Main Object — lazy-loaded */}
+      <Suspense fallback={null}>
+        <BowTieElement />
+      </Suspense>
     </Canvas>
   );
 }

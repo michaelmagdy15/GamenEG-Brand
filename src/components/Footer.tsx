@@ -1,63 +1,92 @@
+import { useState, type FormEvent } from 'react';
 import { Instagram, Facebook, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import BrandWordmark from './BrandWordmark';
 
+const FORMSPREE_ID = 'xpwdgejq';
+
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleNewsletter = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    try {
+      await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        body: JSON.stringify({ email, _subject: 'New GAMEN Newsletter Subscriber' }),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      });
+      setSubscribed(true);
+      setEmail('');
+    } catch {
+      // Silently fail - non-critical
+    }
+  };
+
   return (
     <footer className="bg-deep-walnut text-warm-cream py-24 px-4 sm:px-8 border-t border-champagne-gold/10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
         <div className="col-span-1 lg:col-span-2">
           <BrandWordmark className="block text-4xl tracking-[0.2em] mb-6 text-champagne-gold" />
-          <p className="font-french italic text-champagne-gold text-2xl mb-12">L'élégance taillée en bois.</p>
+          <p className="font-french italic text-champagne-gold text-2xl mb-12">L'elegance taillee en bois.</p>
 
           <div className="max-w-md">
-            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-4">THE GAMÉN CIRCLE</h3>
+            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-4">THE GAMEN CIRCLE</h3>
             <p className="font-body text-sm text-warm-cream/70 mb-6">
               Invitations to private viewings, new wood drops, and artisan meetups.
             </p>
-            <div className="flex border-b border-warm-cream/30 focus-within:border-champagne-gold transition-colors pb-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-transparent border-none outline-none text-warm-cream placeholder-warm-cream/30 flex-grow font-body text-sm"
-              />
-              <button className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold hover:text-warm-cream transition-colors">
-                JOIN
-              </button>
-            </div>
+            {subscribed ? (
+              <p className="font-body text-sm text-champagne-gold">Welcome to the circle.</p>
+            ) : (
+              <form onSubmit={handleNewsletter} className="flex border-b border-warm-cream/30 focus-within:border-champagne-gold transition-colors pb-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="bg-transparent border-none outline-none text-warm-cream placeholder-warm-cream/30 flex-grow font-body text-sm"
+                />
+                <button type="submit" className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold hover:text-warm-cream transition-colors">
+                  JOIN
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
         <div>
           <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ATELIER</h3>
           <ul className="space-y-4 font-body text-sm text-warm-cream/80">
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Collections</a></li>
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Craftsmanship</a></li>
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Custom Orders</a></li>
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Our Story</a></li>
+            <li><Link to="/shop" className="hover:text-champagne-gold transition-colors">Collections</Link></li>
+            <li><Link to="/craftsmanship" className="hover:text-champagne-gold transition-colors">Craftsmanship</Link></li>
+            <li><Link to="/contact" className="hover:text-champagne-gold transition-colors">Custom Orders</Link></li>
+            <li><Link to="/our-story" className="hover:text-champagne-gold transition-colors">Our Story</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ASSISTANCE</h3>
           <ul className="space-y-4 font-body text-sm text-warm-cream/80 mb-12">
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Shipping & Returns</a></li>
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Care Instructions</a></li>
-            <li><a href="#" className="hover:text-champagne-gold transition-colors">Contact</a></li>
+            <li><Link to="/shipping" className="hover:text-champagne-gold transition-colors">Shipping & Returns</Link></li>
+            <li><Link to="/care" className="hover:text-champagne-gold transition-colors">Care Instructions</Link></li>
+            <li><Link to="/contact" className="hover:text-champagne-gold transition-colors">Contact</Link></li>
           </ul>
 
           <div className="flex gap-6">
-            <a href="#" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Instagram"><Instagram size={20} strokeWidth={1.5} /></a>
-            <a href="#" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Facebook"><Facebook size={20} strokeWidth={1.5} /></a>
-            <a href="#" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Instagram"><Instagram size={20} strokeWidth={1.5} /></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Facebook"><Facebook size={20} strokeWidth={1.5} /></a>
+            <a href="mailto:hello@gamen.eg" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-warm-cream/10 flex flex-col md:flex-row justify-between items-center gap-4 font-body text-xs text-warm-cream/40">
-        <p>&copy; {new Date().getFullYear()} GAMÉN. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} GAMEN. All rights reserved.</p>
         <div className="flex gap-4">
-          <span>Cairo.</span>
-          <span>Paris.</span>
+          <span>Cairo, Egypt.</span>
           <span>Wherever you are.</span>
         </div>
       </div>

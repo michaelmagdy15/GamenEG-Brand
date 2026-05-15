@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { useRef } from 'react';
 import { brandAssets } from '../brandAssets';
 
@@ -6,23 +6,29 @@ const steps = ['Select', 'Carve', 'Polish'];
 
 export default function OriginSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: rawScrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end start'],
+    offset: ['start start', 'end end'],
+  });
+  
+  const scrollYProgress = useSpring(rawScrollYProgress, {
+    stiffness: 70,
+    damping: 25,
+    restDelta: 0.001
   });
 
-  const rawWoodOpacity = useTransform(scrollYProgress, [0, 0.2, 0.4], [1, 1, 0]);
-  const carvedOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, 1, 0]);
-  const finishedOpacity = useTransform(scrollYProgress, [0.6, 0.8, 1], [0, 1, 1]);
-  const progressHeight = useTransform(scrollYProgress, [0.08, 0.92], ['0%', '100%']);
+  const rawWoodOpacity = useTransform(scrollYProgress, [0, 0.2, 0.35], [1, 1, 0]);
+  const carvedOpacity = useTransform(scrollYProgress, [0.25, 0.4, 0.6], [0, 1, 0]);
+  const finishedOpacity = useTransform(scrollYProgress, [0.5, 0.65, 0.85], [0, 1, 1]);
+  const progressHeight = useTransform(scrollYProgress, [0.05, 0.85], ['0%', '100%']);
 
   // Derive active step from scroll progress
   const activeStepFromScroll = useTransform(scrollYProgress, (v) =>
-    v < 0.38 ? 0 : v < 0.7 ? 1 : 2
+    v < 0.33 ? 0 : v < 0.58 ? 1 : 2
   );
 
   return (
-    <section ref={containerRef} className="relative h-[280vh] bg-deep-walnut text-warm-cream">
+    <section ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream grain-overlay">
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
         {/* Progress indicator */}
         <div className="absolute inset-y-0 left-6 md:left-12 flex items-center z-20">
