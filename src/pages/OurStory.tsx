@@ -44,7 +44,7 @@ export default function OurStory() {
           <img
             src={brandAssets.lifestyleBowTieJpg}
             alt="GAMEN craftsmanship"
-            className="w-full h-[400px] sm:h-[600px] object-cover object-center"
+            className="w-full aspect-square sm:aspect-video object-cover object-center"
           />
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function OurStory() {
       {/* Values with Wood Grain Feel */}
       <section className="relative mt-32 py-24 px-6 sm:px-10 overflow-hidden">
         {/* Wood grain background and overlays */}
-        <div className="absolute inset-0 bg-[image:var(--background-image-wood-grain)] opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-deep-walnut via-transparent to-deep-walnut pointer-events-none" />
         <div className="absolute inset-0 grain-overlay opacity-50 pointer-events-none" />
         

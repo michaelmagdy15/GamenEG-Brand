@@ -55,12 +55,12 @@ export default function HeroSection() {
         {/* Giant background typography — parallax drift */}
         <motion.div
           style={{ y: bgY, opacity: bgOpacity }}
-          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none"
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden"
         >
-          <span className="font-display text-[72px] md:text-[180px] text-champagne-gold font-light leading-none">
+          <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
             ÉLÉGANCE
           </span>
-          <span className="font-display text-[72px] md:text-[180px] text-champagne-gold font-light leading-none">
+          <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
             TAILLÉE
           </span>
         </motion.div>
@@ -76,15 +76,15 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="text-center px-6 max-w-3xl">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden">
+          <div className="text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name */}
             <motion.div style={{ opacity: brandOpacity, scale: brandScale }}>
-              <p className="font-accent text-[10px] md:text-xs uppercase tracking-[0.35em] text-champagne-gold/60 mb-4">
+              <p className="font-accent text-[10px] md:text-xs uppercase tracking-[0.35em] text-champagne-gold/60 mb-4 whitespace-nowrap">
                 Atelier du Caire
               </p>
-              <h1 className="font-display text-6xl sm:text-8xl md:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
+              <h1 className="font-display text-5xl sm:text-8xl md:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
                 GAMÉN
               </h1>
               <motion.div
@@ -96,9 +96,9 @@ export default function HeroSection() {
             {/* Phase 2: Tagline */}
             <motion.div
               style={{ opacity: taglineOpacity, y: taglineY }}
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute inset-0 flex items-center justify-center px-4"
             >
-              <p className="font-french italic text-2xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
+              <p className="font-french italic text-3xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
                 L'élégance taillée<br />
                 <span className="text-champagne-gold/60">en bois.</span>
               </p>
@@ -107,12 +107,12 @@ export default function HeroSection() {
             {/* Phase 3: Statement */}
             <motion.div
               style={{ opacity: statementOpacity, y: statementY }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4"
             >
-              <p className="font-accent text-[10px] uppercase tracking-[0.3em] text-champagne-gold/50">
-                Handcrafted in Egypt
+              <p className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-champagne-gold/50">
+                Born & Raised in Cairo, Egypt
               </p>
-              <p className="font-display text-3xl sm:text-5xl md:text-6xl text-champagne-gold font-light leading-tight">
+              <p className="font-display text-2xl sm:text-5xl md:text-6xl text-champagne-gold font-light leading-tight">
                 Where ancient wood<br />
                 meets modern <em className="font-french">ceremony</em>
               </p>
