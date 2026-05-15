@@ -120,6 +120,21 @@ export default function SignatureUnboxing() {
                 "Not just a box. A monument to your personal style."
               </p>
             </div>
+
+            {/* Included in the Box */}
+            <div className="mt-12 space-y-6">
+              <h4 className="font-accent text-sm tracking-widest uppercase text-deep-walnut border-b border-deep-walnut/10 pb-2">
+                Included in the Box
+              </h4>
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="w-full sm:w-2/3 rounded-lg overflow-hidden border border-champagne-gold/30 shadow-lg bg-deep-walnut/5 p-1">
+                  <img src="/thank_you_note.png" alt="Thank You Note" className="w-full h-auto rounded" />
+                </div>
+                <div className="w-full sm:w-1/3 rounded-lg overflow-hidden border border-champagne-gold/30 shadow-lg bg-deep-walnut/5 p-1 flex items-center justify-center">
+                  <img src="/instagram_qr.png" alt="Instagram QR" className="w-full h-auto rounded" />
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>

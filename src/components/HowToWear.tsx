@@ -1,23 +1,7 @@
 import { motion } from 'motion/react';
 import { useRef } from 'react';
 
-const steps = [
-  {
-    title: 'Preparation',
-    description: 'Ensure your top collar button is securely fastened. The GΛMÉN bow tie is designed to sit perfectly against standard dress shirt collars.',
-    videoPlaceholder: 'Animation: Collar button close-up',
-  },
-  {
-    title: 'Placement',
-    description: 'Hold the bow tie by its wooden wings. Align the stainless steel back clip with the thread of your top button.',
-    videoPlaceholder: 'Animation: Aligning the back clip',
-  },
-  {
-    title: 'Attachment',
-    description: 'Slide the clip gently downward over the button. It will lock into place with a subtle, secure click.',
-    videoPlaceholder: 'Animation: Sliding down to lock',
-  },
-];
+
 
 export default function HowToWear() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,40 +30,22 @@ export default function HowToWear() {
           </p>
         </div>
 
-        {/* Step-by-Step Sequence */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
-          {steps.map((step, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="w-full aspect-[4/5] bg-deep-walnut/40 border border-champagne-gold/20 rounded-lg mb-8 flex items-center justify-center relative overflow-hidden print:border-gray-300 print:bg-gray-50">
-                {/* Placeholder for Video/3D Animation */}
-                <div className="absolute inset-0 flex items-center justify-center p-6 text-champagne-gold/50 font-accent text-xs tracking-widest uppercase text-center print:text-gray-400">
-                  [{step.videoPlaceholder}]
-                </div>
-                {/* Overlay gradient for premium feel */}
-                <div className="absolute inset-0 bg-gradient-to-t from-void-start/80 to-transparent opacity-60 print:hidden" />
-                
-                {/* Step Number Badge */}
-                <div className="absolute top-4 left-4 w-8 h-8 rounded-full border border-champagne-gold/30 flex items-center justify-center bg-void-start/50 backdrop-blur-md print:bg-white print:border-gray-400">
-                  <span className="font-display text-champagne-gold text-sm print:text-black">{index + 1}</span>
-                </div>
-              </div>
-
-              <h3 className="font-header text-3xl mb-4 text-champagne-gold print:text-black">
-                {step.title}
-              </h3>
-              <p className="font-body text-sm leading-relaxed text-taupe print:text-gray-700">
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+        {/* Visual Guide */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-10%' }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-center justify-center max-w-4xl mx-auto"
+        >
+          <div className="w-full bg-deep-walnut/20 border border-champagne-gold/20 p-4 lg:p-12 rounded-xl print:border-none print:p-0 print:bg-transparent">
+            <img 
+              src="/how_to_wear_guide.png" 
+              alt="How to wear guide" 
+              className="w-full h-auto rounded-lg shadow-2xl print:shadow-none"
+            />
+          </div>
+        </motion.div>
 
         {/* Print / Download Card Button (Hidden on print) */}
         <div className="mt-32 text-center print:hidden flex flex-col items-center justify-center">
