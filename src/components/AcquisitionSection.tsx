@@ -4,7 +4,7 @@ import { brandAssets } from '../brandAssets';
 const products = [
   {
     id: 1,
-    name: 'GAMÉN Signature',
+    name: 'GΛMÉN Signature',
     type: 'Walnut & Brass Bow Tie',
     price: 'EGP 4,200',
     image: brandAssets.heroBowTie,

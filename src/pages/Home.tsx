@@ -4,7 +4,9 @@ import OriginSection from '../components/OriginSection';
 import CollectionsSection from '../components/CollectionsSection';
 import DetailsSection from '../components/DetailsSection';
 import HeritageSection from '../components/HeritageSection';
+import SignatureUnboxing from '../components/SignatureUnboxing';
 import RitualSection from '../components/RitualSection';
+import HowToWear from '../components/HowToWear';
 import AcquisitionSection from '../components/AcquisitionSection';
 import MarqueeTicker from '../components/MarqueeTicker';
 
@@ -24,7 +26,9 @@ export default function Home() {
       <DetailsSection />
       <MarqueeTicker variant="dark" speed="normal" />
       <HeritageSection />
+      <SignatureUnboxing />
       <RitualSection />
+      <HowToWear />
       <AcquisitionSection />
     </main>
   );

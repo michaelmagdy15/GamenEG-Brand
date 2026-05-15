@@ -40,7 +40,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const isExiting = phase === 'exit';
 
   // Split the brand name for staggered letter animation
-  const brandLetters = 'GAMÉN'.split('');
+  const brandLetters = 'GΛMÉN'.split('');
 
   return (
     <motion.div className="fixed inset-0 z-50 pointer-events-none overflow-hidden" style={{ perspective: '1200px' }}>

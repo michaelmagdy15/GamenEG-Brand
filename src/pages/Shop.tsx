@@ -1,111 +1,163 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { products, type ProductCategory } from '../data/products';
+import { Link } from 'react-router-dom';
+import { products, type ProductCollection } from '../data/products';
 
-const filters: { label: string; value: 'all' | ProductCategory }[] = [
-  { label: 'All Pieces', value: 'all' },
-  { label: 'Bow Ties', value: 'bow-tie' },
-  { label: 'Timepieces', value: 'watch' },
-];
+const collectionTitles: Record<ProductCollection, { title: string; subtitle: string }> = {
+  classique: { 
+    title: 'La Maison Classique', 
+    subtitle: 'The timeless modern classics' 
+  },
+  heritage: { 
+    title: 'Les Héritiers du Nil', 
+    subtitle: 'The Heirs of the Nile — inspired by Egyptian royalty & mythology' 
+  },
+  signature: { 
+    title: 'La Signature Privée', 
+    subtitle: 'The Private Signature — personalized bespoke pieces' 
+  },
+  watches: { 
+    title: 'GΛMÉN Horlogerie', 
+    subtitle: 'Precision instruments of time and wood' 
+  },
+};
 
 export default function Shop() {
-  const [active, setActive] = useState<'all' | ProductCategory>('all');
-  const filtered = active === 'all' ? products : products.filter(p => p.category === active);
+  const collections: ProductCollection[] = ['classique', 'heritage', 'signature', 'watches'];
 
   return (
     <main className="min-h-screen bg-deep-walnut pt-36 pb-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Main Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-24"
         >
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[0.9] text-champagne-gold tracking-tighter mb-4">
             The <span className="italic font-light">Collection</span>
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-6" />
-          <p className="font-body text-warm-cream/60 text-sm max-w-md mx-auto">
-            Every piece hand-carved from nature. Every detail considered.
+          <p className="font-body text-warm-cream/60 text-sm max-w-md mx-auto uppercase tracking-widest">
+            Hand-carved excellence. Egyptian soul.
           </p>
         </motion.div>
 
-        {/* Filters */}
-        <div className="flex justify-center gap-8 mb-16">
-          {filters.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setActive(f.value)}
-              className={`font-accent text-[10px] uppercase tracking-[0.2em] transition-colors pb-2 border-b ${
-                active === f.value
-                  ? 'text-champagne-gold border-champagne-gold'
-                  : 'text-warm-cream/40 border-transparent hover:text-warm-cream/70'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Collections */}
+        {collections.map((colKey) => {
+          const collectionProducts = products.filter(p => p.collection === colKey);
+          if (collectionProducts.length === 0) return null;
 
-        {/* Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filtered.map((product, i) => (
-            <motion.div
-              key={product.id}
-              layout
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-            >
-              <Link to={`/product/${product.slug}`} className="group block">
-                <div className="aspect-square rounded-xl mb-5 relative group" style={{ perspective: '1000px' }}>
-                  <div className="relative w-full h-full rounded-xl border border-champagne-gold/10 bg-gradient-to-br from-warm-cream/5 to-warm-cream/10 transform-style-3d">
-                    {/* The Product Inside */}
-                    <div className="absolute inset-0 flex items-center justify-center p-10">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="max-h-full object-contain transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                    </div>
-                    
-                    {/* The Box Lid */}
-                    <div
-                      style={{ transformOrigin: 'left center' }}
-                      className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-xl flex items-center justify-center overflow-hidden transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:rotateY(-105deg)]"
-                    >
-                      <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-20 mix-blend-overlay pointer-events-none" />
-                      <div className="w-12 h-12 rounded-full border border-champagne-gold/30 flex items-center justify-center transition-transform duration-700 group-hover:scale-90">
-                        <span className="font-display text-lg text-champagne-gold">G</span>
+          return (
+            <section key={colKey} className="mb-32 last:mb-0">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="mb-12 border-l border-champagne-gold/20 pl-6"
+              >
+                <h2 className="font-display text-3xl md:text-4xl text-champagne-gold mb-2">
+                  {collectionTitles[colKey].title}
+                </h2>
+                <p className="font-body text-xs md:text-sm text-warm-cream/40 uppercase tracking-widest italic">
+                  {collectionTitles[colKey].subtitle}
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                {collectionProducts.map((product, i) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                  >
+                    <div className="group block relative">
+                      {/* Product Card Container */}
+                      <Link 
+                        to={product.isSoldOut ? '#' : `/product/${product.slug}`} 
+                        className={`block transition-all duration-500 ${product.isSoldOut ? 'cursor-not-allowed opacity-80' : 'hover:-translate-y-2'}`}
+                      >
+                        <div className="aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box" style={{ perspective: '1200px' }}>
+                          <div className="relative w-full h-full rounded-2xl border border-champagne-gold/10 bg-gradient-to-br from-warm-cream/5 to-transparent transform-style-3d">
+                            
+                            {/* Sold Out Badge */}
+                            {product.isSoldOut && (
+                              <div className="absolute top-4 right-4 z-30 bg-espresso/90 border border-champagne-gold/30 px-3 py-1 rounded-full">
+                                <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-champagne-gold">Sold Out</span>
+                              </div>
+                            )}
+
+                            {/* The Product Image */}
+                            <div className="absolute inset-0 flex items-center justify-center p-12 z-0">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className={`max-h-full object-contain transition-all duration-700 ${product.isSoldOut ? 'grayscale contrast-125 opacity-40' : 'group-hover:scale-110 group-hover:rotate-6'}`}
+                                loading="lazy"
+                              />
+                            </div>
+                            
+                            {/* The Box Lid (Premium Interaction) */}
+                            <div
+                              style={{ transformOrigin: 'left center' }}
+                              className={`absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-2xl z-10 shadow-2xl flex items-center justify-center overflow-hidden transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${!product.isSoldOut && 'group-hover/box:[transform:rotateY(-110deg)]'}`}
+                            >
+                              <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
+                              <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" />
+                              
+                              <div className="relative flex flex-col items-center">
+                                <div className="w-16 h-16 rounded-full border border-champagne-gold/20 flex items-center justify-center mb-4">
+                                  <span className="font-display text-2xl text-champagne-gold">G</span>
+                                </div>
+                                <div className="h-px w-8 bg-gold-gradient" />
+                              </div>
+                            </div>
+                            
+                            {/* Inner Shadow / Depth */}
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
+                          </div>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="flex items-start justify-between px-2">
+                          <div>
+                            <h3 className="font-header text-xl text-champagne-gold group-hover:text-warm-cream transition-colors">
+                              {product.name}
+                            </h3>
+                            <p className="font-body text-[10px] text-warm-cream/30 mt-1 uppercase tracking-widest">{product.wood}</p>
+                          </div>
+                          <div className="text-right">
+                            <span className="block font-accent text-sm text-champagne-gold">{product.price} EGP</span>
+                            {product.isSoldOut && <span className="text-[10px] text-espresso uppercase tracking-tighter line-through opacity-40">Archived</span>}
+                          </div>
+                        </div>
+                      </Link>
+
+                      {/* Quick Action Button */}
+                      <div className="mt-6 px-2">
+                        <button
+                          disabled={product.isSoldOut}
+                          className={`w-full py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border ${
+                            product.isSoldOut
+                              ? 'border-warm-cream/5 text-warm-cream/20 cursor-not-allowed bg-transparent'
+                              : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
+                          }`}
+                        >
+                          {product.isSoldOut ? 'Nul Part Ailleurs' : 'Add to Collection'}
+                        </button>
                       </div>
                     </div>
-                    
-                    <div className="absolute inset-0 bg-espresso/10 transition-opacity group-hover:opacity-0 pointer-events-none rounded-xl" />
-                  </div>
-                </div>
-
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-header text-lg text-champagne-gold group-hover:text-warm-cream transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="font-body text-xs text-warm-cream/40 mt-1">{product.wood}</p>
-                  </div>
-                  <span className="font-accent text-sm text-champagne-gold/70">${product.price}</span>
-                </div>
-
-                <p className="font-french italic text-sm text-champagne-gold/50 mt-2">{product.tagline}</p>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </main>
   );
 }
+

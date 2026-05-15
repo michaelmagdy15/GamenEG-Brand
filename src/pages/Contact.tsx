@@ -41,7 +41,7 @@ export default function Contact() {
           {/* Contact Info */}
           <div className="space-y-10">
             {[
-              { icon: Mail, label: 'Email', value: 'hello@gamen.eg', href: 'mailto:hello@gamen.eg' },
+              { icon: Mail, label: 'Email', value: 'gamen.eg@gmail.com', href: 'mailto:gamen.eg@gmail.com' },
               { icon: MapPin, label: 'Atelier', value: 'Cairo, Egypt', href: undefined },
               { icon: Clock, label: 'Response Time', value: 'Within 24 hours', href: undefined },
             ].map(({ icon: Icon, label, value, href }) => (

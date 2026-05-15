@@ -188,3 +188,26 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* =============================================
+   RESPONSIVE TYPOGRAPHY (Headlines)
+   Ensures single-line display on mobile viewports
+   and prevents awkward wrapping/orphans.
+   ============================================= */
+@media (max-width: 768px) {
+  h1, h2, h3 {
+    white-space: nowrap;
+  }
+  
+  /* Fallback clamp sizes if elements don't explicitly set them */
+  h1 {
+    font-size: clamp(2rem, 8vw, 4rem);
+  }
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 3rem);
+  }
+  h3 {
+    font-size: clamp(1.25rem, 5vw, 2.5rem);
+  }
+}

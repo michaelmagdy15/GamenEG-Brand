@@ -19,9 +19,9 @@ const details = [
   },
   {
     image: brandAssets.heroBowTie,
-    alt: 'GAMÉN signature bow tie',
+    alt: 'GΛMÉN signature bow tie',
     label: 'THE SIGNATURE',
-    description: 'A custom center mark, finished in warm brass and aligned with the GAMÉN identity.',
+    description: 'A custom center mark, finished in warm brass and aligned with the GΛMÉN identity.',
     side: 'right' as const,
   },
 ];

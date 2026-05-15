@@ -40,7 +40,7 @@ export default function CareInstructions() {
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
           <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
-            Your GAMEN piece is crafted from natural materials that will age beautifully with proper care. 
+            Your GΛMÉN piece is crafted from natural materials that will age beautifully with proper care. 
             Follow these guidelines to preserve its character for years to come.
           </p>
         </motion.div>
@@ -70,7 +70,7 @@ export default function CareInstructions() {
         <div className="mt-20 p-8 rounded-xl bg-champagne-gold/5 border border-champagne-gold/10 text-center">
           <h3 className="font-header text-xl text-champagne-gold mb-4">Storage</h3>
           <p className="font-body text-sm text-warm-cream/60 leading-relaxed max-w-lg mx-auto">
-            Always store your GAMEN piece in the included presentation box when not in use. 
+            Always store your GΛMÉN piece in the included presentation box when not in use. 
             The box maintains a stable microclimate that protects the wood from humidity fluctuations and dust.
           </p>
         </div>

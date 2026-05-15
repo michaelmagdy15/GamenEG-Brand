@@ -90,7 +90,7 @@ export default function RitualSection() {
                 {/* Embossed brand on lid */}
                 <div className="h-px w-12 bg-champagne-gold/30" />
                 <p className="font-display text-3xl sm:text-4xl tracking-[0.2em] text-champagne-gold/70">
-                  GAMÉN
+                  GΛMÉN
                 </p>
                 <div className="h-px w-12 bg-champagne-gold/30" />
                 <p className="font-accent text-[8px] uppercase tracking-[0.3em] text-champagne-gold/35 mt-2">

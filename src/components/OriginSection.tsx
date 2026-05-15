@@ -61,14 +61,14 @@ export default function OriginSection() {
           <motion.img
             style={{ opacity: carvedOpacity }}
             src={brandAssets.ankhBowTie}
-            alt="GAMEN bow tie with Egyptian brass detail"
+            alt="GΛMÉN bow tie with Egyptian brass detail"
             className="absolute max-w-xl w-[78vw] object-cover"
             loading="lazy"
           />
           <motion.img
             style={{ opacity: finishedOpacity }}
             src={brandAssets.heroBowTie}
-            alt="Finished GAMEN bow tie"
+            alt="Finished GΛMÉN bow tie"
             className="absolute max-w-2xl w-[88vw] object-contain"
             loading="lazy"
           />

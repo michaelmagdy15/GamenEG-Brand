@@ -15,7 +15,7 @@ export default function Footer() {
     try {
       await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method: 'POST',
-        body: JSON.stringify({ email, _subject: 'New GAMEN Newsletter Subscriber' }),
+        body: JSON.stringify({ email, _subject: 'New GΛMÉN Newsletter Subscriber' }),
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       });
       setSubscribed(true);
@@ -33,7 +33,7 @@ export default function Footer() {
           <p className="font-french italic text-champagne-gold text-2xl mb-12">L'elegance taillee en bois.</p>
 
           <div className="max-w-md">
-            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-4">THE GAMEN CIRCLE</h3>
+            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-4">THE GΛMÉN CIRCLE</h3>
             <p className="font-body text-sm text-warm-cream/70 mb-6">
               Invitations to private viewings, new wood drops, and artisan meetups.
             </p>
@@ -78,13 +78,13 @@ export default function Footer() {
           <div className="flex gap-6">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Instagram"><Instagram size={20} strokeWidth={1.5} /></a>
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Facebook"><Facebook size={20} strokeWidth={1.5} /></a>
-            <a href="mailto:hello@gamen.eg" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
+            <a href="mailto:gamen.eg@gmail.com" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-warm-cream/10 flex flex-col md:flex-row justify-between items-center gap-4 font-body text-xs text-warm-cream/40">
-        <p>&copy; {new Date().getFullYear()} GAMEN. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} GΛMÉN. All rights reserved.</p>
         <div className="flex gap-4">
           <span>Cairo, Egypt.</span>
           <span>Wherever you are.</span>

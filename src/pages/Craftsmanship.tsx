@@ -1,5 +1,14 @@
+import { useRef, useLayoutEffect } from 'react';
 import { motion } from 'motion/react';
 import { brandAssets } from '../brandAssets';
+import { Canvas } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
+import { Group } from 'three';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { BowTieModel } from '../components/canvas/BowTieModel';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
@@ -30,8 +39,47 @@ const steps = [
 ];
 
 export default function Craftsmanship() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bowtieRef = useRef<Group>(null);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const stepElements = gsap.utils.toArray<HTMLElement>('.craft-step');
+      
+      const rotations = [
+        [0, 0, 0],                     // 01: Selection (Front View)
+        [0, Math.PI / 2.5, 0],         // 02: Shaping (Angled Side View)
+        [-Math.PI / 6, 0, 0],          // 03: Detailing (Tilted up)
+        [0, 0, Math.PI / 6],           // 04: Finishing (Rotated slightly)
+        [0, Math.PI, 0],               // 05: Assembly (Back View)
+      ];
+
+      stepElements.forEach((step, i) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter: () => animateToStep(i),
+          onEnterBack: () => animateToStep(i)
+        });
+      });
+
+      function animateToStep(index: number) {
+        if (!bowtieRef.current) return;
+        gsap.to(bowtieRef.current.rotation, {
+          x: rotations[index][0],
+          y: rotations[index][1],
+          z: rotations[index][2],
+          duration: 1.2,
+          ease: 'power3.out'
+        });
+      }
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <main className="min-h-screen bg-deep-walnut pt-36 pb-24">
+    <main ref={containerRef} className="min-h-screen bg-deep-walnut pt-36 pb-24">
       {/* Hero */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto text-center mb-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -41,36 +89,43 @@ export default function Craftsmanship() {
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
           <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
-            From raw timber to finished masterpiece, every GAMEN piece passes through over 20 stages of handcraft 
+            From raw timber to finished masterpiece, every GΛMÉN piece passes through over 20 stages of handcraft 
             in our Cairo atelier. Here is how each one comes to life.
           </p>
         </motion.div>
       </section>
 
-      {/* Detail Image */}
-      <section className="px-6 sm:px-10 max-w-6xl mx-auto mb-24">
-        <div className="aspect-[21/9] rounded-xl overflow-hidden border border-champagne-gold/10">
-          <img src={brandAssets.detailBowTieJpg} alt="GAMEN craftsmanship detail" className="w-full h-full object-cover" />
+      {/* Split Scroll Section */}
+      <section className="relative px-6 sm:px-10 max-w-7xl mx-auto mb-24 lg:flex lg:gap-16">
+        
+        {/* Sticky 3D Model Container */}
+        <div className="hidden lg:block w-1/2 relative">
+          <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10">
+            <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+              <Environment preset="city" />
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[5, 5, 5]} intensity={1} />
+              <BowTieModel ref={bowtieRef} />
+            </Canvas>
+          </div>
         </div>
-      </section>
 
-      {/* Process Steps */}
-      <section className="px-6 sm:px-10 max-w-4xl mx-auto">
-        <div className="space-y-20">
+        {/* Process Steps List */}
+        <div className="lg:w-1/2 space-y-32 py-10 lg:py-32">
           {steps.map((step, i) => (
             <motion.div
               key={step.num}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: '-80px' }}
-              transition={{ duration: 0.7, delay: i * 0.05 }}
-              className="flex flex-col md:flex-row gap-8 md:gap-16"
+              transition={{ duration: 0.7 }}
+              className="craft-step flex flex-col md:flex-row gap-6 md:gap-12"
             >
-              <div className="md:w-24 flex-shrink-0">
-                <span className="font-header text-6xl text-champagne-gold/15">{step.num}</span>
+              <div className="flex-shrink-0">
+                <span className="font-header text-5xl md:text-7xl text-champagne-gold/15">{step.num}</span>
               </div>
-              <div className="flex-1 border-l border-champagne-gold/15 pl-8">
-                <h3 className="font-header text-2xl text-champagne-gold mb-3">{step.title}</h3>
+              <div className="flex-1 border-l border-champagne-gold/15 pl-6 md:pl-8 pt-2">
+                <h3 className="font-header text-2xl md:text-3xl text-champagne-gold mb-4">{step.title}</h3>
                 <p className="font-body text-sm leading-relaxed text-warm-cream/60">{step.text}</p>
               </div>
             </motion.div>

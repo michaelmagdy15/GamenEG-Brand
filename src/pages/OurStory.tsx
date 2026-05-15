@@ -1,12 +1,15 @@
 import { motion } from 'motion/react';
 import { Landmark, PenTool, Fingerprint } from 'lucide-react';
+import { Canvas } from '@react-three/fiber';
+import { Environment, PresentationControls } from '@react-three/drei';
+import { BowTieModel } from '../components/canvas/BowTieModel';
 import { brandAssets } from '../brandAssets';
 
 const story = [
   {
     year: '2023',
     title: 'The First Cut',
-    text: 'In the beating heart of Cairo, Egypt, the first GAMEN bow tie was carved from a single piece of walnut in a small workshop. What began as a personal project became an obsession with the intersection of Egyptian heritage and modern luxury.',
+    text: 'In the beating heart of Cairo, Egypt, the first GΛMÉN bow tie was carved from a single piece of walnut in a small workshop. What began as a personal project became an obsession with the intersection of Egyptian heritage and modern luxury.',
   },
   {
     year: '2024',
@@ -16,7 +19,7 @@ const story = [
   {
     year: '2025',
     title: 'Beyond the Bow Tie',
-    text: 'The GAMEN Epoque timepiece launched, extending our woodcraft philosophy to the wrist. The vision crystallised: not a brand, but a movement -- where ancient craft meets contemporary identity.',
+    text: 'The GΛMÉN Epoque timepiece launched, extending our woodcraft philosophy to the wrist. The vision crystallised: not a brand, but a movement -- where ancient craft meets contemporary identity.',
   },
 ];
 
@@ -32,20 +35,33 @@ export default function OurStory() {
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
           <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
-            Born and raised in Cairo, Egypt -- GAMEN grew from a simple belief: that accessories should carry the weight of identity, not just aesthetics. 
+            Born and raised in Cairo, Egypt -- GΛMÉN grew from a simple belief: that accessories should carry the weight of identity, not just aesthetics. 
             Rooted in the heart of one of the world's oldest civilisations, every piece we create bridges thousands of years of Egyptian craftsmanship with the quiet confidence of modern luxury.
           </p>
         </motion.div>
       </section>
 
-      {/* Image */}
-      <section className="px-6 sm:px-10 max-w-5xl mx-auto mb-24">
-        <div className="rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5">
-          <img
-            src={brandAssets.lifestyleBowTieJpg}
-            alt="GAMEN craftsmanship"
-            className="w-full aspect-square sm:aspect-video object-cover object-center"
-          />
+      {/* 3D Model Display */}
+      <section className="px-6 sm:px-10 max-w-5xl mx-auto mb-24 h-[50vh] sm:h-[70vh]">
+        <div className="w-full h-full rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5 relative">
+          <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+            <Environment preset="city" />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[5, 5, 5]} intensity={1} />
+            
+            <PresentationControls 
+              global
+              rotation={[0.1, 0, 0]}
+              polar={[-Math.PI / 4, Math.PI / 4]}
+              azimuth={[-Math.PI / 4, Math.PI / 4]}
+              snap={true}
+            >
+              <BowTieModel autoRotate />
+            </PresentationControls>
+          </Canvas>
+          <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
+            <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/50">Interactive 3D View</span>
+          </div>
         </div>
       </section>
 
@@ -97,7 +113,7 @@ export default function OurStory() {
               { 
                 title: 'Identity', 
                 icon: Fingerprint,
-                text: 'A GAMEN piece is not decoration. It is a declaration -- a quiet signal of taste that cannot be replicated.' 
+                text: 'A GΛMÉN piece is not decoration. It is a declaration -- a quiet signal of taste that cannot be replicated.' 
               },
             ].map((v) => {
               const Icon = v.icon;

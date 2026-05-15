@@ -18,7 +18,7 @@ export default function ShippingReturns() {
           <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-8">Shipping</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { icon: Package, title: 'Packaging', text: 'Every order ships in our signature presentation box, wrapped in tissue and sealed with the GAMEN wax stamp.' },
+              { icon: Package, title: 'Packaging', text: 'Every order ships in our signature presentation box, wrapped in tissue and sealed with the GΛMÉN wax stamp.' },
               { icon: Globe, title: 'Worldwide', text: 'We ship to over 50 countries. International orders are dispatched via tracked express courier.' },
               { icon: Clock, title: 'Timing', text: 'Domestic (Egypt): 2-4 business days. International: 5-10 business days. Custom orders: 2-3 weeks.' },
             ].map(({ icon: Icon, title, text }) => (
@@ -85,7 +85,7 @@ export default function ShippingReturns() {
               <Shield size={20} strokeWidth={1} className="text-champagne-gold/50 mb-4" />
               <h3 className="font-header text-lg text-champagne-gold mb-2">Quality Guarantee</h3>
               <p className="font-body text-xs text-warm-cream/60 leading-relaxed">
-                Every GAMEN piece is backed by a 1-year craftsmanship guarantee. If you discover a defect in materials 
+                Every GΛMÉN piece is backed by a 1-year craftsmanship guarantee. If you discover a defect in materials 
                 or workmanship, we will repair or replace the piece at no cost.
               </p>
             </div>

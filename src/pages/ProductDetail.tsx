@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, Shield, Truck, Leaf } from 'lucide-react';
 import { getProductBySlug, products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import AnatomySection from '../components/AnatomySection';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -94,6 +95,9 @@ export default function ProductDetail() {
           </motion.div>
         </div>
       </section>
+
+      {/* Anatomy 3D Exploding View (Only for bow-ties) */}
+      {product.category === 'bow-tie' && <AnatomySection />}
 
       {/* Details Section */}
       <section className="py-24 px-6 sm:px-10 max-w-5xl mx-auto">

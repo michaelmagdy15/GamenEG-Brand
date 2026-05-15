@@ -5,7 +5,7 @@ import { brandAssets } from '../brandAssets';
 const pieces = [
   {
     id: 'signature',
-    name: 'GAMÉN Signature',
+    name: 'GΛMÉN Signature',
     detail: 'Brass monogram over dark walnut',
     image: brandAssets.heroBowTie,
     accent: 'The original. Where it all began.',
