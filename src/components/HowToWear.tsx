@@ -2,49 +2,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Printer } from 'lucide-react';
 
-const steps = [
-  {
-    num: '01',
-    title: 'Prepare the Collar',
-    subtitle: 'Undo the top button',
-    description: 'Before anything else, unbutton the top button of your dress shirt. The clip mechanism needs direct access to the button stud.',
-    illustration: CollarIllustration,
-    accent: 'The foundation of a clean result.',
-  },
-  {
-    num: '02',
-    title: 'Position the Piece',
-    subtitle: 'Rest it at the centre',
-    description: 'Place the GΛMÉN bow tie at the centre of your collar. Ensure it sits flat — the clip faces inward, the wood face outward.',
-    illustration: PositionIllustration,
-    accent: 'Flat and centred — not tilted.',
-  },
-  {
-    num: '03',
-    title: 'Attach the Clip',
-    subtitle: 'Hook onto the button',
-    description: 'Slide the stainless steel clip loop over the top button stud. You will feel a firm, satisfying click when it is seated correctly.',
-    illustration: ClipIllustration,
-    accent: 'Secure. Precise. Effortless.',
-  },
-  {
-    num: '04',
-    title: 'Adjust the Band',
-    subtitle: 'Set your fit',
-    description: 'The elastic neckband rests under the collar. Adjust the slider for a snug but comfortable fit — not tight enough to pull the collar forward.',
-    illustration: AdjustIllustration,
-    accent: 'Comfort meets precision.',
-  },
-  {
-    num: '05',
-    title: 'Fold & Finish',
-    subtitle: 'Drop the collar down',
-    description: 'Fold your collar points back down. The bow tie should now rest perfectly centred at the base of your throat. You\'re dressed.',
-    illustration: FinishIllustration,
-    accent: 'The room just noticed you.',
-  },
-];
-
 /* ─── Illustration Components ─────────────────────────────────────── */
 
 function CollarIllustration({ isActive }: { isActive: boolean }) {
@@ -248,6 +205,51 @@ function FinishIllustration({ isActive }: { isActive: boolean }) {
   );
 }
 
+/* ─── Steps data — defined AFTER illustration functions so refs resolve ─── */
+
+const steps = [
+  {
+    num: '01',
+    title: 'Prepare the Collar',
+    subtitle: 'Undo the top button',
+    description: 'Before anything else, unbutton the top button of your dress shirt. The clip mechanism needs direct access to the button stud.',
+    illustration: CollarIllustration,
+    accent: 'The foundation of a clean result.',
+  },
+  {
+    num: '02',
+    title: 'Position the Piece',
+    subtitle: 'Rest it at the centre',
+    description: 'Place the GΛMÉN bow tie at the centre of your collar. Ensure it sits flat — the clip faces inward, the wood face outward.',
+    illustration: PositionIllustration,
+    accent: 'Flat and centred — not tilted.',
+  },
+  {
+    num: '03',
+    title: 'Attach the Clip',
+    subtitle: 'Hook onto the button',
+    description: 'Slide the stainless steel clip loop over the top button stud. You will feel a firm, satisfying click when it is seated correctly.',
+    illustration: ClipIllustration,
+    accent: 'Secure. Precise. Effortless.',
+  },
+  {
+    num: '04',
+    title: 'Adjust the Band',
+    subtitle: 'Set your fit',
+    description: 'The elastic neckband rests under the collar. Adjust the slider for a snug but comfortable fit — not tight enough to pull the collar forward.',
+    illustration: AdjustIllustration,
+    accent: 'Comfort meets precision.',
+  },
+  {
+    num: '05',
+    title: 'Fold & Finish',
+    subtitle: 'Drop the collar down',
+    description: "Fold your collar points back down. The bow tie should now rest perfectly centred at the base of your throat. You're dressed.",
+    illustration: FinishIllustration,
+    accent: 'The room just noticed you.',
+  },
+];
+
 /* ─── Main Component ──────────────────────────────────────────────── */
 
 export default function HowToWear() {
@@ -274,7 +276,7 @@ export default function HowToWear() {
   const IllustrationComponent = currentStep.illustration;
 
   return (
-    <section className="relative bg-deep-walnut text-warm-cream py-32 lg:py-48 overflow-hidden print:bg-white print:text-black print:py-8">
+    <section id="how-to-wear-print-section" className="relative bg-deep-walnut text-warm-cream py-32 lg:py-48 overflow-hidden print:bg-white print:text-black print:py-8">
 
       {/* Subtle radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.06),transparent_65%)] pointer-events-none" />

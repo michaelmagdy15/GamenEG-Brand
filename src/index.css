@@ -211,3 +211,28 @@ body {
     font-size: clamp(1.25rem, 5vw, 2.5rem);
   }
 }
+
+/* ── Print: isolate the How to Wear instruction card ─────────────── */
+@media print {
+  /* Hide everything by default */
+  body > #root > * { display: none !important; }
+
+  /* Show only the how-to-wear section */
+  #how-to-wear-print-section {
+    display: block !important;
+    position: static !important;
+    background: white !important;
+    color: black !important;
+    padding: 2rem !important;
+  }
+
+  /* Make sure nested children are visible */
+  #how-to-wear-print-section * {
+    display: revert !important;
+  }
+
+  /* Remove decorative overlays that don't print well */
+  #how-to-wear-print-section .pointer-events-none {
+    display: none !important;
+  }
+}
