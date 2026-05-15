@@ -2,6 +2,7 @@ import HeroSection from '../components/HeroSection';
 import AtelierExperience from '../components/AtelierExperience';
 import OriginSection from '../components/OriginSection';
 import CollectionsSection from '../components/CollectionsSection';
+import AnatomySection from '../components/AnatomySection';
 import DetailsSection from '../components/DetailsSection';
 import HeritageSection from '../components/HeritageSection';
 import SignatureUnboxing from '../components/SignatureUnboxing';
@@ -23,6 +24,7 @@ export default function Home() {
         text="SÉLECTIONNÉ À LA MAIN  ·  SCULPTÉ AVEC INTENTION  ·  POLI JUSQU'À LA PERFECTION  ·  "
       />
       <CollectionsSection />
+      <AnatomySection />
       <DetailsSection />
       <MarqueeTicker variant="dark" speed="normal" />
       <HeritageSection />
