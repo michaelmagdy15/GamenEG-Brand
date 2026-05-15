@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
