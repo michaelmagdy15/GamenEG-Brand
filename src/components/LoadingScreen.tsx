@@ -8,19 +8,18 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const { progress } = useProgress();
 
   useEffect(() => {
-    // We enforce a minimum loading time for aesthetics, but also wait for Three.js assets
-    let timer: NodeJS.Timeout;
+    // Enforce a minimum loading time of 2.5 seconds for a premium entrance
+    let loadTimer: NodeJS.Timeout;
     
     if (progress === 100) {
-      // Once assets are 100% loaded, wait 800ms before dismissing for smooth transition
-      timer = setTimeout(() => {
+      loadTimer = setTimeout(() => {
         setComplete(true);
-        setTimeout(onComplete, 1000);
-      }, 800);
+        setTimeout(onComplete, 1000); // 1s for fade out
+      }, 1500); // Base wait time even when 100%
     }
 
     return () => {
-      if (timer) clearTimeout(timer);
+      if (loadTimer) clearTimeout(loadTimer);
     };
   }, [progress, onComplete]);
 

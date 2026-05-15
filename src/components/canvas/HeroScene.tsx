@@ -7,8 +7,8 @@ export default function HeroScene() {
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 45 }}
-      dpr={1} // Strictly cap DPR for performance
-      gl={{ antialias: false, powerPreference: 'high-performance' }}
+      dpr={[1, 2]} // Support high-DPI mobile screens for better quality
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
       className="!absolute inset-0 pointer-events-auto z-0"
     >
       <color attach="background" args={['#2A1B14']} /> {/* Match deep-walnut or make it transparent to blend with DOM */}

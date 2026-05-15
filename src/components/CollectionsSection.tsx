@@ -21,25 +21,25 @@ export default function CollectionsSection() {
 
             return (
               <div key={item.id} className="relative w-screen h-full flex items-center justify-center p-8 lg:p-24">
-                <div className="absolute left-8 bottom-8 font-header text-[120px] md:text-[220px] leading-none text-deep-walnut/[0.06]">
+                <div className="absolute left-4 bottom-12 font-header text-[80px] md:text-[220px] leading-none text-deep-walnut/[0.08] pointer-events-none">
                   0{item.id}
                 </div>
 
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-12 w-full max-w-7xl mx-auto">
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 w-full max-w-7xl mx-auto">
                   <motion.div
-                    className="w-full lg:w-1/2 relative group"
+                    className="w-full sm:w-4/5 lg:w-1/2 relative group"
                     whileHover={{ scale: 0.985 }}
                     transition={{ type: 'spring', stiffness: 180, damping: 18 }}
                   >
-                    <div className="overflow-hidden bg-void-end aspect-[4/5] rounded-sm shadow-2xl relative">
+                    <div className="overflow-hidden bg-gradient-to-br from-void-start to-void-end aspect-[4/5] rounded-xl shadow-2xl relative border border-deep-walnut/20">
                       <motion.img
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                        initial={{ rotate: imageRotate }}
-                        whileInView={{ rotate: '0deg' }}
+                        className="w-full h-full object-contain p-8 lg:p-12 drop-shadow-2xl transition-transform duration-1000 group-hover:scale-110"
+                        initial={{ rotate: imageRotate, scale: 0.9 }}
+                        whileInView={{ rotate: '0deg', scale: 1 }}
                         viewport={{ once: true, amount: 0.4 }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                       />
                       <div className="absolute inset-0 bg-espresso/10 transition-opacity group-hover:opacity-0" />
                       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-walnut/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
