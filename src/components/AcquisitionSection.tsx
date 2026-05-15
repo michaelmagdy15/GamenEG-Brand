@@ -56,17 +56,17 @@ export default function AcquisitionSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
               transition={{ delay: idx * 0.1 }}
-              whileHover={{ y: -12 }}
               className="group cursor-pointer flex flex-col"
             >
-              <div className="aspect-[4/5] bg-void-end mb-6 overflow-hidden relative rounded-sm transition-shadow duration-500 group-hover:shadow-[0_30px_70px_rgba(70,39,24,0.24)]">
+              <div className="aspect-[4/5] bg-void-end mb-6 overflow-hidden relative rounded-sm">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-2"
+                  className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-espresso/5 group-hover:bg-transparent transition-colors" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-void-end/80 backdrop-blur-sm">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-void-end/80">
                   <button className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-espresso border border-espresso px-6 py-3 hover:bg-espresso hover:text-warm-cream transition-colors">
                     View Details
                   </button>

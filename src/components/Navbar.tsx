@@ -1,23 +1,11 @@
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { useScroll } from 'motion/react';
 import { Menu, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BrandWordmark from './BrandWordmark';
 
 export default function Navbar() {
   const { scrollY } = useScroll();
-  const backgroundColor = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(70, 39, 24, 0)', 'rgba(70, 39, 24, 0.88)']
-  );
-
-  const backdropFilter = useTransform(
-    scrollY,
-    [0, 100],
-    ['blur(0px)', 'blur(20px)']
-  );
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -27,9 +15,10 @@ export default function Navbar() {
   }, [scrollY]);
 
   return (
-    <motion.nav
-      style={{ backgroundColor, backdropFilter }}
-      className="fixed top-0 left-0 right-0 z-40 px-6 sm:px-10 py-8 transition-colors duration-500"
+    <nav
+      className={`fixed top-0 left-0 right-0 z-40 px-6 sm:px-10 py-8 transition-colors duration-500 ${
+        isScrolled ? 'bg-deep-walnut/90' : 'bg-transparent'
+      }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between w-full z-20">
         <button className="lg:hidden text-champagne-gold" aria-label="Open navigation">
@@ -55,6 +44,6 @@ export default function Navbar() {
       </div>
 
       {isScrolled && <div className="absolute inset-x-0 bottom-0 h-px bg-champagne-gold/20" />}
-    </motion.nav>
+    </nav>
   );
 }

@@ -28,11 +28,7 @@ html, body, #root {
 }
 
 body {
-  background-color: var(--color-warm-cream);
-  background-image: url('/luxury_wood_texture.png');
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
+  background-color: var(--color-deep-walnut);
   color: var(--color-espresso);
   font-family: var(--font-body);
   overflow-x: hidden;
@@ -59,15 +55,57 @@ body {
   text-wrap: balance;
 }
 
+/* =============================================
+   CSS-ONLY ANIMATIONS (replaces JS animations)
+   ============================================= */
+
 @keyframes light-sweep {
-  0% {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  100% {
-    transform: translateX(120%) skewX(-18deg);
-  }
+  0% { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(120%) skewX(-18deg); }
 }
 
 .animate-light-sweep {
   animation: light-sweep 5.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-slow-spin {
+  animation: slow-spin 34s linear infinite;
+}
+
+@keyframes slow-spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-slow-spin-reverse {
+  animation: slow-spin-reverse 46s linear infinite;
+}
+
+@keyframes scroll-hint {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+.animate-scroll-hint {
+  animation: scroll-hint 1.5s linear infinite;
+}
+
+/* Force GPU compositing on scroll-animated elements */
+.sticky {
+  will-change: auto;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

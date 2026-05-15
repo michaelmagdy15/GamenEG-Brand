@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { brandAssets } from '../brandAssets';
 
@@ -25,10 +25,6 @@ const pieces = [
 
 export default function AtelierExperience() {
   const [activeId, setActiveId] = useState(pieces[0].id);
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [10, -10]), { stiffness: 180, damping: 24 });
-  const rotateY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-14, 14]), { stiffness: 180, damping: 24 });
   const activePiece = pieces.find((piece) => piece.id === activeId) ?? pieces[0];
 
   return (
@@ -64,33 +60,16 @@ export default function AtelierExperience() {
           </div>
         </div>
 
-        <div
-          className="relative min-h-[460px] lg:min-h-[620px] flex items-center justify-center"
-          onPointerMove={(event) => {
-            const rect = event.currentTarget.getBoundingClientRect();
-            pointerX.set((event.clientX - rect.left) / rect.width - 0.5);
-            pointerY.set((event.clientY - rect.top) / rect.height - 0.5);
-          }}
-          onPointerLeave={() => {
-            pointerX.set(0);
-            pointerY.set(0);
-          }}
-        >
+        {/* Image showcase — no mouse-tracking transforms */}
+        <div className="relative min-h-[460px] lg:min-h-[620px] flex items-center justify-center">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.22),transparent_62%)]" />
-          <motion.div
-            style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-            className="relative w-full max-w-2xl aspect-square flex items-center justify-center"
-          >
-            <div className="absolute inset-[8%] rounded-full border border-champagne-gold/25 bg-espresso/55 shadow-[0_40px_120px_rgba(0,0,0,0.35)]" />
-            <motion.div
-              className="absolute inset-[18%] rounded-full border border-champagne-gold/20"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 34, repeat: Infinity, ease: 'linear' }}
+          <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center">
+            <div className="absolute inset-[8%] rounded-full border border-champagne-gold/25 bg-espresso/55" />
+            <div
+              className="absolute inset-[18%] rounded-full border border-champagne-gold/20 animate-slow-spin"
             />
-            <motion.div
-              className="absolute inset-[27%] rounded-full border border-champagne-gold/15 border-dashed"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 46, repeat: Infinity, ease: 'linear' }}
+            <div
+              className="absolute inset-[27%] rounded-full border border-champagne-gold/15 border-dashed animate-slow-spin-reverse"
             />
 
             <AnimatePresence mode="wait">
@@ -98,15 +77,14 @@ export default function AtelierExperience() {
                 key={activePiece.id}
                 src={activePiece.image}
                 alt={activePiece.name}
-                initial={{ opacity: 0, scale: 0.82, rotate: -6, y: 28 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
-                exit={{ opacity: 0, scale: 0.88, rotate: 6, y: -20 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                className="relative z-10 w-[115%] max-w-none h-auto object-contain drop-shadow-[0_45px_45px_rgba(0,0,0,0.45)]"
-                style={{ transform: 'translateZ(80px)' }}
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.88 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="relative z-10 w-[115%] max-w-none h-auto object-contain"
               />
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
