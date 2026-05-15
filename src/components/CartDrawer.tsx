@@ -1,9 +1,11 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 export default function CartDrawer() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+  const navigate = useNavigate();
 
   return (
     <AnimatePresence>
@@ -92,7 +94,10 @@ export default function CartDrawer() {
                   <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
                   <span className="font-header text-2xl text-champagne-gold">${totalPrice}</span>
                 </div>
-                <button className="w-full py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors">
+                <button
+                  onClick={() => { setIsOpen(false); navigate('/checkout'); }}
+                  className="w-full py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
+                >
                   Proceed to Checkout
                 </button>
               </div>

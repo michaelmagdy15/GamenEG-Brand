@@ -1,6 +1,12 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { useRef } from 'react';
 import { products, type ProductCollection } from '../data/products';
+
+const HIEROGLYPHS = '𓀀𓀁𓀂𓀃𓀄𓀅𓀆𓀇𓀈𓀉𓀊𓀋𓀌𓀍𓀎𓀏𓀐𓀑𓀒𓀓𓀔𓀕𓀖𓀗𓀘𓀙𓀚𓀛𓀜𓀝𓀞𓀟𓀠𓀡𓀢𓀣𓀤𓀥𓀦𓀧𓀨𓀩𓀪𓀫𓀬𓀭𓀮𓀯';
+const hieroglyphRows = Array.from({ length: 10 }, () =>
+  Array.from({ length: 28 }, () => HIEROGLYPHS[Math.floor(Math.random() * HIEROGLYPHS.length)]).join('')
+);
 
 const collectionTitles: Record<ProductCollection, { title: string; subtitle: string }> = {
   classique: { 
@@ -22,7 +28,9 @@ const collectionTitles: Record<ProductCollection, { title: string; subtitle: str
 };
 
 export default function Shop() {
-  const collections: ProductCollection[] = ['classique', 'heritage', 'signature', 'watches'];
+  // Signature first — client requirement: bespoke tier shown prominently at top
+  const collections: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
+  const heritageSectionRef = useRef<HTMLElement>(null);
 
   return (
     <main className="min-h-screen bg-deep-walnut pt-36 pb-24 px-6 sm:px-10">
@@ -49,18 +57,51 @@ export default function Shop() {
           const collectionProducts = products.filter(p => p.collection === colKey);
           if (collectionProducts.length === 0) return null;
 
+          const isHeritage = colKey === 'heritage';
+
           return (
-            <section key={colKey} className="mb-32 last:mb-0">
-              <motion.div 
+            <section
+              key={colKey}
+              ref={isHeritage ? heritageSectionRef : undefined}
+              className={`mb-32 last:mb-0 relative ${
+                isHeritage ? 'rounded-2xl overflow-hidden py-16 px-6 sm:px-10 -mx-6 sm:-mx-10 bg-warm-cream' : ''
+              }`}
+            >
+              {/* Heritage: animated hieroglyphic background */}
+              {isHeritage && (
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                  {hieroglyphRows.map((row, idx) => (
+                    <motion.div
+                      key={idx}
+                      className="whitespace-nowrap font-serif text-[2.5rem] tracking-[0.8em] text-deep-walnut/[0.04] leading-none select-none"
+                      animate={{ x: idx % 2 === 0 ? [0, -60] : [-60, 0] }}
+                      transition={{ duration: 35 + idx * 4, repeat: Infinity, ease: 'linear', repeatType: 'mirror' }}
+                    >
+                      {row}
+                    </motion.div>
+                  ))}
+                  <div className="absolute inset-0 bg-gradient-to-b from-warm-cream via-transparent to-warm-cream" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-warm-cream via-transparent to-warm-cream" />
+                </div>
+              )}
+
+              <div className="relative z-10">
+              <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="mb-12 border-l border-champagne-gold/20 pl-6"
+                className={`mb-12 border-l pl-6 ${
+                  isHeritage ? 'border-deep-walnut/30' : 'border-champagne-gold/20'
+                }`}
               >
-                <h2 className="font-display text-3xl md:text-4xl text-champagne-gold mb-2">
+                <h2 className={`font-display text-3xl md:text-4xl mb-2 ${
+                  isHeritage ? 'text-espresso' : 'text-champagne-gold'
+                }`}>
                   {collectionTitles[colKey].title}
                 </h2>
-                <p className="font-body text-xs md:text-sm text-warm-cream/40 uppercase tracking-widest italic">
+                <p className={`font-body text-xs md:text-sm uppercase tracking-widest italic ${
+                  isHeritage ? 'text-deep-walnut/50' : 'text-warm-cream/40'
+                }`}>
                   {collectionTitles[colKey].subtitle}
                 </p>
               </motion.div>
@@ -124,13 +165,21 @@ export default function Shop() {
                         {/* Product Info */}
                         <div className="flex items-start justify-between px-2">
                           <div>
-                            <h3 className="font-header text-xl text-champagne-gold group-hover:text-warm-cream transition-colors">
+                            <h3 className={`font-header text-xl transition-colors ${
+                              isHeritage
+                                ? 'text-espresso group-hover:text-deep-walnut'
+                                : 'text-champagne-gold group-hover:text-warm-cream'
+                            }`}>
                               {product.name}
                             </h3>
-                            <p className="font-body text-[10px] text-warm-cream/30 mt-1 uppercase tracking-widest">{product.wood}</p>
+                            <p className={`font-body text-[10px] mt-1 uppercase tracking-widest ${
+                              isHeritage ? 'text-espresso/40' : 'text-warm-cream/30'
+                            }`}>{product.wood}</p>
                           </div>
                           <div className="text-right">
-                            <span className="block font-accent text-sm text-champagne-gold">{product.price} EGP</span>
+                            <span className={`block font-accent text-sm ${
+                              isHeritage ? 'text-espresso' : 'text-champagne-gold'
+                            }`}>{product.price} EGP</span>
                             {product.isSoldOut && <span className="text-[10px] text-espresso uppercase tracking-tighter line-through opacity-40">Archived</span>}
                           </div>
                         </div>
@@ -142,7 +191,9 @@ export default function Shop() {
                           disabled={product.isSoldOut}
                           className={`w-full py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border ${
                             product.isSoldOut
-                              ? 'border-warm-cream/5 text-warm-cream/20 cursor-not-allowed bg-transparent'
+                              ? 'border-espresso/10 text-espresso/20 cursor-not-allowed bg-transparent'
+                              : isHeritage
+                              ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
                               : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
                           }`}
                         >
@@ -153,6 +204,7 @@ export default function Shop() {
                   </motion.div>
                 ))}
               </div>
+              </div>{/* end grid wrapper */}
             </section>
           );
         })}
