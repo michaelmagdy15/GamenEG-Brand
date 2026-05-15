@@ -2,7 +2,7 @@ if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }
 
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartProvider } from './context/CartContext';
@@ -16,28 +16,53 @@ import CustomCursor from './components/CustomCursor';
 import BackToTop from './components/BackToTop';
 import AdminRoute from './components/AdminRoute';
 
-// Public Pages
-import Home from './pages/Home';
-import Shop from './pages/Shop';
-import ProductDetail from './pages/ProductDetail';
-import OurStory from './pages/OurStory';
-import Contact from './pages/Contact';
-import Craftsmanship from './pages/Craftsmanship';
-import CareInstructions from './pages/CareInstructions';
-import ShippingReturns from './pages/ShippingReturns';
-import Checkout from './pages/Checkout';
-import OrderConfirmation from './pages/OrderConfirmation';
+/* ─── Lazy-loaded pages — only fetched when the user navigates to them ── */
+const Home             = lazy(() => import('./pages/Home'));
+const Shop             = lazy(() => import('./pages/Shop'));
+const ProductDetail    = lazy(() => import('./pages/ProductDetail'));
+const OurStory         = lazy(() => import('./pages/OurStory'));
+const Contact          = lazy(() => import('./pages/Contact'));
+const Craftsmanship    = lazy(() => import('./pages/Craftsmanship'));
+const CareInstructions = lazy(() => import('./pages/CareInstructions'));
+const ShippingReturns  = lazy(() => import('./pages/ShippingReturns'));
+const Checkout         = lazy(() => import('./pages/Checkout'));
+const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'));
 
-// Admin Pages
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
+/* Admin pages — also lazy */
+const AdminLogin     = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+
+/* Minimal inline fallback — matches the dark background so no flash */
+function PageFallback() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#462718',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: 32,
+          height: 32,
+          border: '2px solid #cfc5b2',
+          borderTopColor: 'transparent',
+          borderRadius: '50%',
+          animation: 'spin 0.7s linear infinite',
+        }}
+      />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;
@@ -46,8 +71,6 @@ function ScrollToTop() {
 function AppContent() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
-
-  // Admin pages: no navbar/footer/cursor
   const isAdminPage = pathname.startsWith('/admin');
 
   return (
@@ -60,17 +83,19 @@ function AppContent() {
       <ScrollToTop />
 
       {isAdminPage ? (
-        <Routes>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
-          />
-        </Routes>
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+          </Routes>
+        </Suspense>
       ) : (
         <motion.div
           className="relative"
@@ -86,18 +111,20 @@ function AppContent() {
           <ScrollProgress />
           <Navbar />
           <CartDrawer />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product/:slug" element={<ProductDetail />} />
-            <Route path="/our-story" element={<OurStory />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/craftsmanship" element={<Craftsmanship />} />
-            <Route path="/care" element={<CareInstructions />} />
-            <Route path="/shipping" element={<ShippingReturns />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          </Routes>
+          <Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/"                  element={<Home />} />
+              <Route path="/shop"              element={<Shop />} />
+              <Route path="/product/:slug"     element={<ProductDetail />} />
+              <Route path="/our-story"         element={<OurStory />} />
+              <Route path="/contact"           element={<Contact />} />
+              <Route path="/craftsmanship"     element={<Craftsmanship />} />
+              <Route path="/care"              element={<CareInstructions />} />
+              <Route path="/shipping"          element={<ShippingReturns />} />
+              <Route path="/checkout"          element={<Checkout />} />
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            </Routes>
+          </Suspense>
           <Footer />
           <BackToTop />
         </motion.div>
