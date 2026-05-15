@@ -319,13 +319,13 @@ export default function HowToWear() {
 
           {/* Illustration Panel */}
           <motion.div
-            className="w-full max-w-xs lg:max-w-sm flex-shrink-0"
+            className="w-full max-w-[18rem] sm:max-w-xs lg:max-w-sm flex-shrink-0"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="aspect-square relative">
+            <div className="aspect-square relative min-h-[240px] sm:min-h-0">
               {/* Step number badge */}
               <div className="absolute -top-4 -left-4 z-10 w-12 h-12 bg-champagne-gold rounded-full flex items-center justify-center">
                 <span className="font-header text-deep-walnut text-lg font-bold">{activeStep + 1}</span>

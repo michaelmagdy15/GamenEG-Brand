@@ -233,7 +233,7 @@ export default function Checkout() {
                       <div className="flex items-center justify-between mt-1">
                         <span className="font-body text-[11px] text-warm-cream/40">Qty: {item.quantity}</span>
                         <span className="font-accent text-xs text-champagne-gold">
-                          {(item.product.price * item.quantity).toLocaleString()} EGP
+                          LE {(item.product.price * item.quantity).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -244,7 +244,7 @@ export default function Checkout() {
               <div className="pt-4 border-t border-champagne-gold/10 space-y-2">
                 <div className="flex justify-between">
                   <span className="font-body text-xs text-warm-cream/40">Subtotal</span>
-                  <span className="font-body text-xs text-warm-cream/70">{totalPrice.toLocaleString()} EGP</span>
+                  <span className="font-body text-xs text-warm-cream/70">LE {totalPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-body text-xs text-warm-cream/40">Shipping</span>
@@ -252,7 +252,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between pt-3 border-t border-champagne-gold/10">
                   <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
-                  <span className="font-header text-xl text-champagne-gold">{totalPrice.toLocaleString()} EGP</span>
+                  <span className="font-header text-xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
                 </div>
               </div>
             </div>

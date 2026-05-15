@@ -69,7 +69,7 @@ export default function ProductDetail() {
 
             {/* Price + Add to Bag */}
             <div className="flex items-end gap-8 mb-12">
-              <span className="font-header text-4xl text-champagne-gold">${product.price}</span>
+              <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
               <button
                 onClick={() => addItem(product)}
                 className="flex-1 max-w-xs flex items-center justify-center gap-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
@@ -138,7 +138,7 @@ export default function ProductDetail() {
                   </div>
                   <h4 className="font-header text-lg text-champagne-gold">{p.name}</h4>
                   <p className="font-body text-xs text-warm-cream/50 mt-1">{p.wood}</p>
-                  <p className="font-accent text-sm text-champagne-gold/70 mt-2">${p.price}</p>
+                  <p className="font-accent text-sm text-champagne-gold/70 mt-2">LE {p.price.toLocaleString()}</p>
                 </Link>
               ))}
             </div>

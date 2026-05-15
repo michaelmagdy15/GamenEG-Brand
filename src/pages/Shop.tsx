@@ -179,7 +179,7 @@ export default function Shop() {
                           <div className="text-right">
                             <span className={`block font-accent text-sm ${
                               isHeritage ? 'text-espresso' : 'text-champagne-gold'
-                            }`}>{product.price} EGP</span>
+                            }`}>LE {product.price.toLocaleString()}</span>
                             {product.isSoldOut && <span className="text-[10px] text-espresso uppercase tracking-tighter line-through opacity-40">Archived</span>}
                           </div>
                         </div>

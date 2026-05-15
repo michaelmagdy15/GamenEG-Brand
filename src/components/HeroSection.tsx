@@ -43,7 +43,8 @@ export default function HeroSection() {
 
   return (
     <section ref={containerRef} className="relative h-[300vh] bg-deep-walnut grain-overlay">
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* h-svh = Safari-safe viewport height (excludes collapsible address bar) */}
+      <div className="sticky top-0 h-svh w-full flex items-center justify-center overflow-hidden">
 
         {/* Ambient radial glow */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(207,197,178,0.12),transparent_58%)]" />

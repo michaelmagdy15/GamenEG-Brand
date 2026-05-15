@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, type MouseEvent } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
 
 interface MagneticWrapperProps {
@@ -6,6 +6,10 @@ interface MagneticWrapperProps {
   strength?: number;
   className?: string;
 }
+
+// Detect touch-only devices once at module load — avoids repeated media query checks
+const isTouchOnly =
+  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
 export default function MagneticWrapper({
   children,
@@ -18,13 +22,16 @@ export default function MagneticWrapper({
   const springX = useSpring(x, { stiffness: 200, damping: 15, mass: 0.5 });
   const springY = useSpring(y, { stiffness: 200, damping: 15, mass: 0.5 });
 
-  const handleMouse = (e: MouseEvent<HTMLDivElement>) => {
+  // Render passthrough on touch devices — no motion overhead
+  if (isTouchOnly) {
+    return <div className={className}>{children}</div>;
+  }
+
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * strength);
-    y.set((e.clientY - centerY) * strength);
+    x.set((e.clientX - rect.left - rect.width / 2) * strength);
+    y.set((e.clientY - rect.top - rect.height / 2) * strength);
   };
 
   const reset = () => {

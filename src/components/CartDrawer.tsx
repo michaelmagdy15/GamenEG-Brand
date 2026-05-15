@@ -26,7 +26,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-deep-walnut z-50 flex flex-col border-l border-champagne-gold/15"
+            className="fixed right-0 top-0 bottom-0 w-full sm:max-w-md bg-deep-walnut z-50 flex flex-col border-l border-champagne-gold/15"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-6 border-b border-champagne-gold/15">
@@ -58,17 +58,19 @@ export default function CartDrawer() {
                       <h4 className="font-header text-sm text-champagne-gold truncate">{item.product.name}</h4>
                       <p className="font-body text-xs text-warm-cream/50 mt-1">{item.product.wood}</p>
                       <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="w-6 h-6 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors"
+                            className="w-11 h-11 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
+                            aria-label="Decrease quantity"
                           >
                             <Minus size={12} />
                           </button>
-                          <span className="font-body text-xs text-warm-cream w-4 text-center">{item.quantity}</span>
+                          <span className="font-body text-xs text-warm-cream w-6 text-center">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="w-6 h-6 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors"
+                            className="w-11 h-11 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
+                            aria-label="Increase quantity"
                           >
                             <Plus size={12} />
                           </button>
@@ -92,7 +94,7 @@ export default function CartDrawer() {
               <div className="px-6 py-6 border-t border-champagne-gold/15">
                 <div className="flex items-center justify-between mb-6">
                   <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
-                  <span className="font-header text-2xl text-champagne-gold">${totalPrice}</span>
+                  <span className="font-header text-2xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
                 </div>
                 <button
                   onClick={() => { setIsOpen(false); navigate('/checkout'); }}

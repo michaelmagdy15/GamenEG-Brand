@@ -15,7 +15,8 @@ export default function HeroScene() {
         alpha: true,
         stencil: false,
         depth: true,
-        failIfMajorPerformanceCaveat: true,
+        // NOTE: failIfMajorPerformanceCaveat removed — it silently kills
+        // WebGL on iPhone Low Power Mode and older A-series chips
       }}
       className="!absolute inset-0 pointer-events-auto z-0"
     >

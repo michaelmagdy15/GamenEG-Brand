@@ -41,7 +41,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between w-full z-20">
           <button
-            className="lg:hidden text-champagne-gold"
+            className="lg:hidden text-champagne-gold -ml-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Open navigation"
             onClick={() => setMobileOpen(true)}
           >
@@ -70,7 +70,7 @@ export default function Navbar() {
           <div className="hidden lg:block bg-gold-gradient w-12 h-[1px]" />
 
           <button
-            className="text-champagne-gold flex items-center gap-2 relative"
+            className="text-champagne-gold flex items-center gap-2 relative p-2 min-w-[44px] min-h-[44px] justify-center"
             aria-label="Open cart"
             onClick={() => setIsOpen(true)}
           >
@@ -110,21 +110,21 @@ export default function Navbar() {
                   <X size={20} strokeWidth={1} />
                 </button>
               </div>
-              <div className="flex-1 flex flex-col gap-2 px-6 py-8">
+              <div className="flex-1 flex flex-col gap-2 px-6 py-8 overflow-y-auto">
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`font-header text-2xl py-3 transition-colors ${
+                    className={`font-header text-2xl py-4 min-h-[52px] flex items-center transition-colors ${
                       location.pathname === link.to ? 'text-champagne-gold' : 'text-warm-cream/60 hover:text-champagne-gold'
                     }`}
                   >
                     {link.label}
                   </Link>
                 ))}
-                <div className="mt-auto pt-8 border-t border-champagne-gold/10 space-y-3">
-                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors">Care Instructions</Link>
-                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors">Shipping & Returns</Link>
+                <div className="mt-auto pt-8 border-t border-champagne-gold/10 space-y-3 safe-bottom">
+                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-2">Care Instructions</Link>
+                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-2">Shipping &amp; Returns</Link>
                 </div>
               </div>
             </motion.div>

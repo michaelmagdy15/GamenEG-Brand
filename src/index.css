@@ -25,7 +25,11 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  /* iPhone: use dynamic viewport height so the sticky hero
+     accounts for Safari's collapsible address bar */
+  min-height: 100dvh;
 }
+
 
 body {
   background-color: var(--color-deep-walnut);
@@ -178,6 +182,36 @@ body {
   .custom-cursor-active * {
     cursor: none !important;
   }
+}
+
+/* =============================================
+   iPHONE / iOS SAFARI FIXES
+   ============================================= */
+
+/* 1. Remove the blue/grey tap flash on all interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 2. Smooth momentum scrolling + disable pull-to-refresh jank */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+/* 3. Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
+input, textarea, select {
+  font-size: max(16px, 1em);
+}
+
+/* 4. Safe-area insets — home bar clearance for bottom-anchored panels */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+}
+
+/* 5. Eliminate 300ms tap delay on all interactive elements */
+a, button, [role="button"], input[type="checkbox"], input[type="radio"], select {
+  touch-action: manipulation;
 }
 
 /* Reduce motion for users who prefer it */
