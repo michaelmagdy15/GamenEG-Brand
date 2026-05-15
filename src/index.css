@@ -1,23 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-warm-cream: #F7F3ED;
-  --color-deep-walnut: #3D2314;
-  --color-champagne-gold: #C9A96E;
-  --color-espresso: #2C1810;
-  --color-taupe: #8B7355;
-  --color-void-start: #F7F3ED;
-  --color-void-end: #E8DFD0;
+  --color-warm-cream: #f2eee6;
+  --color-deep-walnut: #462718;
+  --color-champagne-gold: #cfc5b2;
+  --color-espresso: #2b140c;
+  --color-taupe: #9d8d7c;
+  --color-void-start: #f2eee6;
+  --color-void-end: #cfc5b2;
 
-  --font-display: "Cormorant Garamond", serif;
-  --font-header: "Cormorant Garamond", serif;
+  --font-display: "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
+  --font-header: "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
   --font-body: "Inter", sans-serif;
   --font-accent: "Inter", sans-serif;
-  --font-french: "Cormorant Garamond", serif;
+  --font-french: "Baskerville Old Face", Baskerville, Georgia, serif;
+  --font-lambda: "Palatino Linotype", Palatino, "Book Antiqua", serif;
 
-  --background-image-gold-gradient: linear-gradient(135deg, #C9A96E 0%, #E8DFD0 50%, #C9A96E 100%);
-  --background-image-wood-grain: repeating-linear-gradient(45deg, #3D2314, #3D2314 2px, #4A2C1A 2px, #4A2C1A 4px);
+  --background-image-gold-gradient: linear-gradient(135deg, #cfc5b2 0%, #f2eee6 50%, #cfc5b2 100%);
+  --background-image-wood-grain: repeating-linear-gradient(45deg, #462718, #462718 2px, #5a3220 2px, #5a3220 4px);
 }
 
 body {
@@ -46,4 +47,17 @@ body {
 
 .text-balance {
   text-wrap: balance;
+}
+
+@keyframes light-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(120%) skewX(-18deg);
+  }
+}
+
+.animate-light-sweep {
+  animation: light-sweep 5.5s ease-in-out infinite alternate;
 }

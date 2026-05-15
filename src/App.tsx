@@ -7,7 +7,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
+import ScrollProgress from './components/ScrollProgress';
 import HeroSection from './components/HeroSection';
+import AtelierExperience from './components/AtelierExperience';
 import OriginSection from './components/OriginSection';
 import CollectionsSection from './components/CollectionsSection';
 import DetailsSection from './components/DetailsSection';
@@ -31,9 +33,11 @@ export default function App() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
+          <ScrollProgress />
           <Navbar />
           <main>
             <HeroSection />
+            <AtelierExperience />
             <OriginSection />
             <CollectionsSection />
             <DetailsSection />

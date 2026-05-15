@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import BrandWordmark from './BrandWordmark';
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [complete, setComplete] = useState(false);
@@ -7,7 +8,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   useEffect(() => {
     const timer = setTimeout(() => {
       setComplete(true);
-      setTimeout(onComplete, 1000); // Wait for exit animation
+      setTimeout(onComplete, 1000);
     }, 2500);
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -20,15 +21,12 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       transition={{ duration: 1, ease: 'easeInOut' }}
       pointerEvents={complete ? 'none' : 'auto'}
     >
-      {/* Simulation of drawing logo */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}
       >
-        <h1 className="text-warm-cream font-display text-5xl tracking-[0.25em] font-medium uppercase text-center mb-4">
-          Gamén
-        </h1>
+        <BrandWordmark className="block text-champagne-gold text-5xl tracking-[0.25em] text-center mb-4" />
         <p className="text-champagne-gold font-french italic text-xl text-center">
           L'élégance taillée en bois
         </p>

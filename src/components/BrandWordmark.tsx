@@ -1,0 +1,11 @@
+type BrandWordmarkProps = {
+  className?: string;
+};
+
+export default function BrandWordmark({ className = '' }: BrandWordmarkProps) {
+  return (
+    <span className={`font-display font-normal uppercase ${className}`}>
+      G<span className="font-lambda">Λ</span>MÉN
+    </span>
+  );
+}
