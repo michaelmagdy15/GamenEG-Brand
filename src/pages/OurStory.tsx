@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import { Landmark, PenTool, Fingerprint } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { Environment, PresentationControls } from '@react-three/drei';
+import { PresentationControls } from '@react-three/drei';
 import { BowTieModel } from '../components/canvas/BowTieModel';
+import OptimizedCanvas from '../components/canvas/OptimizedCanvas';
 import { brandAssets } from '../brandAssets';
 
 const story = [
@@ -44,12 +44,15 @@ export default function OurStory() {
       {/* 3D Model Display */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto mb-24 h-[50vh] sm:h-[70vh]">
         <div className="w-full h-full rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5 relative">
-          <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
-            <Environment preset="city" />
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} intensity={1} />
-            
-            <PresentationControls 
+          <OptimizedCanvas
+            frameloop="always"
+            camera={{ position: [0, 0, 4], fov: 45 }}
+            className="absolute inset-0"
+          >
+            <ambientLight intensity={0.6} />
+            <directionalLight position={[5, 5, 5]} intensity={1.4} />
+            <directionalLight position={[-5, -3, -2]} intensity={0.3} />
+            <PresentationControls
               global
               rotation={[0.1, 0, 0]}
               polar={[-Math.PI / 4, Math.PI / 4]}
@@ -58,7 +61,7 @@ export default function OurStory() {
             >
               <BowTieModel autoRotate />
             </PresentationControls>
-          </Canvas>
+          </OptimizedCanvas>
           <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
             <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/50">Interactive 3D View</span>
           </div>

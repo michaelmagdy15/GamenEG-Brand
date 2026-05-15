@@ -1,12 +1,10 @@
 import { useRef, useLayoutEffect } from 'react';
 import { motion } from 'motion/react';
-import { brandAssets } from '../brandAssets';
-import { Canvas } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
 import { Group } from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BowTieModel } from '../components/canvas/BowTieModel';
+import OptimizedCanvas from '../components/canvas/OptimizedCanvas';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -100,13 +98,17 @@ export default function Craftsmanship() {
         
         {/* Sticky 3D Model Container */}
         <div className="hidden lg:block w-1/2 relative">
-          <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10">
-            <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
-              <Environment preset="city" />
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[5, 5, 5]} intensity={1} />
+          <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10 relative">
+            <OptimizedCanvas
+              frameloop="always"
+              camera={{ position: [0, 0, 4], fov: 45 }}
+              className="absolute inset-0"
+            >
+              <ambientLight intensity={0.6} />
+              <directionalLight position={[5, 5, 5]} intensity={1.4} />
+              <directionalLight position={[-5, -3, -2]} intensity={0.3} />
               <BowTieModel ref={bowtieRef} />
-            </Canvas>
+            </OptimizedCanvas>
           </div>
         </div>
 

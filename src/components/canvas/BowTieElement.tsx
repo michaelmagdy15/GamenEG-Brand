@@ -20,7 +20,7 @@ export default function BowTieElement() {
       else setScale(1);
     };
     updateScale();
-    window.addEventListener('resize', updateScale);
+    window.addEventListener('resize', updateScale, { passive: true });
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
@@ -32,7 +32,7 @@ export default function BowTieElement() {
     return [height * aspect, height];
   }, [texture]);
 
-  // Only re-render when scroll position actually changes
+  // Only re-render when scroll position actually changes — debounced by 0.5px threshold
   useFrame(() => {
     if (!meshRef.current) return;
     const scrollY = window.scrollY;
@@ -48,13 +48,12 @@ export default function BowTieElement() {
   return (
     <mesh ref={meshRef} scale={[scale, scale, scale]}>
       <planeGeometry args={planeArgs} />
-      <meshStandardMaterial
+      <meshBasicMaterial
         map={texture}
         transparent
         alphaTest={0.05}
-        roughness={0.5}
-        metalness={0.05}
         side={THREE.DoubleSide}
+        toneMapped={false}
       />
     </mesh>
   );
