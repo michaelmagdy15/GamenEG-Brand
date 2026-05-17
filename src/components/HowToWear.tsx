@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Printer } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent, useSpring } from 'motion/react';
+import { useState, useRef } from 'react';
+import { Printer } from 'lucide-react';
 
 /* ─── Illustration Components ─────────────────────────────────────── */
 
@@ -27,7 +27,7 @@ function CollarIllustration({ isActive }: { isActive: boolean }) {
       />
       {/* Button */}
       <motion.circle
-        cx="100" cy="110" r="6"
+        cx={100} cy={110} r={6}
         fill="none" stroke="#cfc5b2" strokeWidth="2"
         initial={{ scale: 0 }}
         animate={isActive ? { scale: [0, 1.3, 1], stroke: ['#cfc5b2', '#f2eee6', '#cfc5b2'] } : { scale: 1 }}
@@ -104,8 +104,8 @@ function ClipIllustration({ isActive }: { isActive: boolean }) {
       </motion.g>
       {/* Click flash */}
       <motion.circle
-        cx="100" cy="120"
-        r="0"
+        cx={100} cy={120}
+        r={0}
         fill="none"
         stroke="#f2eee6"
         strokeWidth="2"
@@ -162,13 +162,13 @@ function FinishIllustration({ isActive }: { isActive: boolean }) {
       <motion.path
         d="M40 80 L100 120 L100 95 Q70 60 40 55 Z"
         fill="#5a3220" stroke="#cfc5b2" strokeWidth="1.5"
-        animate={isActive ? { d: "M40 80 L100 115 L100 90 Q70 55 40 50 Z" } : {}}
+        animate={{ d: isActive ? "M40 80 L100 115 L100 90 Q70 55 40 50 Z" : "M40 80 L100 120 L100 95 Q70 60 40 55 Z" }}
         transition={{ duration: 0.6, delay: 0.3 }}
       />
       <motion.path
         d="M160 80 L100 120 L100 95 Q130 60 160 55 Z"
         fill="#5a3220" stroke="#cfc5b2" strokeWidth="1.5"
-        animate={isActive ? { d: "M160 80 L100 115 L100 90 Q130 55 160 50 Z" } : {}}
+        animate={{ d: isActive ? "M160 80 L100 115 L100 90 Q130 55 160 50 Z" : "M160 80 L100 120 L100 95 Q130 60 160 55 Z" }}
         transition={{ duration: 0.6, delay: 0.3 }}
       />
       {/* Bow tie — final position */}
@@ -254,30 +254,36 @@ const steps = [
 
 export default function HowToWear() {
   const [activeStep, setActiveStep] = useState(0);
-  const [autoPlay, setAutoPlay] = useState(true);
   const totalSteps = steps.length;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const goNext = useCallback(() => {
-    setActiveStep((prev) => (prev + 1) % totalSteps);
-  }, [totalSteps]);
+  const { scrollYProgress: rawScrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
 
-  const goPrev = useCallback(() => {
-    setActiveStep((prev) => (prev - 1 + totalSteps) % totalSteps);
-  }, [totalSteps]);
+  const scrollYProgress = useSpring(rawScrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
-  // Auto-advance
-  useEffect(() => {
-    if (!autoPlay) return;
-    const timer = setInterval(goNext, 4000);
-    return () => clearInterval(timer);
-  }, [autoPlay, goNext]);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    // latest goes from 0 to 1
+    // map 0..1 to 0..totalSteps-1
+    // Add a tiny buffer so reaching exactly 1 doesn't go out of bounds
+    const step = Math.min(Math.floor(latest * totalSteps), totalSteps - 1);
+    if (step !== activeStep) {
+      setActiveStep(step);
+    }
+  });
 
   const currentStep = steps[activeStep];
   const IllustrationComponent = currentStep.illustration;
 
   return (
-    <section id="how-to-wear-print-section" className="relative bg-deep-walnut text-warm-cream py-32 lg:py-48 overflow-hidden print:bg-white print:text-black print:py-8">
-
+    <section id="how-to-wear-print-section" ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream print:bg-white print:text-black print:py-8 print:h-auto">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden py-12 lg:py-24 print:static print:h-auto print:overflow-visible">
       {/* Subtle radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.06),transparent_65%)] pointer-events-none" />
 
@@ -375,48 +381,11 @@ export default function HowToWear() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Step dots */}
-            <div className="flex items-center gap-3 mt-12 justify-center lg:justify-start">
-              {steps.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setActiveStep(i); setAutoPlay(false); }}
-                  className={`transition-all duration-400 rounded-full ${
-                    i === activeStep
-                      ? 'w-8 h-2 bg-champagne-gold'
-                      : 'w-2 h-2 bg-champagne-gold/25 hover:bg-champagne-gold/50'
-                  }`}
-                  aria-label={`Go to step ${i + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Prev / Next controls */}
-            <div className="flex items-center gap-4 mt-8 justify-center lg:justify-start">
-              <button
-                onClick={() => { goPrev(); setAutoPlay(false); }}
-                className="w-12 h-12 rounded-full border border-champagne-gold/20 flex items-center justify-center text-champagne-gold/60 hover:border-champagne-gold hover:text-champagne-gold transition-all duration-300"
-                aria-label="Previous step"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={() => { goNext(); setAutoPlay(false); }}
-                className="w-12 h-12 rounded-full border border-champagne-gold/20 flex items-center justify-center text-champagne-gold/60 hover:border-champagne-gold hover:text-champagne-gold transition-all duration-300"
-                aria-label="Next step"
-              >
-                <ChevronRight size={18} />
-              </button>
-              <button
-                onClick={() => setAutoPlay((v) => !v)}
-                className={`px-5 py-2 rounded-full font-accent text-[9px] uppercase tracking-[0.2em] border transition-all duration-300 ${
-                  autoPlay
-                    ? 'border-champagne-gold bg-champagne-gold text-deep-walnut'
-                    : 'border-champagne-gold/20 text-champagne-gold/50 hover:border-champagne-gold/50'
-                }`}
-              >
-                {autoPlay ? 'Auto' : 'Manual'}
-              </button>
+            {/* Scroll Indicator */}
+            <div className="mt-8 flex justify-center lg:justify-start print:hidden">
+              <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/40 border border-champagne-gold/20 rounded-full px-4 py-2">
+                Scroll to animate
+              </span>
             </div>
           </div>
         </div>
@@ -459,11 +428,6 @@ export default function HowToWear() {
           </button>
         </div>
       </div>
-
-      {/* Print-only footer */}
-      <div className="hidden print:block text-center mt-16 pt-8 border-t border-gray-200">
-        <p className="font-display text-2xl">GΛMÉN</p>
-        <p className="font-accent text-[10px] uppercase tracking-widest text-gray-500 mt-2">Cairo, Egypt</p>
       </div>
     </section>
   );

@@ -18,45 +18,39 @@ import {
   X,
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { useProductsContext } from '../../context/ProductsContext';
 import {
   getOrders,
   getAdminProducts,
   deleteAdminProduct,
   updateAdminProduct,
-  getProductOverrides,
-  setProductOverride,
   updateOrderStatus,
   type Order,
   type AdminProduct,
-  type ProductOverride,
 } from '../../lib/firestore';
-import { products as staticProducts } from '../../data/products';
 import type { Product } from '../../data/products';
 import AddProductModal from './AddProductModal';
+import EditProductModal from './EditProductModal';
 
 type Tab = 'products' | 'orders';
 
 export default function AdminDashboard() {
   const { admin, logout } = useAdminAuth();
+  const { refreshProducts } = useProductsContext();
   const [tab, setTab] = useState<Tab>('products');
   const [orders, setOrders] = useState<Order[]>([]);
-  const [adminProds, setAdminProds] = useState<AdminProduct[]>([]);
-  const [overrides, setOverrides] = useState<Map<string, ProductOverride>>(new Map());
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [loadingProds, setLoadingProds] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingPrice, setEditingPrice] = useState<string | null>(null);
-  const [priceInput, setPriceInput] = useState('');
+  const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   const loadProducts = useCallback(async () => {
     setLoadingProds(true);
     try {
-      const [prods, ovs] = await Promise.all([getAdminProducts(), getProductOverrides()]);
-      setAdminProds(prods);
-      const map = new Map<string, ProductOverride>();
-      ovs.forEach((o) => map.set(o.id, o));
-      setOverrides(map);
+      const prods = await getAdminProducts();
+      setProducts(prods);
     } finally {
       setLoadingProds(false);
     }
@@ -77,80 +71,34 @@ export default function AdminDashboard() {
     loadOrders();
   }, [loadProducts, loadOrders]);
 
-  // Toggle sold-out for static product
-  const toggleStaticSoldOut = async (productId: string, current: boolean) => {
-    await setProductOverride(productId, { isSoldOut: !current });
-    setOverrides((prev) => {
-      const next = new Map(prev);
-      next.set(productId, { ...prev.get(productId), id: productId, isSoldOut: !current });
-      return next;
-    });
-  };
-
-  // Toggle visibility for static product
-  const toggleStaticHidden = async (productId: string, current: boolean) => {
-    await setProductOverride(productId, { hidden: !current });
-    setOverrides((prev) => {
-      const next = new Map(prev);
-      next.set(productId, { ...prev.get(productId), id: productId, hidden: !current });
-      return next;
-    });
-  };
-
-  // Delete admin product
+  // Delete product
   const handleDeleteAdminProd = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
     await deleteAdminProduct(id);
-    setAdminProds((prev) => prev.filter((p) => p.id !== id));
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+    await refreshProducts();
   };
 
-  // Toggle admin product sold-out
+  // Toggle product sold-out
   const toggleAdminSoldOut = async (id: string, current: boolean) => {
     await updateAdminProduct(id, { isSoldOut: !current });
-    setAdminProds((prev) =>
+    setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, isSoldOut: !current } : p))
     );
+    await refreshProducts();
   };
 
-  // Edit price
-  const startEditPrice = (product: Product | AdminProduct) => {
-    setEditingPrice(product.id);
-    setPriceInput(String(product.price || ''));
+  const openEditModal = (product: AdminProduct) => {
+    setEditingProduct(product);
   };
 
-  const savePrice = async (product: Product | AdminProduct) => {
-    const newPrice = parseInt(priceInput, 10);
-    if (isNaN(newPrice) || newPrice <= 0) return;
-
-    const isAdmin = adminProds.some((p) => p.id === product.id);
-    if (isAdmin) {
-      await updateAdminProduct(product.id, { price: newPrice });
-      setAdminProds((prev) =>
-        prev.map((p) => (p.id === product.id ? { ...p, price: newPrice } : p))
-      );
-    } else {
-      await setProductOverride(product.id, { price: newPrice });
-      setOverrides((prev) => {
-        const next = new Map(prev);
-        next.set(product.id, { ...prev.get(product.id), id: product.id, price: newPrice });
-        return next;
-      });
-    }
-    setEditingPrice(null);
-  };
-
-  // All products view
-  const allStaticWithOverrides = staticProducts.map((p) => {
-    const ov = overrides.get(p.id);
-    return { ...p, isSoldOut: ov?.isSoldOut ?? p.isSoldOut, price: ov?.price ?? p.price, hidden: ov?.hidden ?? false };
-  });
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-200">
       {/* Header */}
       <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <h1 className="font-serif text-xl text-amber-400 tracking-[0.2em]">GΛMÉN</h1>
+          <h1 className="font-display font-normal text-xl text-amber-400 tracking-[0.2em] uppercase">G<span className="font-lambda">Λ</span>MÉN</h1>
           <span className="text-gray-600 text-xs uppercase tracking-widest">Admin</span>
         </div>
         <div className="flex items-center gap-4">
@@ -167,16 +115,15 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <StatCard label="Total Products" value={staticProducts.length + adminProds.length} icon={<Package size={18} />} />
-          <StatCard label="Admin Products" value={adminProds.length} icon={<Plus size={18} />} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
+          <StatCard label="Total Products" value={products.length} icon={<Package size={18} />} />
           <StatCard label="Total Orders" value={orders.length} icon={<ShoppingBag size={18} />} />
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 bg-gray-900 p-1 rounded w-fit">
+        <div className="flex overflow-x-auto hide-scrollbar gap-1 mb-6 bg-gray-900 p-1 rounded w-fit">
           <TabBtn active={tab === 'products'} onClick={() => setTab('products')} icon={<Package size={14} />} label="Products" />
           <TabBtn active={tab === 'orders'} onClick={() => setTab('orders')} icon={<ShoppingBag size={14} />} label={`Orders (${orders.length})`} />
         </div>
@@ -203,85 +150,15 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Static Products */}
-            <div className="mb-6">
-              <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-3">Catalog Products (Static)</p>
-              <div className="bg-gray-900 border border-gray-800 rounded overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-800 text-gray-500 text-[10px] uppercase tracking-widest">
-                      <th className="text-left px-4 py-3">Product</th>
-                      <th className="text-left px-4 py-3">Collection</th>
-                      <th className="text-left px-4 py-3">Price (EGP)</th>
-                      <th className="text-center px-4 py-3">Sold Out</th>
-                      <th className="text-center px-4 py-3">Visible</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {allStaticWithOverrides.map((p) => (
-                      <tr key={p.id} className={`border-b border-gray-800/50 hover:bg-gray-800/40 transition-colors ${p.hidden ? 'opacity-40' : ''}`}>
-                        <td className="px-4 py-3">
-                          <div>
-                            <p className="text-gray-200 font-medium text-xs">{p.name}</p>
-                            <p className="text-gray-600 text-[10px]">{p.wood}</p>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-[10px] uppercase tracking-wider text-amber-500/70 bg-amber-500/10 px-2 py-0.5 rounded">
-                            {p.collection}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          {editingPrice === p.id ? (
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="number"
-                                value={priceInput}
-                                onChange={(e) => setPriceInput(e.target.value)}
-                                className="w-24 bg-gray-800 border border-amber-500/30 text-gray-200 text-xs px-2 py-1 focus:outline-none"
-                                autoFocus
-                              />
-                              <button onClick={() => savePrice(p)} className="text-green-400 hover:text-green-300"><Check size={12} /></button>
-                              <button onClick={() => setEditingPrice(null)} className="text-gray-500 hover:text-gray-300"><X size={12} /></button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2 group">
-                              <span className="text-gray-300 text-xs">{(p.price).toLocaleString()}</span>
-                              <button onClick={() => startEditPrice(p)} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-600 hover:text-amber-400">
-                                <Edit2 size={11} />
-                              </button>
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <button
-                            onClick={() => toggleStaticSoldOut(p.id, !!p.isSoldOut)}
-                            className={`text-xs px-2 py-0.5 rounded transition-colors ${p.isSoldOut ? 'bg-red-500/20 text-red-400 hover:bg-red-500/10' : 'bg-green-500/10 text-green-500 hover:bg-green-500/20'}`}
-                          >
-                            {p.isSoldOut ? 'Sold Out' : 'In Stock'}
-                          </button>
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <button
-                            onClick={() => toggleStaticHidden(p.id, !!p.hidden)}
-                            className="text-gray-500 hover:text-gray-300 transition-colors"
-                            title={p.hidden ? 'Show product' : 'Hide product'}
-                          >
-                            {p.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {/* Products List */}
+            {products.length === 0 ? (
+              <div className="text-center py-20 text-gray-700">
+                <Package size={40} strokeWidth={0.5} className="mx-auto mb-4" />
+                <p className="text-sm">No products found.</p>
               </div>
-            </div>
-
-            {/* Admin Products */}
-            {adminProds.length > 0 && (
+            ) : (
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-3">Admin-Added Products</p>
-                <div className="bg-gray-900 border border-gray-800 rounded overflow-hidden">
+                <div className="hidden md:block">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-800 text-gray-500 text-[10px] uppercase tracking-widest">
@@ -293,7 +170,7 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {adminProds.map((p) => (
+                      {products.map((p) => (
                         <tr key={p.id} className="border-b border-gray-800/50 hover:bg-gray-800/40 transition-colors">
                           <td className="px-4 py-3">
                             <div>
@@ -302,36 +179,22 @@ export default function AdminDashboard() {
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-[10px] uppercase tracking-wider text-blue-400/70 bg-blue-400/10 px-2 py-0.5 rounded">
+                            <span className="text-[10px] uppercase tracking-wider text-amber-500/70 bg-amber-500/10 px-2 py-0.5 rounded">
                               {p.collection}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            {editingPrice === p.id ? (
-                              <div className="flex items-center gap-1">
-                                <input
-                                  type="number"
-                                  value={priceInput}
-                                  onChange={(e) => setPriceInput(e.target.value)}
-                                  className="w-24 bg-gray-800 border border-amber-500/30 text-gray-200 text-xs px-2 py-1 focus:outline-none"
-                                  autoFocus
-                                />
-                                <button onClick={() => savePrice(p)} className="text-green-400 hover:text-green-300"><Check size={12} /></button>
-                                <button onClick={() => setEditingPrice(null)} className="text-gray-500 hover:text-gray-300"><X size={12} /></button>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2 group">
-                                <span className="text-gray-300 text-xs">{(p.price || 0).toLocaleString()}</span>
-                                <button onClick={() => startEditPrice(p)} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-600 hover:text-amber-400">
-                                  <Edit2 size={11} />
-                                </button>
-                              </div>
-                            )}
+                            <div className="flex items-center gap-2 group">
+                              <span className="text-gray-300 text-xs">{(p.price || 0).toLocaleString()}</span>
+                              <button onClick={() => openEditModal(p)} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-600 hover:text-amber-400 p-1">
+                                <Edit2 size={11} />
+                              </button>
+                            </div>
                           </td>
                           <td className="px-4 py-3 text-center">
                             <button
                               onClick={() => toggleAdminSoldOut(p.id, !!p.isSoldOut)}
-                              className={`text-xs px-2 py-0.5 rounded transition-colors ${p.isSoldOut ? 'bg-red-500/20 text-red-400 hover:bg-red-500/10' : 'bg-green-500/10 text-green-500 hover:bg-green-500/20'}`}
+                              className={`text-xs px-2 py-1 rounded transition-colors ${p.isSoldOut ? 'bg-red-500/20 text-red-400 hover:bg-red-500/10' : 'bg-green-500/10 text-green-500 hover:bg-green-500/20'}`}
                             >
                               {p.isSoldOut ? 'Sold Out' : 'In Stock'}
                             </button>
@@ -339,7 +202,7 @@ export default function AdminDashboard() {
                           <td className="px-4 py-3 text-center">
                             <button
                               onClick={() => handleDeleteAdminProd(p.id)}
-                              className="text-gray-600 hover:text-red-400 transition-colors"
+                              className="text-gray-600 hover:text-red-400 transition-colors p-2"
                             >
                               <Trash2 size={14} />
                             </button>
@@ -348,6 +211,41 @@ export default function AdminDashboard() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+
+                {/* Mobile Cards for Products */}
+                <div className="grid grid-cols-1 gap-4 md:hidden p-4">
+                  {products.map((p) => (
+                    <div key={p.id} className="bg-gray-800/30 border border-gray-800 rounded p-4 flex flex-col gap-3">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <p className="text-gray-200 font-medium text-sm">{p.name}</p>
+                          <p className="text-gray-500 text-[10px] mt-0.5">{p.wood}</p>
+                          <span className="inline-block mt-2 text-[10px] uppercase tracking-wider text-amber-500/70 bg-amber-500/10 px-2 py-0.5 rounded">
+                            {p.collection}
+                          </span>
+                        </div>
+                        <p className="text-amber-400 text-sm font-medium">{(p.price || 0).toLocaleString()} <span className="text-[10px] text-gray-500">EGP</span></p>
+                      </div>
+                      <div className="flex items-center gap-2 pt-3 border-t border-gray-800/50 mt-1">
+                        <button onClick={() => openEditModal(p)} className="flex-1 py-2 text-xs flex justify-center items-center gap-1.5 border border-gray-700 text-gray-400 rounded hover:text-amber-400 hover:border-amber-500/50 transition-colors">
+                          <Edit2 size={12} /> Edit
+                        </button>
+                        <button
+                          onClick={() => toggleAdminSoldOut(p.id, !!p.isSoldOut)}
+                          className={`flex-1 py-2 text-xs rounded transition-colors ${p.isSoldOut ? 'bg-red-500/20 text-red-400' : 'bg-green-500/10 text-green-500'}`}
+                        >
+                          {p.isSoldOut ? 'Sold Out' : 'In Stock'}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAdminProd(p.id)}
+                          className="px-3 py-2 border border-red-500/30 rounded text-red-400 hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -378,10 +276,10 @@ export default function AdminDashboard() {
                 {orders.map((order) => (
                   <div key={order.id} className="bg-gray-900 border border-gray-800 rounded">
                     <div
-                      className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-800/40 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-4 cursor-pointer hover:bg-gray-800/40 transition-colors gap-4"
                       onClick={() => setExpandedOrder(expandedOrder === order.id ? null : (order.id ?? null))}
                     >
-                      <div className="flex items-center gap-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                         <div>
                           <p className="text-amber-400 text-xs font-mono">{order.orderRef}</p>
                           <p className="text-gray-500 text-[10px] mt-0.5">
@@ -397,10 +295,11 @@ export default function AdminDashboard() {
                           <p className="text-gray-600 text-[10px]">{order.items.length} item(s)</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between sm:justify-end gap-3 mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-0 border-gray-800">
                         <select
                           value={order.status}
                           onChange={async (e) => {
+                            if (!confirm(`Are you sure you want to change order status to ${e.target.value}?`)) return;
                             const newStatus = e.target.value as Order['status'];
                             await updateOrderStatus(order.id!, newStatus);
                             setOrders((prev) =>
@@ -408,14 +307,16 @@ export default function AdminDashboard() {
                             );
                           }}
                           onClick={(e) => e.stopPropagation()}
-                          className="bg-gray-800 border border-gray-700 text-gray-300 text-[10px] px-2 py-1 rounded focus:outline-none focus:border-amber-500/40"
+                          className="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-3 py-2 rounded focus:outline-none focus:border-amber-500/40"
                         >
                           <option value="pending">Pending</option>
                           <option value="confirmed">Confirmed</option>
                           <option value="shipped">Shipped</option>
                           <option value="delivered">Delivered</option>
                         </select>
-                        {expandedOrder === order.id ? <ChevronUp size={14} className="text-gray-500" /> : <ChevronDown size={14} className="text-gray-500" />}
+                        <div className="p-2 border border-gray-700 rounded text-gray-400">
+                          {expandedOrder === order.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </div>
                       </div>
                     </div>
 
@@ -461,12 +362,18 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Add Product Modal */}
       <AnimatePresence>
         {showAddModal && (
           <AddProductModal
             onClose={() => setShowAddModal(false)}
-            onAdded={() => { setShowAddModal(false); loadProducts(); }}
+            onAdded={async () => { setShowAddModal(false); loadProducts(); await refreshProducts(); }}
+          />
+        )}
+        {editingProduct && (
+          <EditProductModal
+            product={editingProduct}
+            onClose={() => setEditingProduct(null)}
+            onUpdated={async () => { setEditingProduct(null); loadProducts(); await refreshProducts(); }}
           />
         )}
       </AnimatePresence>

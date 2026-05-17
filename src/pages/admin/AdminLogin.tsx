@@ -1,5 +1,5 @@
 // src/pages/admin/AdminLogin.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -11,8 +11,13 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin', { replace: true });
+    }
+  }, [isAdmin, navigate]);
+
   if (isAdmin) {
-    navigate('/admin', { replace: true });
     return null;
   }
 
@@ -21,10 +26,8 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/admin', { replace: true });
+      // Navigation is handled by the useEffect watching isAdmin
     } catch {
-      // error is handled by context
-    } finally {
       setLoading(false);
     }
   };
@@ -38,9 +41,9 @@ export default function AdminLogin() {
         className="w-full max-w-sm"
       >
         {/* Logo */}
-        <div className="text-center mb-10">
-          <h1 className="font-serif text-3xl text-amber-400 tracking-[0.25em] mb-1">GΛMÉN</h1>
-          <p className="text-gray-500 text-xs uppercase tracking-[0.2em]">Admin Portal</p>
+        <div className="text-center mb-8">
+          <h1 className="font-display font-normal text-3xl text-amber-400 tracking-[0.25em] mb-1 uppercase">G<span className="font-lambda">Λ</span>MÉN</h1>
+          <h2 className="font-accent text-sm text-amber-400/60 uppercase tracking-widest">Atelier Portal</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -1,14 +1,15 @@
 import { useRef, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { Group, MeshStandardMaterial } from 'three';
 import { useFrame } from '@react-three/fiber';
+import { MotionValue } from 'motion/react';
 
 interface BowTieModelProps {
-  explodeProgress?: number; // 0 (collapsed) to 1 (fully exploded)
+  explodeProgressValue?: MotionValue<number>;
   autoRotate?: boolean;
 }
 
 export const BowTieModel = forwardRef<Group, BowTieModelProps>(
-  ({ explodeProgress = 0, autoRotate = false }, ref) => {
+  ({ explodeProgressValue, autoRotate = false }, ref) => {
     const localGroupRef = useRef<Group>(null);
 
     useImperativeHandle(ref, () => localGroupRef.current as Group);
@@ -42,9 +43,10 @@ export const BowTieModel = forwardRef<Group, BowTieModelProps>(
       }
 
       // Apply explode offsets based on progress
+      const progress = explodeProgressValue ? explodeProgressValue.get() : 0;
       const maxOffset = 1.5;
-      if (faceRef.current) faceRef.current.position.z = explodeProgress * maxOffset;
-      if (backRef.current) backRef.current.position.z = -explodeProgress * maxOffset;
+      if (faceRef.current) faceRef.current.position.z = progress * maxOffset;
+      if (backRef.current) backRef.current.position.z = -progress * maxOffset;
     });
 
     return (

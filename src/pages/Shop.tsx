@@ -1,7 +1,9 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useRef } from 'react';
-import { products, type ProductCollection } from '../data/products';
+import type { ProductCollection } from '../data/products';
+import { useProductsContext } from '../context/ProductsContext';
+import { useCart } from '../context/CartContext';
 
 const HIEROGLYPHS = '𓀀𓀁𓀂𓀃𓀄𓀅𓀆𓀇𓀈𓀉𓀊𓀋𓀌𓀍𓀎𓀏𓀐𓀑𓀒𓀓𓀔𓀕𓀖𓀗𓀘𓀙𓀚𓀛𓀜𓀝𓀞𓀟𓀠𓀡𓀢𓀣𓀤𓀥𓀦𓀧𓀨𓀩𓀪𓀫𓀬𓀭𓀮𓀯';
 const hieroglyphRows = Array.from({ length: 10 }, () =>
@@ -28,6 +30,9 @@ const collectionTitles: Record<ProductCollection, { title: string; subtitle: str
 };
 
 export default function Shop() {
+  const { addItem } = useCart();
+  const { products, loading } = useProductsContext();
+  
   // Signature first — client requirement: bespoke tier shown prominently at top
   const collections: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
   const heritageSectionRef = useRef<HTMLElement>(null);
@@ -53,7 +58,11 @@ export default function Shop() {
         </motion.div>
 
         {/* Collections */}
-        {collections.map((colKey) => {
+        {loading ? (
+          <div className="flex justify-center items-center py-24">
+            <div className="w-16 h-16 border-t-2 border-champagne-gold border-solid rounded-full animate-spin"></div>
+          </div>
+        ) : collections.map((colKey) => {
           const collectionProducts = products.filter(p => p.collection === colKey);
           if (collectionProducts.length === 0) return null;
 
@@ -142,9 +151,13 @@ export default function Shop() {
                             </div>
                             
                             {/* The Box Lid (Premium Interaction) */}
-                            <div
+                            <motion.div
                               style={{ transformOrigin: 'left center' }}
-                              className={`absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-2xl z-10 shadow-2xl flex items-center justify-center overflow-hidden transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${!product.isSoldOut && 'group-hover/box:[transform:rotateY(-110deg)]'}`}
+                              initial={{ rotateY: 0 }}
+                              whileInView={!product.isSoldOut ? { rotateY: window.innerWidth < 768 ? -110 : 0 } : {}}
+                              viewport={{ once: true, amount: 0.3 }}
+                              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                              className={`absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-2xl z-10 shadow-2xl flex items-center justify-center overflow-hidden transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] md:!transform-none md:transition-transform md:duration-[1500ms] ${!product.isSoldOut && 'md:group-hover/box:![transform:rotateY(-110deg)]'}`}
                             >
                               <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
                               <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" />
@@ -155,7 +168,7 @@ export default function Shop() {
                                 </div>
                                 <div className="h-px w-8 bg-gold-gradient" />
                               </div>
-                            </div>
+                            </motion.div>
                             
                             {/* Inner Shadow / Depth */}
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
@@ -189,6 +202,12 @@ export default function Shop() {
                       <div className="mt-6 px-2">
                         <button
                           disabled={product.isSoldOut}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (!product.isSoldOut) {
+                              addItem(product);
+                            }
+                          }}
                           className={`w-full py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border ${
                             product.isSoldOut
                               ? 'border-espresso/10 text-espresso/20 cursor-not-allowed bg-transparent'

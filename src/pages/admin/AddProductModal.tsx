@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { addAdminProduct } from '../../lib/firestore';
+import { addProduct } from '../../lib/firestore';
 import type { ProductCollection, ProductCategory } from '../../data/products';
 
 interface Props {
@@ -46,8 +46,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
     setSaving(true);
     setError('');
     try {
-      await addAdminProduct({
-        id: Date.now().toString(),
+      await addProduct({
         name: form.name,
         slug: form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
         tagline: form.tagline,
@@ -61,7 +60,6 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
         details: details.filter(Boolean),
         careNote: form.careNote,
         isSoldOut: false,
-        source: 'admin',
       });
       onAdded();
     } catch {
@@ -108,7 +106,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
                 name="collection"
                 value={form.collection}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40"
+                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 focus:outline-none focus:border-amber-500/40 rounded-sm"
               >
                 <option value="signature">La Signature Privée</option>
                 <option value="classique">La Maison Classique</option>
@@ -122,7 +120,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40"
+                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 focus:outline-none focus:border-amber-500/40 rounded-sm"
               >
                 <option value="bow-tie">Bow Tie</option>
                 <option value="watch">Watch</option>
@@ -145,7 +143,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
               onChange={handleChange}
               rows={3}
               placeholder="Product description…"
-              className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 resize-none"
+              className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 resize-none rounded-sm"
             />
           </div>
 
@@ -163,11 +161,11 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
                     value={d}
                     onChange={(e) => updateDetail(i, e.target.value)}
                     placeholder={`Detail ${i + 1}…`}
-                    className="flex-1 bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40"
+                    className="flex-1 bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 rounded-sm"
                   />
                   {details.length > 1 && (
-                    <button type="button" onClick={() => removeDetail(i)} className="text-gray-600 hover:text-red-400 transition-colors">
-                      <Trash2 size={12} />
+                    <button type="button" onClick={() => removeDetail(i)} className="text-gray-600 hover:text-red-400 transition-colors p-2">
+                      <Trash2 size={14} />
                     </button>
                   )}
                 </div>
@@ -175,7 +173,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
               <button
                 type="button"
                 onClick={addDetail}
-                className="text-amber-500/60 hover:text-amber-400 text-[10px] uppercase tracking-wider flex items-center gap-1 transition-colors"
+                className="text-amber-500/60 hover:text-amber-400 text-[10px] uppercase tracking-wider flex items-center gap-1 transition-colors py-2"
               >
                 <Plus size={11} /> Add Detail
               </button>
@@ -191,7 +189,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
               onChange={handleChange}
               rows={2}
               placeholder="Care instructions…"
-              className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 resize-none"
+              className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 resize-none rounded-sm"
             />
           </div>
 
@@ -201,14 +199,14 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 border border-gray-700 text-gray-500 text-xs hover:text-gray-300 hover:border-gray-600 transition-colors"
+              className="flex-1 py-3 border border-gray-700 text-gray-500 text-xs hover:text-gray-300 hover:border-gray-600 transition-colors rounded"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 text-xs font-semibold transition-colors disabled:opacity-50"
+              className="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-gray-950 text-xs font-semibold transition-colors disabled:opacity-50 rounded"
             >
               {saving ? 'Saving…' : 'Add Product'}
             </button>
@@ -235,7 +233,7 @@ function Field({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40"
+        className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-3 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/40 rounded-sm"
       />
     </div>
   );

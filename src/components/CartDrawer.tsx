@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,18 @@ import { useCart } from '../context/CartContext';
 export default function CartDrawer() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
 
   return (
     <AnimatePresence>
@@ -18,6 +31,7 @@ export default function CartDrawer() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-espresso/60 backdrop-blur-sm z-50"
             onClick={() => setIsOpen(false)}
+            onTouchMove={(e) => e.preventDefault()}
           />
 
           {/* Drawer */}
@@ -36,8 +50,8 @@ export default function CartDrawer() {
                   Your Bag ({totalItems})
                 </h2>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-champagne-gold/60 hover:text-champagne-gold transition-colors">
-                <X size={20} strokeWidth={1} />
+              <button onClick={() => setIsOpen(false)} className="p-2 -mr-2 text-champagne-gold/60 hover:text-champagne-gold transition-colors">
+                <X size={24} strokeWidth={1} />
               </button>
             </div>
 
@@ -75,7 +89,7 @@ export default function CartDrawer() {
                             <Plus size={12} />
                           </button>
                         </div>
-                        <span className="font-accent text-xs text-champagne-gold">${item.product.price * item.quantity}</span>
+                        <span className="font-accent text-xs text-champagne-gold">LE {item.product.price * item.quantity}</span>
                       </div>
                     </div>
                     <button
@@ -90,20 +104,28 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            {items.length > 0 && (
-              <div className="px-6 py-6 border-t border-champagne-gold/15">
-                <div className="flex items-center justify-between mb-6">
-                  <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
-                  <span className="font-header text-2xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
-                </div>
-                <button
-                  onClick={() => { setIsOpen(false); navigate('/checkout'); }}
-                  className="w-full py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
-                >
-                  Proceed to Checkout
-                </button>
-              </div>
-            )}
+            <div className="px-6 py-6 border-t border-champagne-gold/15 mt-auto">
+              {items.length > 0 && (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
+                    <span className="font-header text-2xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
+                  </div>
+                  <button
+                    onClick={() => { setIsOpen(false); navigate('/checkout'); }}
+                    className="w-full mb-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
+                  >
+                    Proceed to Checkout
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-full py-4 border border-champagne-gold/20 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] hover:bg-champagne-gold/10 transition-colors"
+              >
+                Continue Shopping
+              </button>
+            </div>
           </motion.aside>
         </>
       )}

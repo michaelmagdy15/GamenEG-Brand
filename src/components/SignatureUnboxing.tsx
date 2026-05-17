@@ -37,7 +37,7 @@ export default function SignatureUnboxing() {
           <div className="relative w-full max-w-md lg:max-w-lg aspect-square" style={{ perspective: '1200px' }}>
             <motion.div 
               initial={{ rotateX: 60, rotateZ: -45, y: 50, opacity: 0 }}
-              whileInView={{ rotateX: 55, rotateZ: -35, y: 0, opacity: 1 }}
+              whileInView={{ rotateX: 60, rotateZ: -35, y: 0, opacity: 1 }}
               viewport={{ once: true, margin: '-20%' }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
               className="w-full h-full relative transform-style-3d"
@@ -50,12 +50,14 @@ export default function SignatureUnboxing() {
                 <div className="absolute inset-4 bg-void-start rounded-lg shadow-inner opacity-90" />
               </div>
 
-              {/* Box Lid (Slightly open or hovering) */}
+              {/* Box Lid (Hinged at the back/top edge) */}
               <motion.div 
-                animate={{ z: [20, 30, 20], rotateX: [-5, 0, -5] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                initial={{ rotateX: 0, z: 0 }}
+                whileInView={{ rotateX: -110, z: 0, y: 0 }}
+                viewport={{ once: true, margin: '-20%' }}
+                transition={{ duration: 1.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                style={{ transformOrigin: 'top center' }}
                 className="absolute inset-8 bg-deep-walnut shadow-2xl rounded-xl border border-champagne-gold/30 flex items-center justify-center overflow-hidden"
-                style={{ transform: 'translateZ(40px)' }}
               >
                 <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-30 mix-blend-overlay" />
                 

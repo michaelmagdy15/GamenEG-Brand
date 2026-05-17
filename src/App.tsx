@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { motion, AnimatePresence } from 'motion/react';
 import { CartProvider } from './context/CartContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
+import { ProductsProvider } from './context/ProductsContext';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import ScrollProgress from './components/ScrollProgress';
@@ -70,6 +71,11 @@ function ScrollToTop() {
 
 function AppContent() {
   const [loading, setLoading] = useState(true);
+
+  const handleLoadingComplete = () => {
+    setLoading(false);
+  };
+
   const { pathname } = useLocation();
   const isAdminPage = pathname.startsWith('/admin');
 
@@ -77,7 +83,7 @@ function AppContent() {
     <>
       <CustomCursor />
       <AnimatePresence>
-        {loading && !isAdminPage && <LoadingScreen onComplete={() => setLoading(false)} />}
+        {loading && !isAdminPage && <LoadingScreen onComplete={handleLoadingComplete} />}
       </AnimatePresence>
 
       <ScrollToTop />
@@ -97,50 +103,56 @@ function AppContent() {
           </Routes>
         </Suspense>
       ) : (
-        <motion.div
-          className="relative"
-          initial={{ opacity: 0, filter: 'blur(12px)', scale: 0.98 }}
-          animate={{
-            opacity: loading ? 0 : 1,
-            filter: loading ? 'blur(12px)' : 'blur(0px)',
-            scale: loading ? 0.98 : 1,
-          }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          style={{ pointerEvents: loading ? 'none' : 'auto' }}
-        >
+        <>
           <ScrollProgress />
           <Navbar />
           <CartDrawer />
-          <Suspense fallback={<PageFallback />}>
-            <Routes>
-              <Route path="/"                  element={<Home />} />
-              <Route path="/shop"              element={<Shop />} />
-              <Route path="/product/:slug"     element={<ProductDetail />} />
-              <Route path="/our-story"         element={<OurStory />} />
-              <Route path="/contact"           element={<Contact />} />
-              <Route path="/craftsmanship"     element={<Craftsmanship />} />
-              <Route path="/care"              element={<CareInstructions />} />
-              <Route path="/shipping"          element={<ShippingReturns />} />
-              <Route path="/checkout"          element={<Checkout />} />
-              <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            </Routes>
-          </Suspense>
-          <Footer />
           <BackToTop />
-        </motion.div>
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, filter: 'blur(12px)', scale: 0.98 }}
+            animate={{
+              opacity: loading ? 0 : 1,
+              filter: loading ? 'blur(12px)' : 'blur(0px)',
+              scale: loading ? 0.98 : 1,
+            }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            style={{ pointerEvents: loading ? 'none' : 'auto' }}
+          >
+            <Suspense fallback={<PageFallback />}>
+              <Routes>
+                <Route path="/"                  element={<Home />} />
+                <Route path="/shop"              element={<Shop />} />
+                <Route path="/product/:slug"     element={<ProductDetail />} />
+                <Route path="/our-story"         element={<OurStory />} />
+                <Route path="/contact"           element={<Contact />} />
+                <Route path="/craftsmanship"     element={<Craftsmanship />} />
+                <Route path="/care"              element={<CareInstructions />} />
+                <Route path="/shipping"          element={<ShippingReturns />} />
+                <Route path="/checkout"          element={<Checkout />} />
+                <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              </Routes>
+            </Suspense>
+            <Footer />
+          </motion.div>
+        </>
       )}
     </>
   );
 }
 
+
+
 export default function App() {
   return (
     <Router>
-      <AdminAuthProvider>
-        <CartProvider>
-          <AppContent />
-        </CartProvider>
-      </AdminAuthProvider>
+      <ProductsProvider>
+        <AdminAuthProvider>
+          <CartProvider>
+            <AppContent />
+          </CartProvider>
+        </AdminAuthProvider>
+      </ProductsProvider>
     </Router>
   );
 }

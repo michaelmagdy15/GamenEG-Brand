@@ -1,13 +1,12 @@
 import HeroSection from '../components/HeroSection';
-import AtelierExperience from '../components/AtelierExperience';
 import OriginSection from '../components/OriginSection';
 import CollectionsSection from '../components/CollectionsSection';
 import AnatomySection from '../components/AnatomySection';
 import DetailsSection from '../components/DetailsSection';
 import HeritageSection from '../components/HeritageSection';
-import SignatureUnboxing from '../components/SignatureUnboxing';
 import RitualSection from '../components/RitualSection';
 import HowToWear from '../components/HowToWear';
+import AtelierExperience from '../components/AtelierExperience';
 import AcquisitionSection from '../components/AcquisitionSection';
 import MarqueeTicker from '../components/MarqueeTicker';
 
@@ -16,7 +15,6 @@ export default function Home() {
     <main>
       <HeroSection />
       <MarqueeTicker variant="dark" speed="normal" />
-      <AtelierExperience />
       <OriginSection />
       <MarqueeTicker
         variant="light"
@@ -28,9 +26,9 @@ export default function Home() {
       <DetailsSection />
       <MarqueeTicker variant="dark" speed="normal" />
       <HeritageSection />
-      <SignatureUnboxing />
       <RitualSection />
       <HowToWear />
+      <AtelierExperience />
       <AcquisitionSection />
     </main>
   );

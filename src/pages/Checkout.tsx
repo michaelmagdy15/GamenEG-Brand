@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { saveOrder } from '../lib/firestore';
+import { saveOrder, sendEmailNotification } from '../lib/firestore';
 
 interface CheckoutForm {
   name: string;
@@ -29,8 +29,6 @@ export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const hasSignature = items.some((i) => i.product.collection === 'signature');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -51,9 +49,9 @@ export default function Checkout() {
     setSubmitting(true);
     try {
       const orderRef = generateRef();
-      await saveOrder({
+      const newOrder = {
         orderRef,
-        status: 'pending',
+        status: 'pending' as const,
         customer: form,
         items: items.map((i) => ({
           productId: i.product.id,
@@ -63,7 +61,15 @@ export default function Checkout() {
           image: i.product.image,
         })),
         totalPrice,
-      });
+      };
+      await saveOrder(newOrder);
+      
+      // Attempt to send email, but don't fail the checkout if it errors
+      try {
+        await sendEmailNotification(newOrder);
+      } catch (emailErr) {
+        console.error('Failed to send email notification:', emailErr);
+      }
       clearCart();
       navigate('/order-confirmation', { state: { orderRef, customerName: form.name } });
     } catch (err) {
@@ -144,43 +150,19 @@ export default function Checkout() {
               />
             </div>
 
-            {hasSignature && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="bg-champagne-gold/5 border border-champagne-gold/20 p-5"
-              >
-                <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold mb-1">
-                  Signature Monogram
-                </p>
-                <p className="font-body text-xs text-warm-cream/50 mb-3">
-                  Your Signature piece includes a custom monogram. Enter your initials below (e.g., "M.A.E" or "MW").
-                </p>
-                <InputField
-                  label="Your Initials"
-                  name="notes"
-                  value={form.notes}
-                  onChange={handleChange}
-                  placeholder="M.A.E"
-                />
-              </motion.div>
-            )}
-
-            {!hasSignature && (
-              <div>
-                <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-2">
-                  Order Notes (Optional)
-                </p>
-                <textarea
-                  name="notes"
-                  value={form.notes}
-                  onChange={handleChange}
-                  placeholder="Gift wrapping, special requests, gifting occasion…"
-                  rows={2}
-                  className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3 placeholder:text-warm-cream/25 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none"
-                />
-              </div>
-            )}
+            <div>
+              <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-2">
+                Order Notes (Optional)
+              </p>
+              <textarea
+                name="notes"
+                value={form.notes}
+                onChange={handleChange}
+                placeholder="Gift wrapping, special requests, gifting occasion…"
+                rows={2}
+                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3 placeholder:text-warm-cream/25 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none"
+              />
+            </div>
 
             {error && (
               <p className="text-red-400 font-body text-sm">{error}</p>

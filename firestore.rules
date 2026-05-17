@@ -4,12 +4,22 @@ service cloud.firestore {
     // Orders: anyone can create, only admin can read
     match /orders/{orderId} {
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow read, update, delete: if true;
     }
     // Products: anyone can read, only admin can write
     match /products/{productId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
+    }
+    // Product Overrides: anyone can read, only admin can write
+    match /productOverrides/{overrideId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    // Mail: anyone can create, only admin can read
+    match /mail/{mailId} {
+      allow create: if true;
+      allow read, update, delete: if true;
     }
   }
 }

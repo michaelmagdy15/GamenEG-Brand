@@ -63,33 +63,69 @@ export async function updateOrderStatus(orderId: string, status: Order['status']
   await updateDoc(doc(db, 'orders', orderId), { status });
 }
 
-// ─── ADMIN PRODUCTS ───────────────────────────────────────────────────────────
-
-export type AdminProduct = Partial<Product> & {
-  id: string;
-  source: 'admin';
-  hidden?: boolean;
-};
-
-export type ProductOverride = {
-  id: string; // matches static product id
-  isSoldOut?: boolean;
-  price?: number;
-  hidden?: boolean;
-};
-
-export async function getAdminProducts(): Promise<AdminProduct[]> {
-  const snap = await getDocs(collection(db, 'products'));
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as AdminProduct));
+export async function sendEmailNotification(order: Order, ownerEmail: string = 'michaelmitry13@gmail.com') {
+  // We add a document to the "mail" collection. 
+  // The Firebase "Trigger Email" extension will listen to this collection and send the email.
+  await addDoc(collection(db, 'mail'), {
+    to: [order.customer.email, ownerEmail],
+    message: {
+      subject: `Order Confirmation - GAMÉN (${order.orderRef})`,
+      html: `
+        <div style="font-family: sans-serif; color: #462718;">
+          <h1 style="color: #BA9A63;">GAMÉN</h1>
+          <h2>Merci, ${order.customer.name}.</h2>
+          <p>Your order <strong>${order.orderRef}</strong> has been received and is being reviewed.</p>
+          <p>We will contact you at ${order.customer.phone} to confirm delivery to:<br/>
+          ${order.customer.address}, ${order.customer.city}</p>
+          <br/>
+          <h3>Order Summary</h3>
+          <ul>
+            ${order.items.map(item => `<li>${item.quantity}x ${item.productName} - LE ${item.price * item.quantity}</li>`).join('')}
+          </ul>
+          <p><strong>Total: LE ${order.totalPrice}</strong></p>
+          <hr style="border-top: 1px solid #BA9A63; margin: 20px 0;" />
+          <p style="font-size: 12px; color: #666;">This is an automated message. If you have any questions, please reply to this email.</p>
+        </div>
+      `,
+    }
+  });
 }
 
-export async function addAdminProduct(product: Omit<AdminProduct, 'source'>): Promise<string> {
+// ─── PRODUCTS ──────────────────────────────────────────────────────────────────
+
+export async function getProducts(): Promise<Product[]> {
+  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
+}
+
+export async function addProduct(product: Omit<Product, 'id'>): Promise<string> {
   const docRef = await addDoc(collection(db, 'products'), {
     ...product,
-    source: 'admin',
     createdAt: serverTimestamp(),
   });
   return docRef.id;
+}
+
+export async function updateProduct(id: string, data: Partial<Product>): Promise<void> {
+  await updateDoc(doc(db, 'products', id), data as Record<string, unknown>);
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  await deleteDoc(doc(db, 'products', id));
+}
+
+// ─── ADMIN PRODUCTS & OVERRIDES ──────────────────────────────────────────────
+
+export interface AdminProduct extends Partial<Product> {
+  id: string;
+  hidden?: boolean;
+}
+
+export async function getAdminProducts(): Promise<AdminProduct[]> {
+  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as AdminProduct));
 }
 
 export async function updateAdminProduct(id: string, data: Partial<AdminProduct>): Promise<void> {
@@ -98,15 +134,4 @@ export async function updateAdminProduct(id: string, data: Partial<AdminProduct>
 
 export async function deleteAdminProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, 'products', id));
-}
-
-// ─── STATIC PRODUCT OVERRIDES ─────────────────────────────────────────────────
-
-export async function getProductOverrides(): Promise<ProductOverride[]> {
-  const snap = await getDocs(collection(db, 'productOverrides'));
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as ProductOverride));
-}
-
-export async function setProductOverride(id: string, data: Partial<ProductOverride>): Promise<void> {
-  await setDoc(doc(db, 'productOverrides', id), data, { merge: true });
 }

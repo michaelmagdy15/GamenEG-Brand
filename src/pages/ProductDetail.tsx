@@ -1,14 +1,23 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, Shield, Truck, Leaf } from 'lucide-react';
-import { getProductBySlug, products } from '../data/products';
+import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 import AnatomySection from '../components/AnatomySection';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const { getProductBySlug, products, loading } = useProductsContext();
   const product = getProductBySlug(slug || '');
   const { addItem } = useCart();
+
+  if (loading) {
+    return (
+      <main className="min-h-screen pt-40 px-6 flex flex-col items-center justify-center bg-deep-walnut">
+        <div className="w-16 h-16 border-t-2 border-champagne-gold border-solid rounded-full animate-spin"></div>
+      </main>
+    );
+  }
 
   if (!product) {
     return (

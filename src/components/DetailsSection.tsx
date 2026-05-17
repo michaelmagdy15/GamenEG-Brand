@@ -30,7 +30,7 @@ export default function DetailsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawScrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end start'],
+    offset: ['start start', 'end end'],
   });
   const scrollYProgress = useSpring(rawScrollYProgress, {
     stiffness: 70,

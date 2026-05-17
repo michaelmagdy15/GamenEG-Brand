@@ -6,7 +6,7 @@ export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawScrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end start'],
+    offset: ['start start', 'end end'],
   });
 
   // Apply spring physics to scroll progress for fluid inertia
@@ -65,7 +65,7 @@ export default function HeroSection() {
         {/* 3D Scene — fades down as scroll progresses */}
         <motion.div
           style={{ opacity: sceneOpacity }}
-          className="absolute inset-0 flex items-center justify-center -translate-y-16 sm:-translate-y-24 md:-translate-y-32"
+          className="absolute inset-0 flex items-center justify-center -translate-y-12 sm:-translate-y-16 md:-translate-y-20 lg:-translate-y-28"
         >
           <HeroScene />
         </motion.div>
@@ -73,7 +73,7 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-24 sm:translate-y-32 md:translate-y-48">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-16 sm:translate-y-24 md:translate-y-28 lg:translate-y-40">
           <div className="text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name */}
@@ -81,7 +81,7 @@ export default function HeroSection() {
               <p className="font-accent text-[10px] md:text-xs uppercase tracking-[0.35em] text-champagne-gold/60 mb-4 whitespace-nowrap">
                 Atelier du Caire
               </p>
-              <h1 className="font-display text-5xl sm:text-8xl md:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
+              <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
                 G<span className="font-lambda">Λ</span>MÉN
               </h1>
               <motion.div
@@ -139,7 +139,7 @@ export default function HeroSection() {
         {/* Scroll indicator — visible only at start */}
         <motion.div
           style={{ opacity: brandOpacity }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         >
           <p className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold/30">
             Scroll

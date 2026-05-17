@@ -8,25 +8,25 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Phase 1: Progress bar fills (0-100 over ~2s)
+    // Phase 1: Show brand name early
+    const t1 = setTimeout(() => setPhase('brand'), 100);
+    // Phase 2: Progress bar fills (0-100 over ~1.5s)
     let current = 0;
     const interval = setInterval(() => {
-      current += 1.5;
+      current += 2;
       if (current >= 100) {
         current = 100;
         clearInterval(interval);
       }
       setProgress(Math.floor(current));
-    }, 25);
+    }, 20);
 
-    // Phase 2: Show brand name at ~0.3s
-    const t1 = setTimeout(() => setPhase('brand'), 300);
-    // Phase 3: Show tagline at ~1.2s
-    const t2 = setTimeout(() => setPhase('tagline'), 1200);
-    // Phase 4: Exit at ~2.8s
-    const t3 = setTimeout(() => setPhase('exit'), 2800);
-    // Phase 5: Unmount at ~4.2s (after curtain animation finishes)
-    const t4 = setTimeout(onComplete, 4200);
+    // Phase 3: Show tagline at ~1s
+    const t2 = setTimeout(() => setPhase('tagline'), 1000);
+    // Phase 4: Exit at ~2.5s
+    const t3 = setTimeout(() => setPhase('exit'), 2500);
+    // Phase 5: Unmount at ~3.5s
+    const t4 = setTimeout(onComplete, 3500);
 
     return () => {
       clearInterval(interval);
@@ -39,8 +39,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
 
   const isExiting = phase === 'exit';
 
-  // Split the brand name for staggered letter animation
-  const brandLetters = 'GΛMÉN'.split('');
+
 
   return (
     <motion.div className="fixed inset-0 z-50 pointer-events-none overflow-hidden" style={{ perspective: '1200px' }}>
@@ -50,7 +49,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         animate={{ rotateY: isExiting ? -90 : 0 }}
         transition={{ duration: 1.6, ease, delay: 0.1 }}
         style={{ transformOrigin: 'left center' }}
-        className="absolute top-0 bottom-0 left-0 w-1/2 bg-[#1a1412] z-20 shadow-[inset_-20px_0_50px_rgba(0,0,0,0.5)] border-r border-champagne-gold/10"
+        className="absolute top-0 bottom-0 left-0 w-1/2 bg-[#1a1412] z-20 shadow-[inset_-20px_0_50px_rgba(0,0,0,0.5)]"
       >
         <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
       </motion.div>
@@ -61,21 +60,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
         animate={{ rotateY: isExiting ? 90 : 0 }}
         transition={{ duration: 1.6, ease, delay: 0.1 }}
         style={{ transformOrigin: 'right center' }}
-        className="absolute top-0 bottom-0 right-0 w-1/2 bg-[#1a1412] z-20 shadow-[inset_20px_0_50px_rgba(0,0,0,0.5)] border-l border-champagne-gold/10"
+        className="absolute top-0 bottom-0 right-0 w-1/2 bg-[#1a1412] z-20 shadow-[inset_20px_0_50px_rgba(0,0,0,0.5)]"
       >
         <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
       </motion.div>
-
-      {/* Center seam line — golden line at the split that shrinks away */}
-      <motion.div
-        initial={{ scaleX: 1, opacity: 1 }}
-        animate={{
-          scaleX: isExiting ? 0 : 1,
-          opacity: isExiting ? 0 : 1,
-        }}
-        transition={{ duration: 0.6, ease, delay: 0.05 }}
-        className="absolute top-1/2 left-0 right-0 h-px bg-champagne-gold/30 z-30 origin-center -translate-y-1/2"
-      />
 
       {/* Content layer — sits between the two curtains */}
       <div className="absolute inset-0 z-25 flex flex-col items-center justify-center">
@@ -86,26 +74,33 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
               transition={{ duration: 0.5, ease }}
               className="flex flex-col items-center"
             >
-              {/* Staggered brand letters */}
-              <div className="flex items-baseline gap-[0.04em] mb-4 overflow-hidden">
-                {brandLetters.map((letter, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ y: '120%', opacity: 0 }}
-                    animate={{
-                      y: phase !== 'intro' ? '0%' : '120%',
-                      opacity: phase !== 'intro' ? 1 : 0,
+              {/* Brand Logo Drawing Animation */}
+              <div className="mb-4 flex justify-center items-center">
+                <svg viewBox="0 0 800 150" className="w-[300px] sm:w-[400px] lg:w-[600px] h-auto overflow-visible">
+                  <motion.text
+                    x="50%"
+                    y="50%"
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="font-display tracking-[0.2em]"
+                    fontSize="100"
+                    fill="transparent"
+                    stroke="#cfc5b2"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                    initial={{ strokeDasharray: 1200, strokeDashoffset: 1200, fill: "rgba(207,197,178,0)" }}
+                    animate={{ 
+                      strokeDashoffset: phase !== 'intro' ? 0 : 1200, 
+                      fill: phase === 'tagline' ? "rgba(207,197,178,1)" : "rgba(207,197,178,0)" 
                     }}
                     transition={{
-                      duration: 0.9,
-                      ease,
-                      delay: i * 0.07,
+                      strokeDashoffset: { duration: 1.8, ease: "easeInOut", delay: 0.2 },
+                      fill: { duration: 1, ease: "easeInOut", delay: 0.4 }
                     }}
-                    className="font-display text-6xl sm:text-8xl lg:text-[120px] text-champagne-gold tracking-[0.15em] leading-none inline-block"
                   >
-                    {letter}
-                  </motion.span>
-                ))}
+                    <tspan>G</tspan><tspan className="font-lambda">Λ</tspan><tspan>MÉN</tspan>
+                  </motion.text>
+                </svg>
               </div>
 
               {/* Tagline — appears after brand settles */}

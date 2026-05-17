@@ -7,7 +7,7 @@ import { brandAssets } from '../../brandAssets';
 let lastScrollY = -1;
 
 export default function BowTieElement() {
-  const texture = useTexture(brandAssets.heroBowTie);
+  const texture = useTexture(brandAssets.twoToneBowTie);
   const meshRef = useRef<THREE.Mesh>(null);
   const [scale, setScale] = useState(1);
 
@@ -33,15 +33,22 @@ export default function BowTieElement() {
   }, [texture]);
 
   // Only re-render when scroll position actually changes — debounced by 0.5px threshold
-  useFrame(() => {
+  useFrame((state) => {
     if (!meshRef.current) return;
     const scrollY = window.scrollY;
-    if (Math.abs(scrollY - lastScrollY) < 0.5) return;
-    lastScrollY = scrollY;
-
+    
+    // Continuous subtle floating
+    const t = state.clock.getElapsedTime();
+    const floatY = Math.sin(t * 1.5) * 0.05;
+    
     const maxScroll = window.innerHeight * 2;
     const progress = Math.min(scrollY / maxScroll, 1);
-    meshRef.current.rotation.y = progress * Math.PI * 2;
+    
+    // Add scroll-based upward drift and subtle tilt
+    meshRef.current.position.y = floatY + progress * 0.5;
+    meshRef.current.rotation.x = -progress * 0.1; // very subtle tilt
+    meshRef.current.rotation.y = Math.sin(t * 0.5) * 0.05; // tiny sway
+    
     invalidate();
   });
 
@@ -59,4 +66,4 @@ export default function BowTieElement() {
   );
 }
 
-useTexture.preload(brandAssets.heroBowTie);
+useTexture.preload(brandAssets.twoToneBowTie);
