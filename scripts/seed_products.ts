@@ -1,6 +1,6 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../src/lib/firebase';
-import { products } from '../products_temp2'; // We will use the temporary file I created
+import { products } from '../src/data/products';
 
 async function seedProducts() {
   try {

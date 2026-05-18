@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { Product, ProductCategory, ProductCollection } from '../data/products';
+import { products as staticProducts } from '../data/products';
 import { getProducts } from '../lib/firestore';
 
 interface ProductsContextType {
@@ -25,10 +26,13 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const data = await getProducts();
-      setProducts(data || []);
+      // Fall back to static products if Firestore has none
+      setProducts(data && data.length > 0 ? data : staticProducts);
     } catch (err) {
       console.error('Failed to load products from Firebase:', err);
       setError(err instanceof Error ? err : new Error('Failed to load products'));
+      // Always show static products on error so the site is never blank
+      setProducts(staticProducts);
     } finally {
       setLoading(false);
     }

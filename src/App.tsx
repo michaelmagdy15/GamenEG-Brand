@@ -110,11 +110,10 @@ function AppContent() {
           <BackToTop />
           <motion.div
             className="relative"
-            initial={{ opacity: 0, filter: 'blur(12px)', scale: 0.98 }}
+            initial={{ opacity: 0, filter: 'blur(12px)' }}
             animate={{
               opacity: loading ? 0 : 1,
               filter: loading ? 'blur(12px)' : 'blur(0px)',
-              scale: loading ? 0.98 : 1,
             }}
             transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
             style={{ pointerEvents: loading ? 'none' : 'auto' }}
