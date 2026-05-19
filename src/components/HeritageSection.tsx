@@ -65,7 +65,7 @@ export default function HeritageSection() {
           {[
             {
               title: 'Pharaoh Seal',
-              copy: 'A tribute to kingship and ceremony. Polished brass sits over dark walnut, giving a formal accessory the gravity of an heirloom.',
+              copy: '<span className="font-lambda">Λ</span> tribute to kingship and ceremony. Polished brass sits over dark walnut, giving a formal accessory the gravity of an heirloom.',
               image: brandAssets.pharaohBowTie,
             },
             {
@@ -114,7 +114,7 @@ export default function HeritageSection() {
           transition={{ duration: 0.7 }}
         >
           <h2 className="font-display text-4xl lg:text-6xl text-taupe max-w-4xl mx-auto leading-normal">
-            "Not just an accessory.<br />Your <span className="text-espresso italic">signature</span>."
+            "Not just <span className="font-lambda">Λ</span>n accessory.<br />Your <span className="text-espresso italic">signature</span>."
           </h2>
         </motion.div>
       </div>

@@ -1,9 +1,28 @@
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { useRef } from 'react';
+import { motion, useTransform, useMotionValue, useMotionValueEvent, useMotionTemplate } from 'motion/react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { MotionValue } from 'motion/react';
+
+const FRAMES = [
+  'gamenbox_000000_0015_Layer-1.png',
+  'gamenbox_000000_0014_gamenbox_000001.png',
+  'gamenbox_000000_0013_gamenbox_000002.png',
+  'gamenbox_000000_0012_gamenbox_000003.png',
+  'gamenbox_000000_0011_gamenbox_000004.png',
+  'gamenbox_000000_0010_gamenbox_000005.png',
+  'gamenbox_000000_0009_gamenbox_000006.png',
+  'gamenbox_000000_0008_gamenbox_000007.png',
+  'gamenbox_000000_0007_gamenbox_000008.png',
+  'gamenbox_000000_0006_gamenbox_000009.png',
+  'gamenbox_000000_0005_gamenbox_000010.png',
+  'gamenbox_000000_0004_gamenbox_000011.png',
+  'gamenbox_000000_0003_gamenbox_000012.png',
+  'gamenbox_000000_0002_gamenbox_000013.png',
+  'gamenbox_000000_0001_gamenbox_000014.png',
+  'gamenbox_000000_0000_gamenbox_000015.png'
+];
 
 export default function CollectionsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,108 +38,156 @@ export default function CollectionsSection() {
   }));
   
   const count = collections.length;
+  const x = useMotionValue(0);
 
-  const { scrollYProgress: rawScrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-  const scrollYProgress = useSpring(rawScrollYProgress, {
-    stiffness: 80,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  const [vw, setVw] = useState(typeof window !== 'undefined' ? window.innerWidth : 1000);
+  const [hasDragged, setHasDragged] = useState(false);
+  
+  useEffect(() => {
+    const handleResize = () => setVw(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    
+    // Preload frames
+    FRAMES.forEach(frame => {
+      const img = new Image();
+      img.src = `/unboxing/${frame}`;
+    });
 
-  // Each item is 100vw wide; translate to show the last item centered
-  const endPercent = `-${((count - 1) / count) * 100}%`;
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', endPercent]);
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // Give each item 120vh of scroll runway for comfortable pacing
-  const scrollHeight = `${Math.max(count * 120, 400)}vh`;
+  const progressWidth = useTransform(
+    x,
+    [0, -((count - 1) * vw)],
+    ['0%', '100%']
+  );
 
   return (
-    <section ref={containerRef} className="relative bg-warm-cream" style={{ height: scrollHeight }}>
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-deep-walnut/15">
-          <motion.div className="h-full bg-deep-walnut origin-left" style={{ width: progressWidth }} />
-        </div>
+    <section className="relative bg-warm-cream py-12 md:py-24 overflow-hidden min-h-[100svh] flex flex-col justify-center">
+      <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-deep-walnut/15">
+        <motion.div className="h-full bg-deep-walnut origin-left" style={{ width: progressWidth }} />
+      </div>
 
+      {/* Drag Hint Indicator */}
+      <motion.div 
+        animate={{ opacity: hasDragged ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-20 mix-blend-multiply opacity-60"
+      >
         <motion.div
+          animate={{ x: [-15, 15, -15] }}
+          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+          className="flex items-center gap-4"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-deep-walnut opacity-70 rotate-180">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+          <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-deep-walnut font-bold">
+            DR<span className="font-lambda">Λ</span>G OR SWIPE
+          </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-deep-walnut opacity-70">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </motion.div>
+      </motion.div>
+
+      <motion.div 
+        ref={containerRef} 
+        className="w-full flex-1 flex items-center"
+      >
+        <motion.div
+          drag="x"
+          dragConstraints={containerRef}
+          dragElastic={0.1}
           style={{ x }}
-          className="flex h-full"
-          // Dynamic width based on actual item count
-          // Each item is 100vw, so total = count * 100vw
+          onDragStart={() => setHasDragged(true)}
+          className="flex items-center h-full cursor-grab active:cursor-grabbing"
         >
           {collections.map((item, index) => (
-            <CollectionItem key={item.id} item={item} index={index} count={count} scrollYProgress={scrollYProgress} />
+            <CollectionItem 
+              key={item.id} 
+              item={item} 
+              index={index} 
+              count={count} 
+              x={x} 
+              vw={vw} 
+            />
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }
 
-function CollectionItem({ item, index, count, scrollYProgress }: { item: any, index: number, count: number, scrollYProgress: MotionValue<number> }) {
-  // Center point for this item in the scroll progress (0 to 1)
-  const center = count > 1 ? index / (count - 1) : 0;
-  // Define how much scroll progress constitutes entering/leaving the item's domain
-  const buffer = count > 1 ? 0.8 / (count - 1) : 0.5;
-  const start = Math.max(0, center - buffer);
-  const end = Math.min(1, center + buffer);
+function CollectionItem({ item, index, count, x, vw }: { item: any, index: number, count: number, x: MotionValue<number>, vw: number }) {
+  const centerPosition = -index * vw;
+  const startPosition = centerPosition + vw * 0.8;
+  const endPosition = centerPosition - vw * 0.8;
 
-  // When scroll hits start, rotation starts. At center, rotation is -105. At end, rotation is back to 0.
-  const rotateY = useTransform(scrollYProgress, [start, center, end], [0, -105, 0]);
-  const scale = useTransform(scrollYProgress, [start, center, end], [0.8, 1, 0.8]);
-  const opacity = useTransform(scrollYProgress, [start, center, end], [0, 1, 0]);
+  // Map horizontal position to a frame index (0 to 15)
+  const frameFloat = useTransform(x, [startPosition, centerPosition, endPosition], [0, 15, 0]);
+  const [frameIndex, setFrameIndex] = useState(0);
+
+  useMotionValueEvent(frameFloat, 'change', (latest) => {
+    setFrameIndex(Math.min(15, Math.max(0, Math.round(latest))));
+  });
+
+  // Product animation values
+  const productScale = useTransform(frameFloat, [10, 15], [0.5, 1.1]);
+  const productY = useTransform(frameFloat, [10, 15], [100, -20]);
+  const productOpacity = useTransform(frameFloat, [10, 14], [0, 1]);
+
+  // Box blur and opacity values
+  const boxBlur = useTransform(frameFloat, [13, 15], [0, 6]);
+  const filter = useMotionTemplate`blur(${boxBlur}px)`;
+  const boxOpacity = useTransform(frameFloat, [13, 15], [1, 0.6]);
+  const boxScale = useTransform(frameFloat, [13, 15], [1, 0.95]);
 
   return (
     <div
       className="relative h-full flex items-center justify-center py-6 px-6 lg:p-24 flex-shrink-0"
       style={{ width: '100vw' }}
     >
-      <div className="absolute left-2 md:left-8 lg:left-12 top-24 md:top-auto md:bottom-12 font-header text-[120px] md:text-[220px] leading-none text-deep-walnut/[0.06] pointer-events-none -z-10">
+      <div className="absolute left-2 md:left-8 lg:left-12 top-24 md:top-auto md:bottom-12 font-header text-[120px] md:text-[220px] leading-none text-deep-walnut/[0.06] pointer-events-none -z-10 select-none">
         0{item.id}
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 w-full max-w-7xl mx-auto z-10">
-        <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0" style={{ perspective: '1000px' }}>
-          <div className="relative w-full max-w-[220px] lg:max-w-[400px] aspect-[4/5] rounded-xl border border-deep-walnut/20 bg-gradient-to-br from-void-start to-void-end transform-style-3d shrink-0">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 w-full max-w-7xl mx-auto z-10 pointer-events-none">
+        <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0 pointer-events-auto" style={{ perspective: '1000px' }}>
+          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0">
+            {/* The Box Sequence */}
+            <motion.img
+              src={`/unboxing/${FRAMES[frameIndex]}`}
+              alt="Box sequence"
+              style={{ filter, opacity: boxOpacity, scale: boxScale }}
+              className="absolute w-full h-full object-contain pointer-events-none"
+              draggable={false}
+            />
+
             {/* The Product Inside */}
             <motion.div
-              style={{ scale, opacity }}
-              className="absolute inset-0 flex items-center justify-center p-6 lg:p-12"
+              style={{ scale: productScale, y: productY, opacity: productOpacity }}
+              className="absolute z-10 w-full h-full flex items-center justify-center p-6 lg:p-12 pointer-events-none"
             >
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl"
                 loading="lazy"
+                draggable={false}
               />
             </motion.div>
-            
-            {/* The Box Lid (Front cover that swings open) */}
-            <motion.div
-              style={{ rotateY, transformOrigin: 'left center' }}
-              className="absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-xl z-10 shadow-2xl flex items-center justify-center overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-20 mix-blend-overlay" />
-              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full border border-champagne-gold/30 flex items-center justify-center">
-                <span className="font-display text-xl lg:text-2xl text-champagne-gold">G</span>
-              </div>
-            </motion.div>
-            
-            <div className="absolute inset-0 bg-espresso/10 transition-opacity group-hover:opacity-0 pointer-events-none" />
           </div>
         </div>
 
-        <div className="w-full lg:w-1/2 flex flex-col items-center text-center justify-center gap-4 lg:gap-6 mt-4 lg:mt-0">
-          <span className="font-accent text-[10px] tracking-[0.2em] font-medium text-deep-walnut uppercase text-center block w-full">
+        <div className="w-full lg:w-1/2 flex flex-col items-center text-center justify-center gap-4 lg:gap-6 mt-4 lg:mt-0 pointer-events-auto">
+          <span className="font-accent text-[10px] tracking-[0.2em] font-medium text-deep-walnut uppercase text-center block w-full select-none">
             Collection // {item.wood}
           </span>
-          <h3 className="font-header text-4xl lg:text-7xl text-espresso text-center leading-tight">
+          <h3 className="font-header text-4xl lg:text-7xl text-espresso text-center leading-tight select-none">
             {item.name}
           </h3>
-          <p className="font-french italic text-lg lg:text-3xl leading-tight text-espresso opacity-80 max-w-[280px] lg:max-w-none text-center">
+          <p className="font-french italic text-lg lg:text-3xl leading-tight text-espresso opacity-80 max-w-[280px] lg:max-w-none text-center select-none">
             {item.tagline}
           </p>
 

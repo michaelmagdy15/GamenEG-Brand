@@ -10,15 +10,21 @@
   --color-void-start: #f2eee6;
   --color-void-end: #cfc5b2;
 
-  --font-display: "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
-  --font-header: "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
-  --font-body: "Inter", sans-serif;
-  --font-accent: "Inter", sans-serif;
-  --font-french: "Baskerville Old Face", Baskerville, Georgia, serif;
-  --font-lambda: "Palatino Linotype", Palatino, "Book Antiqua", serif;
+  --font-display: "BrandLambda", "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
+  --font-header: "BrandLambda", "Baskerville Old Face", Baskerville, "Libre Baskerville", Georgia, serif;
+  --font-body: "BrandLambda", "Inter", sans-serif;
+  --font-accent: "BrandLambda", "Inter", sans-serif;
+  --font-french: "BrandLambda", "Baskerville Old Face", Baskerville, Georgia, serif;
+  --font-lambda: "BrandLambda", "Palatino Linotype", Palatino, "Book Antiqua", serif;
 
   --background-image-gold-gradient: linear-gradient(135deg, #cfc5b2 0%, #f2eee6 50%, #cfc5b2 100%);
   --background-image-wood-grain: repeating-linear-gradient(45deg, #462718, #462718 2px, #5a3220 2px, #5a3220 4px);
+}
+
+@font-face {
+  font-family: 'BrandLambda';
+  src: local('Palatino Linotype'), local('Palatino'), local('Book Antiqua');
+  unicode-range: U+039B;
 }
 
 html, body, #root {

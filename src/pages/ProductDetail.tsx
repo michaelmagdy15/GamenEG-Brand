@@ -4,6 +4,7 @@ import { ArrowLeft, ShoppingBag, Shield, Truck, Leaf } from 'lucide-react';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 import AnatomySection from '../components/AnatomySection';
+import UnboxingExperience from '../components/UnboxingExperience';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -42,14 +43,7 @@ export default function ProductDetail() {
           >
             <ArrowLeft size={14} /> Back
           </Link>
-          <motion.img
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            src={product.image}
-            alt={product.name}
-            className="max-w-full max-h-[60vh] lg:max-h-[70vh] object-contain drop-shadow-2xl"
-          />
+          <UnboxingExperience productImage={product.image} productName={product.name} />
         </div>
 
         {/* Info Side */}

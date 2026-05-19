@@ -29,7 +29,7 @@ export default function AcquisitionSection() {
               onClick={() => setActiveFilter('All Pieces')}
               className={activeFilter === 'All Pieces' ? 'border-b border-espresso pb-1 text-espresso' : 'text-taupe hover:text-espresso pb-1'}
             >
-              All Pieces
+              <span className="font-lambda">Λ</span>ll Pieces
             </button>
             <button 
               onClick={() => setActiveFilter('Walnut')}
@@ -86,7 +86,7 @@ export default function AcquisitionSection() {
                     LE {product.price.toLocaleString()}
                   </span>
                   <button className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-espresso border-b border-transparent group-hover:border-espresso transition-colors pb-0.5">
-                    Add to Collection
+                    <span className="font-lambda">Λ</span>dd to Collection
                   </button>
                 </div>
               </motion.div>

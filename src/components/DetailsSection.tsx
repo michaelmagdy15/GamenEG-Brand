@@ -7,21 +7,27 @@ const details = [
     image: brandAssets.twoToneBowTie,
     alt: 'Two-tone walnut bow tie',
     label: 'THE GRAIN',
-    description: 'A polished walnut body with visible variation in tone, cut to hold its sculptural bow shape.',
+    displayLabel: <>THE GR<span className="font-lambda">Λ</span>IN</>,
+    navLabel: <>GR<span className="font-lambda">Λ</span>IN</>,
+    description: <><span className="font-lambda">Λ</span> polished walnut body with visible variation in tone, cut to hold its sculptural bow shape.</>,
     side: 'right' as const,
   },
   {
     image: brandAssets.ankhBowTie,
     alt: 'Eye of Horus brass emblem bow tie',
     label: 'THE EMBLEM',
-    description: 'Brass iconography sits at the center, giving each piece its signature Egyptian character.',
+    displayLabel: <>THE EMBLEM</>,
+    navLabel: <>EMBLEM</>,
+    description: <>Brass iconography sits at the center, giving each piece its signature Egyptian character.</>,
     side: 'left' as const,
   },
   {
     image: brandAssets.heroBowTie,
     alt: 'GΛMÉN signature bow tie',
     label: 'THE SIGNATURE',
-    description: 'A custom center mark, finished in warm brass and aligned with the GΛMÉN identity.',
+    displayLabel: <>THE SIGN<span className="font-lambda">Λ</span>TURE</>,
+    navLabel: <>SIGN<span className="font-lambda">Λ</span>TURE</>,
+    description: <><span className="font-lambda">Λ</span> custom center mark, finished in warm brass and aligned with the GΛMÉN identity.</>,
     side: 'right' as const,
   },
 ];
@@ -73,7 +79,7 @@ export default function DetailsSection() {
         <motion.div style={{ opacity: titleOpacity }} className="absolute z-20 pointer-events-none text-center px-4">
           <p className="font-accent text-[10px] uppercase tracking-[0.3em] text-champagne-gold/50 mb-4">Craftsmanship</p>
           <h2 className="font-header text-5xl md:text-7xl mb-4">Precision Deconstructed</h2>
-          <p className="font-french italic text-champagne-gold text-2xl md:text-3xl">One detail. All the attention.</p>
+          <p className="font-french italic text-champagne-gold text-2xl md:text-3xl">One detail. Λll the attention.</p>
         </motion.div>
 
         {/* Center showcase area */}
@@ -105,7 +111,7 @@ export default function DetailsSection() {
                 } w-56 hidden md:block`}
               >
                 <div className={`w-10 h-px bg-champagne-gold/40 mb-3 ${detail.side === 'left' ? 'ml-auto' : ''}`} />
-                <h4 className="font-accent tracking-[0.2em] text-champagne-gold text-[11px] mb-2">{detail.label}</h4>
+                <h4 className="font-accent tracking-[0.2em] text-champagne-gold text-[11px] mb-2">{detail.displayLabel}</h4>
                 <p className="font-body text-sm text-warm-cream/60 leading-relaxed">{detail.description}</p>
               </motion.div>
 
@@ -130,7 +136,7 @@ export default function DetailsSection() {
             >
               <div className="w-2 h-2 rounded-full border border-champagne-gold/40" />
               <span className="font-accent text-[9px] uppercase tracking-[0.15em] text-champagne-gold/40">
-                {detail.label.replace('THE ', '')}
+                {detail.navLabel}
               </span>
             </motion.div>
           ))}

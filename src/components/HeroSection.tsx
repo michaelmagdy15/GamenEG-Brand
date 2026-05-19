@@ -11,38 +11,34 @@ export default function HeroSection() {
 
   // Apply spring physics to scroll progress for fluid inertia
   const scrollYProgress = useSpring(rawScrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 80,
+    damping: 25,
     restDelta: 0.001
   });
 
-  // Phase 1: Initial view (0-0.15) — bow tie + brand reveal
-  const brandOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25], [1, 1, 0]);
-  const brandScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.92]);
+  // Phase 1: Initial view (0-0.4) — bow tie + brand reveal
+  const brandOpacity = useTransform(scrollYProgress, [0, 0.15, 0.4], [1, 1, 0]);
+  const brandScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.92]);
 
-  // Phase 2: Tagline slides in (0.15-0.45)
-  const taglineOpacity = useTransform(scrollYProgress, [0.15, 0.25, 0.55], [0, 1, 0]);
-  const taglineY = useTransform(scrollYProgress, [0.15, 0.25], [60, 0]);
+  // Phase 2: Tagline slides in (0.3-0.75)
+  const taglineOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.75], [0, 1, 0]);
+  const taglineY = useTransform(scrollYProgress, [0.3, 0.5], [40, 0]);
 
-  // Phase 3: Craft detail (0.45-0.75)
-  const craftOpacity = useTransform(scrollYProgress, [0.45, 0.55, 0.85], [0, 1, 0]);
-  const craftY = useTransform(scrollYProgress, [0.45, 0.55], [40, 0]);
-
-  // Phase 4: CTA (0.75-1.0)
-  const ctaOpacity = useTransform(scrollYProgress, [0.75, 0.85, 0.95], [0, 1, 0]);
+  // Phase 3: CTA (0.65-1.0)
+  const ctaOpacity = useTransform(scrollYProgress, [0.65, 0.85, 1], [0, 1, 1]);
 
   // Background text parallax
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.15, 0.5], [0.06, 0.06, 0]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.3, 0.8], [0.06, 0.06, 0]);
 
   // Bow tie scene fades slightly as text takes over
-  const sceneOpacity = useTransform(scrollYProgress, [0, 0.12, 0.5, 0.8], [1, 1, 0.4, 0.2]);
+  const sceneOpacity = useTransform(scrollYProgress, [0, 0.2, 0.6, 1], [1, 1, 0.4, 0.2]);
 
   // Divider line grows
   const dividerScale = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] bg-deep-walnut grain-overlay">
+    <section ref={containerRef} className="relative h-[120vh] bg-deep-walnut grain-overlay -mb-[20vh] sm:-mb-[25vh] md:-mb-[30vh]">
       {/* h-svh = Safari-safe viewport height (excludes collapsible address bar) */}
       <div className="sticky top-0 h-svh w-full flex items-center justify-center overflow-hidden">
 
@@ -55,10 +51,10 @@ export default function HeroSection() {
           className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden"
         >
           <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
-            ÉLÉGANCE
+            ÉLÉGΛNCE
           </span>
           <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
-            TAILLÉE
+            TΛILLÉE
           </span>
         </motion.div>
 
@@ -78,9 +74,7 @@ export default function HeroSection() {
 
             {/* Phase 1: Brand name */}
             <motion.div style={{ opacity: brandOpacity, scale: brandScale }}>
-              <p className="font-accent text-[10px] md:text-xs uppercase tracking-[0.35em] text-champagne-gold/60 mb-4 whitespace-nowrap">
-                Atelier du Caire
-              </p>
+
               <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
                 G<span className="font-lambda">Λ</span>MÉN
               </h1>
@@ -95,37 +89,18 @@ export default function HeroSection() {
               style={{ opacity: taglineOpacity, y: taglineY }}
               className="absolute inset-0 flex items-center justify-center px-4"
             >
-              <p className="font-french italic text-3xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
-                L'élégance taillée<br />
-                <span className="text-champagne-gold/60">en bois.</span>
+              <p translate="no" className="notranslate font-french italic text-3xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
+                L'élégance taillée <span className="text-champagne-gold">en bois.</span>
               </p>
             </motion.div>
 
-            {/* Phase 3: Craft */}
-            <motion.div
-              style={{ opacity: craftOpacity, y: craftY }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6"
-            >
-              <div className="flex items-center gap-6">
-                <div className="h-px w-12 bg-champagne-gold/30" />
-                <p className="font-accent text-[10px] uppercase tracking-[0.3em] text-champagne-gold/50">
-                  The Details
-                </p>
-                <div className="h-px w-12 bg-champagne-gold/30" />
-              </div>
-              <p className="font-body text-lg md:text-xl text-champagne-gold/70 max-w-md leading-relaxed">
-                Hand-selected walnut. Brass insignias cast from pharaonic moulds.
-                Each piece signed, numbered, and unrepeatable.
-              </p>
-            </motion.div>
-
-            {/* Phase 4: CTA */}
+            {/* Phase 3: CTA */}
             <motion.div
               style={{ opacity: ctaOpacity }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-8"
             >
-              <p className="font-display text-4xl sm:text-6xl text-champagne-gold font-light">
-                Discover the Collection
+              <p className="font-display text-4xl sm:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
+                H<span className="font-lambda">Λ</span>NDCR<span className="font-lambda">Λ</span>FTED IN EGYPT
               </p>
               <div className="h-px w-16 bg-champagne-gold/30" />
               <p className="font-accent text-[10px] uppercase tracking-[0.25em] text-champagne-gold/40">

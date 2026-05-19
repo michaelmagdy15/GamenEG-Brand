@@ -43,7 +43,7 @@ export default function AdminLogin() {
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="font-display font-normal text-3xl text-amber-400 tracking-[0.25em] mb-1 uppercase">G<span className="font-lambda">Λ</span>MÉN</h1>
-          <h2 className="font-accent text-sm text-amber-400/60 uppercase tracking-widest">Atelier Portal</h2>
+          <h2 className="font-accent text-sm text-amber-400/60 uppercase tracking-widest">Λtelier Portal</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

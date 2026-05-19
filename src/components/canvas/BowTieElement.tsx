@@ -44,10 +44,10 @@ export default function BowTieElement() {
     const maxScroll = window.innerHeight * 2;
     const progress = Math.min(scrollY / maxScroll, 1);
     
-    // Add scroll-based upward drift and subtle tilt
+    // Add scroll-based upward drift, subtle tilt, and full 360 rotation
     meshRef.current.position.y = floatY + progress * 0.5;
     meshRef.current.rotation.x = -progress * 0.1; // very subtle tilt
-    meshRef.current.rotation.y = Math.sin(t * 0.5) * 0.05; // tiny sway
+    meshRef.current.rotation.y = progress * Math.PI * 2; // Scroll-linked 360 rotation around Y axis
     
     invalidate();
   });

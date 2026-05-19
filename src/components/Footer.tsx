@@ -58,7 +58,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ATELIER</h3>
+          <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ΛTELIER</h3>
           <ul className="space-y-4 font-body text-sm text-warm-cream/80">
             <li><Link to="/shop" className="hover:text-champagne-gold transition-colors">Collections</Link></li>
             <li><Link to="/craftsmanship" className="hover:text-champagne-gold transition-colors">Craftsmanship</Link></li>
@@ -68,7 +68,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ASSISTANCE</h3>
+          <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/50 mb-6">ΛSSISTΛNCE</h3>
           <ul className="space-y-4 font-body text-sm text-warm-cream/80 mb-12">
             <li><Link to="/shipping" className="hover:text-champagne-gold transition-colors">Shipping & Returns</Link></li>
             <li><Link to="/care" className="hover:text-champagne-gold transition-colors">Care Instructions</Link></li>
@@ -84,7 +84,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-warm-cream/10 flex flex-col md:flex-row justify-between items-center gap-4 font-body text-xs text-warm-cream/40">
-        <p>&copy; {new Date().getFullYear()} GΛMÉN. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} GΛMÉN. Λll rights reserved.</p>
         <div className="flex gap-4">
           <span>Cairo, Egypt.</span>
           <span>Wherever you are.</span>

@@ -85,7 +85,7 @@ export default function AddProductModal({ onClose, onAdded }: Props) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 sticky top-0 bg-gray-900">
-          <h2 className="text-sm text-gray-200 font-medium">Add New Product</h2>
+          <h2 className="text-sm text-gray-200 font-medium">Λdd New Product</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 transition-colors">
             <X size={16} />
           </button>

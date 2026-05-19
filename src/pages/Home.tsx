@@ -14,22 +14,20 @@ export default function Home() {
   return (
     <main>
       <HeroSection />
-      <MarqueeTicker variant="dark" speed="normal" />
-      <OriginSection />
-      <MarqueeTicker
-        variant="light"
-        speed="slow"
-        text="SÉLECTIONNÉ À LA MAIN  ·  SCULPTÉ AVEC INTENTION  ·  POLI JUSQU'À LA PERFECTION  ·  "
-      />
-      <CollectionsSection />
-      <AnatomySection />
-      <DetailsSection />
-      <MarqueeTicker variant="dark" speed="normal" />
-      <HeritageSection />
-      <RitualSection />
-      <HowToWear />
-      <AtelierExperience />
-      <AcquisitionSection />
+      <div className="relative z-20 bg-deep-walnut">
+        <MarqueeTicker variant="dark" speed="normal" />
+        {/* <OriginSection /> */}
+        {/* <MarqueeTicker variant="light" speed="slow" /> */}
+        <AtelierExperience />
+        <DetailsSection />
+        <CollectionsSection />
+        <AnatomySection />
+        <MarqueeTicker variant="dark" speed="normal" />
+        <HeritageSection />
+        {/* <RitualSection /> */}{/* hidden — re-enable in a future version */}
+        <HowToWear />
+        <AcquisitionSection />
+      </div>
     </main>
   );
 }

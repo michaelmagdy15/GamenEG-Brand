@@ -140,35 +140,28 @@ export default function Shop() {
                               </div>
                             )}
 
-                            {/* The Product Image */}
-                            <div className="absolute inset-0 flex items-center justify-center p-12 z-0">
+                            {/* The Opened Box Background */}
+                            <div className="absolute inset-0 flex items-center justify-center z-0 p-8 pointer-events-none">
                               <img
-                                src={product.image}
-                                alt={product.name}
-                                className={`max-h-full object-contain transition-all duration-700 ${product.isSoldOut ? 'grayscale contrast-125 opacity-40' : 'group-hover:scale-110 group-hover:rotate-6'}`}
+                                src="/unboxing/gamenbox_000000_0000_gamenbox_000015.png"
+                                alt="Open Box"
+                                className={`w-full h-full object-contain opacity-80 ${product.isSoldOut ? 'grayscale contrast-125 opacity-40' : ''}`}
                                 loading="lazy"
                               />
                             </div>
-                            
-                            {/* The Box Lid (Premium Interaction) */}
-                            <motion.div
-                              style={{ transformOrigin: 'left center' }}
-                              initial={{ rotateY: 0 }}
-                              whileInView={!product.isSoldOut ? { rotateY: window.innerWidth < 768 ? -110 : 0 } : {}}
-                              viewport={{ once: true, amount: 0.3 }}
-                              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                              className={`absolute inset-0 bg-deep-walnut border border-champagne-gold/20 rounded-2xl z-10 shadow-2xl flex items-center justify-center overflow-hidden transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] md:!transform-none md:transition-transform md:duration-[1500ms] ${!product.isSoldOut && 'md:group-hover/box:![transform:rotateY(-110deg)]'}`}
-                            >
-                              <div className="absolute inset-0 bg-[url('/wood-grain.jpg')] opacity-10 mix-blend-overlay pointer-events-none" />
-                              <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none" />
-                              
-                              <div className="relative flex flex-col items-center">
-                                <div className="w-16 h-16 rounded-full border border-champagne-gold/20 flex items-center justify-center mb-4">
-                                  <span className="font-display text-2xl text-champagne-gold">G</span>
-                                </div>
-                                <div className="h-px w-8 bg-gold-gradient" />
-                              </div>
-                            </motion.div>
+
+                            {/* The Product Image */}
+                            <div className="absolute inset-0 flex items-center justify-center p-8 z-10 pointer-events-none">
+                              <motion.img
+                                src={product.image}
+                                alt={product.name}
+                                initial={{ y: -10, scale: 1 }}
+                                whileHover={!product.isSoldOut ? { y: -30, scale: 1.1 } : {}}
+                                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                className={`w-full h-full max-w-[85%] max-h-[85%] object-contain ${product.isSoldOut ? 'grayscale contrast-125 opacity-40' : 'drop-shadow-2xl'}`}
+                                loading="lazy"
+                              />
+                            </div>
                             
                             {/* Inner Shadow / Depth */}
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
