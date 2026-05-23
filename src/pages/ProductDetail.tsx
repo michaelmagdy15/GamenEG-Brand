@@ -31,8 +31,32 @@ export default function ProductDetail() {
 
   const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "image": typeof window !== 'undefined' ? window.location.origin + product.image : product.image,
+    "description": product.description,
+    "sku": product.id,
+    "offers": {
+      "@type": "Offer",
+      "url": typeof window !== 'undefined' ? window.location.href : '',
+      "priceCurrency": "EGP",
+      "price": product.price,
+      "availability": product.isSoldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      "priceValidUntil": "2027-12-31"
+    },
+    "brand": {
+      "@type": "Brand",
+      "name": "GAMÉN"
+    }
+  };
+
   return (
     <main className="min-h-screen bg-deep-walnut">
+      <script type="application/ld+json">
+        {JSON.stringify(jsonLd)}
+      </script>
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col lg:flex-row">
         {/* Image Side */}
@@ -55,7 +79,7 @@ export default function ProductDetail() {
             className="max-w-lg"
           >
             <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 block mb-4">
-              {product.category === 'bow-tie' ? 'Bow Tie Collection' : 'Timepiece Collection'} // {product.wood}
+              {product.category === 'bow-tie' ? 'Bow Tie Collection' : 'Timepiece Collection'} <span className="mx-2 text-champagne-gold/20">|</span> {product.wood}
             </span>
 
             <h1 className="font-header text-4xl sm:text-5xl lg:text-6xl text-champagne-gold leading-[0.95] mb-4">
@@ -106,7 +130,7 @@ export default function ProductDetail() {
       <section className="py-24 px-6 sm:px-10 max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6">Details</h3>
+            <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6 font-semibold">Details</h2>
             <ul className="space-y-3">
               {product.details.map((d, i) => (
                 <li key={i} className="flex items-start gap-3">
@@ -117,7 +141,7 @@ export default function ProductDetail() {
             </ul>
           </div>
           <div>
-            <h3 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6">Care</h3>
+            <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6 font-semibold">Care</h2>
             <p className="font-body text-sm leading-relaxed text-warm-cream/70">{product.careNote}</p>
           </div>
         </div>

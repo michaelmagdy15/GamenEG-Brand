@@ -29,7 +29,7 @@ export default function OriginSection() {
 
   return (
     <section ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream grain-overlay">
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-svh w-full flex items-center justify-center overflow-hidden">
         {/* Progress indicator */}
         <div className="absolute inset-y-0 left-6 md:left-12 flex items-center z-20">
           <div className="relative h-[48vh] w-px bg-champagne-gold/20">

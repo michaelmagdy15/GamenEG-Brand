@@ -75,10 +75,10 @@ export default function Footer() {
             <li><Link to="/contact" className="hover:text-champagne-gold transition-colors">Contact</Link></li>
           </ul>
 
-          <div className="flex gap-6">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Instagram"><Instagram size={20} strokeWidth={1.5} /></a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Facebook"><Facebook size={20} strokeWidth={1.5} /></a>
-            <a href="mailto:gamen.eg@gmail.com" className="text-warm-cream/50 hover:text-champagne-gold transition-colors" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
+          <div className="flex gap-4">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors p-3 -m-3 min-w-[48px] min-h-[48px] flex items-center justify-center" aria-label="Instagram"><Instagram size={20} strokeWidth={1.5} /></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-warm-cream/50 hover:text-champagne-gold transition-colors p-3 -m-3 min-w-[48px] min-h-[48px] flex items-center justify-center" aria-label="Facebook"><Facebook size={20} strokeWidth={1.5} /></a>
+            <a href="mailto:gamen.eg@gmail.com" className="text-warm-cream/50 hover:text-champagne-gold transition-colors p-3 -m-3 min-w-[48px] min-h-[48px] flex items-center justify-center" aria-label="Email"><Mail size={20} strokeWidth={1.5} /></a>
           </div>
         </div>
       </div>

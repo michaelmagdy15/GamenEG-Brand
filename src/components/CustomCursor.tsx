@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import { motion, useMotionValue, useSpring } from 'motion/react';
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'motion/react';
 
 export default function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
@@ -23,11 +24,14 @@ export default function CustomCursor() {
   const onLeave = useCallback(() => setIsHovering(false), []);
 
   useEffect(() => {
-    if (!isFinePointer) return;
+    if (!isFinePointer || shouldReduceMotion) return;
 
     document.documentElement.classList.add('custom-cursor-active');
 
     const onMove = (e: MouseEvent) => {
+      // Ignore touch-simulated mouse movements to prevent stuck cursors on hybrid screens
+      if ((e as any).sourceCapabilities?.firesTouchEvents) return;
+
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -35,23 +39,26 @@ export default function CustomCursor() {
 
     const onDocLeave = () => setIsVisible(false);
     const onDocEnter = () => setIsVisible(true);
+    const onTouchStart = () => setIsVisible(false);
 
     window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
     document.addEventListener('mouseleave', onDocLeave);
     document.addEventListener('mouseenter', onDocEnter);
 
     return () => {
       document.documentElement.classList.remove('custom-cursor-active');
       window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('touchstart', onTouchStart);
       document.removeEventListener('mouseleave', onDocLeave);
       document.removeEventListener('mouseenter', onDocEnter);
     };
-  }, [isFinePointer, cursorX, cursorY, isVisible]);
+  }, [isFinePointer, shouldReduceMotion, cursorX, cursorY, isVisible]);
 
   // Use event delegation on document.body instead of MutationObserver
   // This is O(1) instead of O(n) listeners and never leaks
   useEffect(() => {
-    if (!isFinePointer) return;
+    if (!isFinePointer || shouldReduceMotion) return;
 
     const INTERACTIVE = 'A,BUTTON,INPUT,TEXTAREA,SELECT,[role="button"],.cursor-hover';
 
@@ -71,15 +78,15 @@ export default function CustomCursor() {
       document.body.removeEventListener('mouseover', handleOver);
       document.body.removeEventListener('mouseout', handleOut);
     };
-  }, [isFinePointer]);
+  }, [isFinePointer, shouldReduceMotion]);
 
-  if (!isFinePointer) return null;
+  if (!isFinePointer || shouldReduceMotion) return null;
 
   return (
     <>
       {/* Dot — follows mouse exactly */}
       <motion.div
-        className="fixed top-0 left-0 z-[9999] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 z-[9999] pointer-events-none"
         style={{
           x: cursorX,
           y: cursorY,
@@ -100,7 +107,7 @@ export default function CustomCursor() {
 
       {/* Ring — follows with spring lag */}
       <motion.div
-        className="fixed top-0 left-0 z-[9998] pointer-events-none mix-blend-difference"
+        className="fixed top-0 left-0 z-[9998] pointer-events-none"
         style={{
           x: ringX,
           y: ringY,

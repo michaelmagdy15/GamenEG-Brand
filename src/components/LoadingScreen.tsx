@@ -1,19 +1,30 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { useProgress } from '@react-three/drei';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<'intro' | 'brand' | 'tagline' | 'exit'>('intro');
   const [progress, setProgress] = useState(0);
+  const { active: assetsLoading } = useProgress();
 
   useEffect(() => {
     // Phase 1: Show brand name early
     const t1 = setTimeout(() => setPhase('brand'), 100);
-    // Phase 2: Progress bar fills (0-100 over ~1.5s)
+    // Phase 2: Show tagline at ~1s
+    const t2 = setTimeout(() => setPhase('tagline'), 1000);
+
+    // Phase 3: Progress bar fills
     let current = 0;
     const interval = setInterval(() => {
-      current += 2;
+      current += 1.5;
+      
+      // Cap simulated progress at 90% if Three.js assets are still loading
+      if (current >= 90 && assetsLoading) {
+        current = 90;
+      }
+      
       if (current >= 100) {
         current = 100;
         clearInterval(interval);
@@ -21,21 +32,24 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       setProgress(Math.floor(current));
     }, 20);
 
-    // Phase 3: Show tagline at ~1s
-    const t2 = setTimeout(() => setPhase('tagline'), 1000);
-    // Phase 4: Exit at ~2.5s
-    const t3 = setTimeout(() => setPhase('exit'), 2500);
-    // Phase 5: Unmount at ~3.5s
-    const t4 = setTimeout(onComplete, 3500);
-
     return () => {
       clearInterval(interval);
       clearTimeout(t1);
       clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
     };
-  }, [onComplete]);
+  }, [assetsLoading]);
+
+  // Phase 4: Handle exit and complete states
+  useEffect(() => {
+    if (progress >= 100 && !assetsLoading) {
+      const exitTimeout = setTimeout(() => {
+        setPhase('exit');
+        const completeTimeout = setTimeout(onComplete, 1600); // 1.6s matches door animation duration
+        return () => clearTimeout(completeTimeout);
+      }, 500);
+      return () => clearTimeout(exitTimeout);
+    }
+  }, [progress, assetsLoading, onComplete]);
 
   const isExiting = phase === 'exit';
 

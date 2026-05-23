@@ -1,12 +1,15 @@
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Group } from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BowTieModel } from '../components/canvas/BowTieModel';
 import OptimizedCanvas from '../components/canvas/OptimizedCanvas';
 
-gsap.registerPlugin(ScrollTrigger);
+const rotations = [
+  { x: 0, y: 0, z: 0 },                       // 01: Selection (Front View)
+  { x: 0, y: Math.PI / 2.5, z: 0 },           // 02: Shaping (Angled Side View)
+  { x: -Math.PI / 6, y: 0, z: 0 },            // 03: Detailing (Tilted up)
+  { x: 0, y: 0, z: Math.PI / 6 },             // 04: Finishing (Rotated slightly)
+  { x: 0, y: Math.PI, z: 0 },                 // 05: Assembly (Back View)
+];
 
 const steps = [
   {
@@ -38,43 +41,43 @@ const steps = [
 
 export default function Craftsmanship() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const bowtieRef = useRef<Group>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const stepElements = gsap.utils.toArray<HTMLElement>('.craft-step');
-      
-      const rotations = [
-        [0, 0, 0],                     // 01: Selection (Front View)
-        [0, Math.PI / 2.5, 0],         // 02: Shaping (Angled Side View)
-        [-Math.PI / 6, 0, 0],          // 03: Detailing (Tilted up)
-        [0, 0, Math.PI / 6],           // 04: Finishing (Rotated slightly)
-        [0, Math.PI, 0],               // 05: Assembly (Back View)
-      ];
-
-      stepElements.forEach((step, i) => {
-        ScrollTrigger.create({
-          trigger: step,
-          start: 'top 60%',
-          end: 'bottom 40%',
-          onEnter: () => animateToStep(i),
-          onEnterBack: () => animateToStep(i)
-        });
-      });
-
-      function animateToStep(index: number) {
-        if (!bowtieRef.current) return;
-        gsap.to(bowtieRef.current.rotation, {
-          x: rotations[index][0],
-          y: rotations[index][1],
-          z: rotations[index][2],
-          duration: 1.2,
-          ease: 'power3.out'
-        });
-      }
-    }, containerRef);
-    return () => ctx.revert();
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Track which step is currently in focus using an IntersectionObserver
+  useEffect(() => {
+    if (!isDesktop) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
+            setActiveStep(index);
+          }
+        });
+      },
+      {
+        rootMargin: '-40% 0px -40% 0px', // Trigger when step is in the middle 20% of viewport
+      }
+    );
+
+    const stepElements = document.querySelectorAll('.craft-step');
+    stepElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      stepElements.forEach((el) => observer.unobserve(el));
+    };
+  }, [isDesktop]);
 
   return (
     <main ref={containerRef} className="min-h-screen bg-deep-walnut pt-36 pb-24">
@@ -99,24 +102,27 @@ export default function Craftsmanship() {
         {/* Sticky 3D Model Container */}
         <div className="hidden lg:block w-1/2 relative">
           <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10 relative">
-            <OptimizedCanvas
-              frameloop="always"
-              camera={{ position: [0, 0, 4], fov: 45 }}
-              className="absolute inset-0"
-            >
-              <ambientLight intensity={0.6} />
-              <directionalLight position={[5, 5, 5]} intensity={1.4} />
-              <directionalLight position={[-5, -3, -2]} intensity={0.3} />
-              <BowTieModel ref={bowtieRef} />
-            </OptimizedCanvas>
+            {isDesktop && (
+              <OptimizedCanvas
+                frameloop="always"
+                camera={{ position: [0, 0, 4], fov: 45 }}
+                className="absolute inset-0"
+              >
+                <ambientLight intensity={0.6} />
+                <directionalLight position={[5, 5, 5]} intensity={1.4} />
+                <directionalLight position={[-5, -3, -2]} intensity={0.3} />
+                <BowTieModel targetRotation={rotations[activeStep]} />
+              </OptimizedCanvas>
+            )}
           </div>
         </div>
 
         {/* Process Steps List */}
-        <div className="lg:w-1/2 space-y-32 py-10 lg:py-32">
+        <div className="lg:w-1/2 space-y-16 lg:space-y-32 py-10 lg:py-32">
           {steps.map((step, i) => (
             <motion.div
               key={step.num}
+              data-index={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: '-80px' }}
@@ -127,7 +133,7 @@ export default function Craftsmanship() {
                 <span className="font-header text-5xl md:text-7xl text-champagne-gold/15">{step.num}</span>
               </div>
               <div className="flex-1 border-l border-champagne-gold/15 pl-6 md:pl-8 pt-2">
-                <h3 className="font-header text-2xl md:text-3xl text-champagne-gold mb-4">{step.title}</h3>
+                <h2 className="font-header text-2xl md:text-3xl text-champagne-gold mb-4 font-semibold">{step.title}</h2>
                 <p className="font-body text-sm leading-relaxed text-warm-cream/60">{step.text}</p>
               </div>
             </motion.div>
@@ -146,7 +152,7 @@ export default function Craftsmanship() {
             { name: 'Brass', origin: 'Cairo Foundries', note: 'Sand-cast and hand-polished for every inlay' },
           ].map((m) => (
             <div key={m.name} className="border border-champagne-gold/10 rounded-xl p-6">
-              <h4 className="font-header text-lg text-champagne-gold mb-1">{m.name}</h4>
+              <h3 className="font-header text-lg text-champagne-gold mb-1 font-semibold">{m.name}</h3>
               <span className="font-accent text-[9px] uppercase tracking-[0.15em] text-champagne-gold/40 block mb-3">{m.origin}</span>
               <p className="font-body text-xs text-warm-cream/50 leading-relaxed">{m.note}</p>
             </div>

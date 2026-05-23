@@ -25,7 +25,7 @@ export default function SignatureUnboxing() {
           <h2 className="font-header text-5xl lg:text-7xl mb-8">
             The Unboxing Experience
           </h2>
-          <p className="font-french italic text-xl lg:text-3xl text-taupe">
+          <p className="font-french italic text-xl lg:text-3xl text-deep-walnut/80">
             <span className="font-lambda">Λ</span> bespoke presentation. Your initials, carved in history.
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function SignatureUnboxing() {
               <h3 className="font-header text-3xl mb-4 text-espresso">
                 Personalized Lid Engraving
               </h3>
-              <p className="font-body text-taupe leading-relaxed">
+              <p className="font-body text-espresso/85 leading-relaxed">
                 The La Signature Privée collection arrives in an exclusive solid walnut presentation case. The lid is precision-engraved with your initials, filled with a subtle gold alloy that catches the light.
               </p>
             </div>
@@ -107,7 +107,7 @@ export default function SignatureUnboxing() {
             </div>
 
             <div className="mt-8 pt-8 border-t border-deep-walnut/10">
-              <p className="font-french italic text-lg text-taupe">
+              <p className="font-french italic text-lg text-deep-walnut/80">
                 "Not just a box. <span className="font-lambda">Λ</span> monument to your personal style."
               </p>
             </div>

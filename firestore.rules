@@ -1,25 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Orders: anyone can create, only admin can read
+    // Orders: anyone can create, only authenticated admins can read, update, delete
     match /orders/{orderId} {
       allow create: if true;
-      allow read, update, delete: if true;
+      allow read, update, delete: if request.auth != null;
     }
-    // Products: anyone can read, only admin can write
+    // Products: anyone can read, only authenticated admins can write
     match /products/{productId} {
       allow read: if true;
-      allow write: if true;
+      allow write: if request.auth != null;
     }
-    // Product Overrides: anyone can read, only admin can write
+    // Product Overrides: anyone can read, only authenticated admins can write
     match /productOverrides/{overrideId} {
       allow read: if true;
-      allow write: if true;
+      allow write: if request.auth != null;
     }
-    // Mail: anyone can create, only admin can read
+    // Mail: anyone can create, only authenticated admins can read, update, delete
     match /mail/{mailId} {
       allow create: if true;
-      allow read, update, delete: if true;
+      allow read, update, delete: if request.auth != null;
     }
   }
 }

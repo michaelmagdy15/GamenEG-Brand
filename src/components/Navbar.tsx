@@ -28,9 +28,56 @@ export default function Navbar() {
 
   useEffect(() => {
     return scrollY.on('change', (latest) => {
-      setIsScrolled(latest > 50);
+      setIsScrolled(latest > 20); // Solidify background earlier on scroll to ensure visual contrast
     });
   }, [scrollY]);
+
+  // Capture ESC key event to close mobile menu
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileOpen]);
+
+  // Trap focus inside mobile drawer when open (WCAG 2.4.3 Focus Order)
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const focusableElements = 'button, [href], input, select, textarea, [tabindex="0"]';
+    
+    const focusTimeout = setTimeout(() => {
+      const modal = document.querySelector('[role="dialog"]');
+      if (!modal) return;
+      const focusableContent = modal.querySelectorAll(focusableElements);
+      if (focusableContent.length === 0) return;
+      const firstFocusableElement = focusableContent[0] as HTMLElement;
+      const lastFocusableElement = focusableContent[focusableContent.length - 1] as HTMLElement;
+
+      const handleTabKey = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusableElement) {
+            lastFocusableElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastFocusableElement) {
+            firstFocusableElement.focus();
+            e.preventDefault();
+          }
+        }
+      };
+
+      window.addEventListener('keydown', handleTabKey);
+      firstFocusableElement.focus();
+
+      return () => window.removeEventListener('keydown', handleTabKey);
+    }, 50);
+
+    return () => clearTimeout(focusTimeout);
+  }, [mobileOpen]);
 
   return (
     <>
@@ -41,7 +88,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between w-full z-20">
           <button
-            className="lg:hidden text-champagne-gold -ml-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="lg:hidden text-champagne-gold -ml-2 p-2 min-w-[48px] min-h-[48px] flex items-center justify-center"
             aria-label="Open navigation"
             onClick={() => setMobileOpen(true)}
           >
@@ -70,7 +117,7 @@ export default function Navbar() {
           <div className="hidden lg:block bg-gold-gradient w-12 h-[1px]" />
 
           <button
-            className="text-champagne-gold flex items-center gap-2 relative p-2 min-w-[44px] min-h-[44px] justify-center"
+            className="text-champagne-gold flex items-center gap-2 relative p-2 min-w-[48px] min-h-[48px] justify-center"
             aria-label="Open cart"
             onClick={() => setIsOpen(true)}
           >
@@ -102,11 +149,17 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              role="dialog"
+              aria-modal="true"
               className="fixed left-0 top-0 bottom-0 w-[80vw] max-w-sm bg-deep-walnut z-50 flex flex-col border-r border-champagne-gold/15"
             >
               <div className="flex items-center justify-between px-6 py-6 border-b border-champagne-gold/15">
                 <BrandWordmark className="text-lg tracking-[0.2em] text-champagne-gold" />
-                <button onClick={() => setMobileOpen(false)} className="text-champagne-gold/60">
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="text-champagne-gold/60 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center -mr-3"
+                  aria-label="Close menu"
+                >
                   <X size={20} strokeWidth={1} />
                 </button>
               </div>
@@ -123,8 +176,8 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <div className="mt-auto pt-8 border-t border-champagne-gold/10 space-y-3 safe-bottom">
-                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-2">Care Instructions</Link>
-                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-2">Shipping &amp; Returns</Link>
+                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-3">Care Instructions</Link>
+                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-3">Shipping &amp; Returns</Link>
                 </div>
               </div>
             </motion.div>

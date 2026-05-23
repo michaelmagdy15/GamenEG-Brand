@@ -33,7 +33,7 @@ export default function AnatomySection() {
 
   return (
     <section ref={containerRef} className="h-[250vh] w-full relative bg-deep-walnut">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-0 h-svh w-full overflow-hidden">
         <div className="absolute top-16 left-0 w-full text-center z-10 pointer-events-none">
           <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 block mb-4">The <span className="font-lambda">Λ</span>natomy</span>
           <h2 className="font-display text-4xl sm:text-6xl text-champagne-gold">Deconstructing Cr<span className="font-lambda">Λ</span>ft</h2>
@@ -54,7 +54,7 @@ export default function AnatomySection() {
         <directionalLight position={[-5, -3, -2]} intensity={0.3} />
 
         <PresentationControls
-          global
+          global={!isMobile}
           rotation={[0.1, 0, 0]}
           polar={[-Math.PI / 4, Math.PI / 4]}
           azimuth={[-Math.PI / 4, Math.PI / 4]}
@@ -67,21 +67,21 @@ export default function AnatomySection() {
             {/* Changed positions to be closer to center for mobile screens: x from -2/2 to -1/1 */}
             <Html position={[isMobile ? -0.6 : -1.2, isMobile ? 1.5 : 1, 1.5]} center style={{ pointerEvents: 'none', zIndex: 10 }}>
               <motion.div style={{ opacity: faceOpacity, y: faceY }} className="bg-deep-walnut/90 border border-champagne-gold/20 p-3 md:p-4 rounded-xl w-36 md:w-56 backdrop-blur-md">
-                <h4 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2">The F<span className="font-lambda">Λ</span>ce</h4>
+                <h3 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2 font-semibold">The F<span className="font-lambda">Λ</span>ce</h3>
                 <p className="text-warm-cream/60 font-body text-[10px] md:text-xs leading-relaxed">Hand-carved Zan wood, meticulously sanded to reveal the natural depth of the grain.</p>
               </motion.div>
             </Html>
 
             <Html position={[isMobile ? 0.6 : 1.2, isMobile ? 0.5 : 0, -0.25]} center style={{ pointerEvents: 'none', zIndex: 10 }}>
               <motion.div style={{ opacity: coreOpacity, y: coreY }} className="bg-deep-walnut/90 border border-champagne-gold/20 p-3 md:p-4 rounded-xl w-36 md:w-56 backdrop-blur-md">
-                <h4 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2">The Core</h4>
+                <h3 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2 font-semibold">The Core</h3>
                 <p className="text-warm-cream/60 font-body text-[10px] md:text-xs leading-relaxed">Λ structural binding ensuring the piece maintains its precise geometry under tension.</p>
               </motion.div>
             </Html>
 
             <Html position={[isMobile ? -0.6 : -1.2, isMobile ? -1.5 : -1, -1.9]} center style={{ pointerEvents: 'none', zIndex: 10 }}>
               <motion.div style={{ opacity: clipOpacity, y: clipY }} className="bg-deep-walnut/90 border border-champagne-gold/20 p-3 md:p-4 rounded-xl w-36 md:w-56 backdrop-blur-md">
-                <h4 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2">The Clip</h4>
+                <h3 className="text-champagne-gold font-header text-base md:text-lg mb-1 md:mb-2 font-semibold">The Clip</h3>
                 <p className="text-warm-cream/60 font-body text-[10px] md:text-xs leading-relaxed">Λ durable, adjustable stainless steel mechanism for seamless, comfortable attachment.</p>
               </motion.div>
             </Html>

@@ -19,6 +19,54 @@ export default function CartDrawer() {
     };
   }, [isOpen]);
 
+  // Capture ESC key event to close
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, setIsOpen]);
+
+  // Trap focus inside drawer when open (WCAG 2.4.3 Focus Order)
+  useEffect(() => {
+    if (!isOpen) return;
+    const focusableElements = 'button, [href], input, select, textarea, [tabindex="0"]';
+    const modal = document.querySelector('aside');
+    if (!modal) return;
+    
+    // Defer query to make sure elements are fully rendered
+    const focusTimeout = setTimeout(() => {
+      const focusableContent = modal.querySelectorAll(focusableElements);
+      if (focusableContent.length === 0) return;
+      const firstFocusableElement = focusableContent[0] as HTMLElement;
+      const lastFocusableElement = focusableContent[focusableContent.length - 1] as HTMLElement;
+
+      const handleTabKey = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusableElement) {
+            lastFocusableElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastFocusableElement) {
+            firstFocusableElement.focus();
+            e.preventDefault();
+          }
+        }
+      };
+
+      window.addEventListener('keydown', handleTabKey);
+      firstFocusableElement.focus();
+
+      return () => window.removeEventListener('keydown', handleTabKey);
+    }, 50);
+
+    return () => clearTimeout(focusTimeout);
+  }, [isOpen]);
+
 
   return (
     <AnimatePresence>
@@ -75,7 +123,7 @@ export default function CartDrawer() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="w-11 h-11 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
+                            className="w-12 h-12 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
                             aria-label="Decrease quantity"
                           >
                             <Minus size={12} />
@@ -83,7 +131,7 @@ export default function CartDrawer() {
                           <span className="font-body text-xs text-warm-cream w-6 text-center">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="w-11 h-11 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
+                            className="w-12 h-12 flex items-center justify-center border border-champagne-gold/20 text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
                             aria-label="Increase quantity"
                           >
                             <Plus size={12} />
@@ -94,7 +142,8 @@ export default function CartDrawer() {
                     </div>
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="text-warm-cream/30 hover:text-warm-cream/60 transition-colors self-start"
+                      className="text-warm-cream/30 hover:text-warm-cream/60 transition-colors p-2.5 -m-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center self-start"
+                      aria-label="Remove item"
                     >
                       <X size={14} />
                     </button>

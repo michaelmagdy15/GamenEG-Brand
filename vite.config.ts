@@ -39,7 +39,6 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             'vendor-react':    ['react', 'react-dom', 'react-router-dom'],
             'vendor-motion':   ['motion'],
-            'vendor-gsap':     ['gsap', '@gsap/react'],
             'vendor-three':    ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
             'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
             'vendor-icons':    ['lucide-react'],

@@ -4,25 +4,25 @@ import { brandAssets } from '../brandAssets';
 
 const pieces = [
   {
+    id: 'classique',
+    name: 'GΛMÉN Classiques',
+    detail: 'Refined essentials',
+    image: brandAssets.gamenClassique,
+    accent: 'Refined essentials for distinguished style.',
+  },
+  {
+    id: 'pharaoh',
+    name: 'GΛMÉN Héritage',
+    detail: 'Ceremonial brass centerpiece',
+    image: brandAssets.pharaohBowTie,
+    accent: 'Where royal legacy meets contemporary artistry.',
+  },
+  {
     id: 'signature',
     name: 'GΛMÉN Signature',
     detail: 'Brass monogram over dark walnut',
     image: brandAssets.heroBowTie,
-    accent: 'The original. Where it all began.',
-  },
-  {
-    id: 'pharaoh',
-    name: 'Pharaoh Seal',
-    detail: 'A ceremonial brass centerpiece',
-    image: brandAssets.pharaohBowTie,
-    accent: 'Inspired by ancient thrones.',
-  },
-  {
-    id: 'horus',
-    name: 'Eye of Horus',
-    detail: 'Ancient symbolism in polished brass',
-    image: brandAssets.ankhBowTie,
-    accent: 'Protection meets precision.',
+    accent: 'A signature of individuality and prestige.',
   },
 ];
 
@@ -51,44 +51,35 @@ export default function AtelierExperience() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-deep-walnut text-champagne-gold px-4 sm:px-8 py-28 lg:py-36 overflow-hidden"
+      className="relative bg-deep-walnut text-champagne-gold px-4 sm:px-8 py-8 md:py-28 lg:py-36 overflow-hidden min-h-[100vh] md:min-h-0 flex flex-col justify-center"
     >
       {/* Animated light sweep */}
       <div className="absolute inset-0 opacity-15 bg-[linear-gradient(90deg,transparent,rgba(207,197,178,0.16),transparent)] animate-light-sweep" />
 
-      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-16 lg:gap-24 items-center">
+      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-4 md:gap-16 lg:gap-24 items-center w-full">
 
         {/* LEFT COLUMN — text + selectors with scroll reveal */}
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={staggerDelay(0)}
-            className="font-accent text-[10px] uppercase tracking-[0.28em] mb-6 text-champagne-gold/60"
-          >
-            Interactive Atelier
-          </motion.p>
-
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={staggerDelay(1)}
-            className="font-header text-4xl sm:text-5xl lg:text-7xl leading-none mb-8 text-warm-cream"
+            className="font-header text-2xl sm:text-5xl lg:text-7xl leading-none mb-4 md:mb-8 text-warm-cream text-center md:text-left"
           >
-            Choose the center<br />of attention.
+            Choose the center<br className="hidden sm:inline" /> of attention.
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={staggerDelay(2)}
-            className="font-french italic text-xl sm:text-2xl lg:text-3xl text-champagne-gold/70 max-w-xl"
+            className="font-french italic text-base sm:text-2xl lg:text-3xl text-champagne-gold max-w-xl text-center md:text-left mx-auto md:mx-0"
           >
             Every bow tie keeps the same sculpted silhouette. The emotion changes with the emblem.
           </motion.p>
 
-          {/* Selection buttons — stagger in */}
-          <div className="mt-12 grid gap-3 max-w-xl">
+          {/* Selection buttons — horizontal on mobile, vertical grid on desktop */}
+          <div className="mt-6 md:mt-12 flex flex-row flex-wrap md:grid gap-2 md:gap-3 max-w-xl justify-center md:justify-start">
             {pieces.map((piece, i) => (
               <motion.button
                 key={piece.id}
@@ -96,15 +87,15 @@ export default function AtelierExperience() {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={staggerDelay(3 + i)}
                 onClick={() => setActiveId(piece.id)}
-                className={`group text-left border px-5 py-4 transition-all duration-300 ${
+                className={`group text-left border px-3 py-2 md:px-5 md:py-4 transition-all duration-300 flex-1 md:flex-initial text-center md:text-left ${
                   activeId === piece.id
                     ? 'border-champagne-gold bg-champagne-gold text-deep-walnut scale-[1.02]'
                     : 'border-champagne-gold/20 text-champagne-gold hover:border-champagne-gold/50 hover:bg-champagne-gold/5'
                 }`}
               >
-                <span className="block font-header text-xl sm:text-2xl">{piece.name}</span>
+                <span className="block font-header text-sm md:text-xl lg:text-2xl whitespace-nowrap">{piece.name}</span>
                 <span
-                  className={`block font-body text-sm mt-1 transition-colors ${
+                  className={`hidden md:block font-body text-xs md:text-sm mt-1 transition-colors ${
                     activeId === piece.id ? 'text-deep-walnut/70' : 'text-champagne-gold/50'
                   }`}
                 >
@@ -120,11 +111,11 @@ export default function AtelierExperience() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative min-h-[420px] lg:min-h-[580px] flex items-center justify-center"
+          className="relative min-h-[220px] md:min-h-[420px] lg:min-h-[580px] flex items-center justify-center mt-4 md:mt-0"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.18),transparent_58%)]" />
 
-          <motion.div style={{ y: bgShift }} className="relative w-full max-w-2xl aspect-square flex items-center justify-center">
+          <motion.div style={{ y: bgShift }} className="relative w-full max-w-[280px] md:max-w-2xl aspect-square flex items-center justify-center mx-auto">
             {/* Decorative orbit rings — scroll-driven */}
             <motion.div
               style={{ rotate: ringRotate }}
@@ -157,7 +148,7 @@ export default function AtelierExperience() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
-                  className="mt-6 font-french italic text-lg text-champagne-gold/50 text-center"
+                  className="mt-3 md:mt-6 font-french italic text-sm md:text-lg text-champagne-gold/80 text-center"
                 >
                   {activePiece.accent}
                 </motion.p>

@@ -27,19 +27,19 @@ export default function AcquisitionSection() {
           <div className="flex gap-6 font-accent text-[10px] uppercase tracking-[0.2em] font-medium transition-colors">
             <button 
               onClick={() => setActiveFilter('All Pieces')}
-              className={activeFilter === 'All Pieces' ? 'border-b border-espresso pb-1 text-espresso' : 'text-taupe hover:text-espresso pb-1'}
+              className={activeFilter === 'All Pieces' ? 'border-b border-espresso pb-1 text-espresso' : 'text-deep-walnut/70 hover:text-espresso pb-1'}
             >
               <span className="font-lambda">Λ</span>ll Pieces
             </button>
             <button 
               onClick={() => setActiveFilter('Walnut')}
-              className={activeFilter === 'Walnut' ? 'border-b border-espresso pb-1 text-espresso' : 'text-taupe hover:text-espresso pb-1'}
+              className={activeFilter === 'Walnut' ? 'border-b border-espresso pb-1 text-espresso' : 'text-deep-walnut/70 hover:text-espresso pb-1'}
             >
               Walnut
             </button>
             <button 
               onClick={() => setActiveFilter('Brass Detail')}
-              className={activeFilter === 'Brass Detail' ? 'border-b border-espresso pb-1 text-espresso' : 'text-taupe hover:text-espresso pb-1'}
+              className={activeFilter === 'Brass Detail' ? 'border-b border-espresso pb-1 text-espresso' : 'text-deep-walnut/70 hover:text-espresso pb-1'}
             >
               Brass Detail
             </button>
@@ -78,7 +78,7 @@ export default function AcquisitionSection() {
 
                 <div className="flex-grow">
                   <h3 className="font-header text-2xl text-espresso mb-1">{product.name}</h3>
-                  <p className="font-body text-taupe text-sm mb-4">{product.wood}</p>
+                  <p className="font-body text-espresso/70 text-sm mb-4">{product.wood}</p>
                 </div>
 
                 <div className="flex items-center justify-between mt-auto gap-4">

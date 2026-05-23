@@ -105,7 +105,7 @@ export default function AdminDashboard() {
           <Link to="/" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
             ← View Site
           </Link>
-          <span className="text-gray-600 text-xs">{admin?.email}</span>
+          <span className="text-gray-600 text-xs hidden sm:block">{admin?.email}</span>
           <button
             onClick={logout}
             className="flex items-center gap-1.5 text-gray-500 hover:text-red-400 text-xs transition-colors"

@@ -63,29 +63,29 @@ export default function CollectionsSection() {
   );
 
   return (
-    <section className="relative bg-warm-cream py-12 md:py-24 overflow-hidden min-h-[100svh] flex flex-col justify-center">
-      <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-deep-walnut/15">
-        <motion.div className="h-full bg-deep-walnut origin-left" style={{ width: progressWidth }} />
+    <section className="relative bg-espresso py-12 md:py-24 overflow-hidden min-h-[100svh] flex flex-col justify-center">
+      <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-champagne-gold/20">
+        <motion.div className="h-full bg-champagne-gold origin-left" style={{ width: progressWidth }} />
       </div>
 
       {/* Drag Hint Indicator */}
       <motion.div 
         animate={{ opacity: hasDragged ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-20 mix-blend-multiply opacity-60"
+        className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-20 opacity-60"
       >
         <motion.div
           animate={{ x: [-15, 15, -15] }}
           transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
           className="flex items-center gap-4"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-deep-walnut opacity-70 rotate-180">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70 rotate-180">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
-          <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-deep-walnut font-bold">
+          <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-champagne-gold font-bold">
             DR<span className="font-lambda">Λ</span>G OR SWIPE
           </span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-deep-walnut opacity-70">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </motion.div>
@@ -148,11 +148,13 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
       className="relative h-full flex items-center justify-center py-6 px-6 lg:p-24 flex-shrink-0"
       style={{ width: '100vw' }}
     >
-      <div className="absolute left-2 md:left-8 lg:left-12 top-24 md:top-auto md:bottom-12 font-header text-[120px] md:text-[220px] leading-none text-deep-walnut/[0.06] pointer-events-none -z-10 select-none">
-        0{item.id}
-      </div>
-
       <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 w-full max-w-7xl mx-auto z-10 pointer-events-none">
+        
+        {/* Numeric Slide Indicator positioned directly next to the Box */}
+        <div className="font-header text-5xl lg:text-[110px] leading-none text-champagne-gold/20 select-none pointer-events-auto flex items-center justify-center shrink-0 lg:-mr-12">
+          0{item.id}
+        </div>
+
         <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0 pointer-events-auto" style={{ perspective: '1000px' }}>
           <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0">
             {/* The Box Sequence */}
@@ -181,19 +183,19 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
         </div>
 
         <div className="w-full lg:w-1/2 flex flex-col items-center text-center justify-center gap-4 lg:gap-6 mt-4 lg:mt-0 pointer-events-auto">
-          <span className="font-accent text-[10px] tracking-[0.2em] font-medium text-deep-walnut uppercase text-center block w-full select-none">
+          <span className="font-accent text-[10px] tracking-[0.2em] font-medium text-champagne-gold/60 uppercase text-center block w-full select-none">
             Collection // {item.wood}
           </span>
-          <h3 className="font-header text-4xl lg:text-7xl text-espresso text-center leading-tight select-none">
+          <h3 className="font-header text-4xl lg:text-7xl text-warm-cream text-center leading-tight select-none">
             {item.name}
           </h3>
-          <p className="font-french italic text-lg lg:text-3xl leading-tight text-espresso opacity-80 max-w-[280px] lg:max-w-none text-center select-none">
+          <p className="font-french italic text-lg lg:text-3xl leading-tight text-warm-cream/80 max-w-[280px] lg:max-w-none text-center select-none">
             {item.tagline}
           </p>
 
-          <Link to={`/product/${item.slug}`} className="mt-4 lg:mt-8 group inline-flex items-center justify-center gap-4 text-espresso font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border border-espresso/20 hover:border-espresso transition-colors">
+          <Link to={`/product/${item.slug}`} className="mt-4 lg:mt-8 group inline-flex items-center justify-center gap-4 text-warm-cream font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border border-warm-cream/20 hover:border-warm-cream hover:bg-warm-cream/5 transition-colors">
             <span className="relative z-10">Explore</span>
-            <span className="relative z-10 h-px w-10 bg-espresso" />
+            <span className="relative z-10 h-px w-10 bg-warm-cream" />
           </Link>
         </div>
       </div>

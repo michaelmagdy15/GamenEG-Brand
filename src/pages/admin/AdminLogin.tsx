@@ -48,10 +48,11 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">
+            <label htmlFor="admin-email" className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">
               Email
             </label>
             <input
+              id="admin-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -62,10 +63,11 @@ export default function AdminLogin() {
           </div>
 
           <div>
-            <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">
+            <label htmlFor="admin-password" className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">
               Password
             </label>
             <input
+              id="admin-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

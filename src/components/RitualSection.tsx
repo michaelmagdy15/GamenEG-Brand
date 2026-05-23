@@ -40,7 +40,7 @@ export default function RitualSection() {
 
   return (
     <section ref={containerRef} className="relative h-[300vh] bg-deep-walnut grain-overlay">
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-svh w-full flex items-center justify-center overflow-hidden">
         {/* Ambient background */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(207,197,178,0.06),transparent_55%)]" />
 

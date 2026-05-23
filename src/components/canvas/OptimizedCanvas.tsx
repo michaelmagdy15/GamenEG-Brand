@@ -25,21 +25,30 @@ export default function OptimizedCanvas({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
 
-  // Only mount/activate the WebGL context when the canvas enters the viewport
+  // Only mount/activate the WebGL context when the canvas enters the viewport range
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => setActive(entry.isIntersecting),
-      { threshold: 0.05 } // activate when 5% is visible
+      { 
+        rootMargin: '200px 0px', // Pre-mount 200px before entering viewport to prevent flashing/jank
+        threshold: 0.01 
+      }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={wrapperRef} className={className} style={{ width: '100%', height: '100%' }}>
+    <div
+      ref={wrapperRef}
+      className={className}
+      style={{ width: '100%', height: '100%' }}
+      role="img"
+      aria-label="Interactive 3D model of GAMÉN luxury design. You can interact with or rotate the visual model."
+    >
       {active && (
         <Canvas
           camera={camera}

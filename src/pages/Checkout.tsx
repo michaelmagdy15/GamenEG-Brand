@@ -115,14 +115,14 @@ export default function Checkout() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-[1fr_400px] gap-12">
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_400px] gap-12">
           {/* Left: Form */}
           <motion.form
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onSubmit={handleSubmit}
-            className="space-y-6"
+            className="space-y-6 order-2 lg:order-1"
           >
             <div>
               <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-6 pb-3 border-b border-champagne-gold/10">
@@ -137,10 +137,14 @@ export default function Checkout() {
             </div>
 
             <div>
-              <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-4">
+              <label 
+                htmlFor="checkout-address"
+                className="block font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-4"
+              >
                 Delivery Address *
-              </p>
+              </label>
               <textarea
+                id="checkout-address"
                 name="address"
                 value={form.address}
                 onChange={handleChange}
@@ -151,10 +155,14 @@ export default function Checkout() {
             </div>
 
             <div>
-              <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-2">
+              <label 
+                htmlFor="checkout-notes"
+                className="block font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-2"
+              >
                 Order Notes (Optional)
-              </p>
+              </label>
               <textarea
+                id="checkout-notes"
                 name="notes"
                 value={form.notes}
                 onChange={handleChange}
@@ -196,13 +204,13 @@ export default function Checkout() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:sticky lg:top-28 h-fit"
+            className="lg:sticky lg:top-28 h-fit order-1 lg:order-2"
           >
             <div className="bg-warm-cream/3 border border-champagne-gold/10 p-6">
               <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-6 pb-3 border-b border-champagne-gold/10">
                 Order Summary ({items.reduce((s, i) => s + i.quantity, 0)} items)
               </p>
-
+              
               <div className="space-y-4 mb-6">
                 {items.map((item) => (
                   <div key={item.product.id} className="flex gap-3">
@@ -264,10 +272,14 @@ function InputField({
 }) {
   return (
     <div>
-      <label className="block font-accent text-[9px] uppercase tracking-[0.15em] text-warm-cream/40 mb-1.5">
+      <label 
+        htmlFor={`checkout-${name}`}
+        className="block font-accent text-[9px] uppercase tracking-[0.15em] text-warm-cream/40 mb-1.5"
+      >
         {label}
       </label>
       <input
+        id={`checkout-${name}`}
         type={type}
         name={name}
         value={value}

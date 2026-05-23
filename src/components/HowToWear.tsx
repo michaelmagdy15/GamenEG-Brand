@@ -1,5 +1,6 @@
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useSpring } from 'motion/react';
 import { useState, useRef } from 'react';
+import { useMedia } from 'react-use';
 import { Printer } from 'lucide-react';
 
 /* ─── Illustration Components ─────────────────────────────────────── */
@@ -253,6 +254,7 @@ const steps = [
 /* ─── Main Component ──────────────────────────────────────────────── */
 
 export default function HowToWear() {
+  const isDesktop = useMedia('(min-width: 1024px)', true);
   const [activeStep, setActiveStep] = useState(0);
   const totalSteps = steps.length;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -281,9 +283,57 @@ export default function HowToWear() {
   const currentStep = steps[activeStep];
   const IllustrationComponent = currentStep.illustration;
 
+  if (!isDesktop) {
+    return (
+      <section id="how-to-wear-print-section" className="bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <p className="font-accent text-[10px] uppercase tracking-[0.28em] text-champagne-gold mb-6 print:text-gray-500">The Ritual</p>
+            <h2 className="font-header text-4xl sm:text-5xl mb-6 text-champagne-gold print:text-4xl leading-tight">How to Wear</h2>
+            <p className="font-french italic text-xl text-champagne-gold/80 print:text-gray-700">A seamless connection between craft and collar.</p>
+          </div>
+
+          {/* List of Steps */}
+          <div className="space-y-16">
+            {steps.map((step, i) => {
+              const StepIllustration = step.illustration;
+              return (
+                <div key={step.num} className="border-b border-champagne-gold/10 pb-12 last:border-b-0 last:pb-0">
+                  <div className="aspect-square max-w-xs mx-auto rounded-2xl border border-champagne-gold/20 bg-warm-cream/5 flex items-center justify-center p-8 mb-6 overflow-hidden">
+                    <StepIllustration isActive={true} />
+                  </div>
+                  <div className="px-2">
+                    <span className="font-header text-4xl text-champagne-gold/25 block mb-2">{step.num}</span>
+                    <span className="font-accent text-[9px] uppercase tracking-[0.3em] text-champagne-gold/40 block mb-2">{step.subtitle}</span>
+                    <h3 className="font-header text-2xl text-champagne-gold mb-4 font-semibold">{step.title}</h3>
+                    <p className="font-body text-sm leading-relaxed text-warm-cream/70 mb-4">{step.description}</p>
+                    <p className="font-french italic text-lg text-champagne-gold/60">{step.accent}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Print Button */}
+          <div className="mt-20 text-center print:hidden">
+            <p className="font-french italic text-lg text-champagne-gold/80 mb-8">Prefer a physical guide? Print your instruction card.</p>
+            <button
+              onClick={() => window.print()}
+              className="group inline-flex items-center gap-4 text-champagne-gold font-accent text-[10px] tracking-[0.2em] uppercase px-8 py-4 border border-champagne-gold/30 hover:border-champagne-gold transition-colors"
+            >
+              <span>Print Instruction Card</span>
+              <span className="h-px w-8 bg-champagne-gold transition-all group-hover:w-12" />
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="how-to-wear-print-section" ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream print:bg-white print:text-black print:py-8 print:h-auto">
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden py-12 lg:py-24 print:static print:h-auto print:overflow-visible">
+      <div className="sticky top-0 h-svh w-full flex flex-col justify-center overflow-hidden py-12 lg:py-24 print:static print:h-auto print:overflow-visible">
       {/* Subtle radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.06),transparent_65%)] pointer-events-none" />
 
@@ -310,7 +360,7 @@ export default function HowToWear() {
             How to Wear
           </motion.h2>
           <motion.p
-            className="font-french italic text-xl lg:text-2xl text-taupe print:text-gray-700"
+            className="font-french italic text-xl lg:text-2xl text-champagne-gold/80 print:text-gray-700"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -415,7 +465,7 @@ export default function HowToWear() {
 
         {/* Print / Download */}
         <div className="mt-24 text-center print:hidden">
-          <p className="font-french italic text-lg text-taupe mb-8">
+          <p className="font-french italic text-lg text-champagne-gold/80 mb-8">
             Prefer a physical guide? Print your instruction card.
           </p>
           <button

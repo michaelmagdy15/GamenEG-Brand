@@ -50,10 +50,10 @@ export default function HeroSection() {
           style={{ y: bgY, opacity: bgOpacity }}
           className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden"
         >
-          <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
+          <span className="font-display text-[12vw] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
             ÉLÉGΛNCE
           </span>
-          <span className="font-display text-[54px] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
+          <span className="font-display text-[12vw] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
             TΛILLÉE
           </span>
         </motion.div>
@@ -89,7 +89,7 @@ export default function HeroSection() {
               style={{ opacity: taglineOpacity, y: taglineY }}
               className="absolute inset-0 flex items-center justify-center px-4"
             >
-              <p translate="no" className="notranslate font-french italic text-3xl sm:text-4xl md:text-5xl text-champagne-gold font-light leading-snug">
+              <p translate="no" className="notranslate font-french italic text-xl sm:text-3xl md:text-5xl text-champagne-gold font-light leading-snug">
                 L'élégance taillée <span className="text-champagne-gold">en bois.</span>
               </p>
             </motion.div>
@@ -99,7 +99,7 @@ export default function HeroSection() {
               style={{ opacity: ctaOpacity }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-8"
             >
-              <p className="font-display text-4xl sm:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
+              <p className="font-display text-2xl sm:text-4xl md:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
                 H<span className="font-lambda">Λ</span>NDCR<span className="font-lambda">Λ</span>FTED IN EGYPT
               </p>
               <div className="h-px w-16 bg-champagne-gold/30" />

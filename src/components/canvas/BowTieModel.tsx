@@ -1,4 +1,4 @@
-import { useRef, forwardRef, useImperativeHandle, useMemo } from 'react';
+import { useRef, useEffect, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { Group, MeshStandardMaterial } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { MotionValue } from 'motion/react';
@@ -6,10 +6,11 @@ import { MotionValue } from 'motion/react';
 interface BowTieModelProps {
   explodeProgressValue?: MotionValue<number>;
   autoRotate?: boolean;
+  targetRotation?: { x: number; y: number; z: number };
 }
 
 export const BowTieModel = forwardRef<Group, BowTieModelProps>(
-  ({ explodeProgressValue, autoRotate = false }, ref) => {
+  ({ explodeProgressValue, autoRotate = false, targetRotation }, ref) => {
     const localGroupRef = useRef<Group>(null);
 
     useImperativeHandle(ref, () => localGroupRef.current as Group);
@@ -37,9 +38,23 @@ export const BowTieModel = forwardRef<Group, BowTieModelProps>(
       metalness: 0.9,
     }), []);
 
+    // Clean up GPU VRAM on unmount
+    useEffect(() => {
+      return () => {
+        woodMaterial.dispose();
+        coreMaterial.dispose();
+        steelMaterial.dispose();
+      };
+    }, [woodMaterial, coreMaterial, steelMaterial]);
+
     useFrame(() => {
       if (autoRotate && localGroupRef.current) {
         localGroupRef.current.rotation.y += 0.005;
+      } else if (targetRotation && localGroupRef.current) {
+        // Smoothly interpolate current rotation towards targetRotation at refresh-rate speeds
+        localGroupRef.current.rotation.x += (targetRotation.x - localGroupRef.current.rotation.x) * 0.08;
+        localGroupRef.current.rotation.y += (targetRotation.y - localGroupRef.current.rotation.y) * 0.08;
+        localGroupRef.current.rotation.z += (targetRotation.z - localGroupRef.current.rotation.z) * 0.08;
       }
 
       // Apply explode offsets based on progress

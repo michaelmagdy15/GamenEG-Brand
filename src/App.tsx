@@ -3,7 +3,7 @@ if ('scrollRestoration' in window.history) {
 }
 
 import { lazy, Suspense, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CartProvider } from './context/CartContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
@@ -100,6 +100,8 @@ function AppContent() {
                 </AdminRoute>
               }
             />
+            {/* Catch-all admin routes */}
+            <Route path="*" element={<Navigate to="/admin/login" replace />} />
           </Routes>
         </Suspense>
       ) : (
@@ -130,6 +132,8 @@ function AppContent() {
                 <Route path="/shipping"          element={<ShippingReturns />} />
                 <Route path="/checkout"          element={<Checkout />} />
                 <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                {/* Catch-all global routes */}
+                <Route path="*"                  element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
             <Footer />

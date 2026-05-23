@@ -90,8 +90,14 @@ export default function Contact() {
                   { name: 'email', label: 'Email Address', type: 'email' },
                 ].map((field) => (
                   <div key={field.name}>
-                    <label className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3">{field.label}</label>
+                    <label 
+                      htmlFor={`contact-${field.name}`}
+                      className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3"
+                    >
+                      {field.label}
+                    </label>
                     <input
+                      id={`contact-${field.name}`}
                       type={field.type}
                       name={field.name}
                       required
@@ -100,8 +106,14 @@ export default function Contact() {
                   </div>
                 ))}
                 <div>
-                  <label className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3">Subject</label>
+                  <label 
+                    htmlFor="contact-subject"
+                    className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3"
+                  >
+                    Subject
+                  </label>
                   <select
+                    id="contact-subject"
                     name="subject"
                     required
                     className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold outline-none text-warm-cream font-body text-sm py-3 transition-colors"
@@ -115,8 +127,14 @@ export default function Contact() {
                   </select>
                 </div>
                 <div>
-                  <label className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3">Message</label>
+                  <label 
+                    htmlFor="contact-message"
+                    className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/40 block mb-3"
+                  >
+                    Message
+                  </label>
                   <textarea
+                    id="contact-message"
                     name="message"
                     required
                     rows={5}

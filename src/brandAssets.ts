@@ -1,12 +1,13 @@
 export const brandAssets = {
   // Transparent PNGs (for 3D/canvas/product cards)
-  heroBowTie: '/Images/TRANSPARENT/PNG/IMG-2217_transparent.png',
-  pharaohBowTie: '/Images/TRANSPARENT/PNG/IMG-2211_transparent.png',
-  ankhBowTie: '/Images/TRANSPARENT/PNG/IMG_2215_transparent.png',
-  signatureBowTie: '/Images/TRANSPARENT/PNG/IMG_2220_transparent.png',
-  twoToneBowTie: '/Images/TRANSPARENT/PNG/IMG_2212_transparent.png',
-  darkClassicBowTie: '/Images/TRANSPARENT/PNG/IMG_2214_transparent.png',
-  epoqueWatch: '/Images/TRANSPARENT/PNG/IMG_2486_transparent.png',
+  heroBowTie: '/Images/TRANSPARENT/PNG/IMG-2217_transparent.webp',
+  pharaohBowTie: '/Images/TRANSPARENT/PNG/IMG-2211_transparent.webp',
+  ankhBowTie: '/Images/TRANSPARENT/PNG/IMG_2215_transparent.webp',
+  signatureBowTie: '/Images/TRANSPARENT/PNG/IMG_2220_transparent.webp',
+  twoToneBowTie: '/Images/TRANSPARENT/PNG/IMG_2212_transparent.webp',
+  darkClassicBowTie: '/Images/TRANSPARENT/PNG/IMG_2214_transparent.webp',
+  gamenClassique: '/Images/categories/gamen_classique.png',
+  epoqueWatch: '/Images/TRANSPARENT/PNG/IMG_2486_transparent.webp',
 
   // Full source images (for product detail backgrounds/hero images)
   heroBowTieJpg: '/Images/IMG_2217.PNG',

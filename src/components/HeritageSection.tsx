@@ -58,19 +58,27 @@ export default function HeritageSection() {
         <div className="text-center max-w-3xl mx-auto mb-32">
           <p className="font-accent text-[10px] uppercase tracking-[0.28em] text-deep-walnut mb-6">Heritage Marks</p>
           <h2 className="font-header text-5xl lg:text-8xl mb-8">The Egyptian Soul</h2>
-          <p className="font-french italic text-2xl lg:text-4xl text-taupe">One symbol. Infinite presence.</p>
+          <p className="font-french italic text-2xl lg:text-4xl text-deep-walnut/80">One symbol. Infinite presence.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-start">
           {[
             {
               title: 'Pharaoh Seal',
-              copy: '<span className="font-lambda">Λ</span> tribute to kingship and ceremony. Polished brass sits over dark walnut, giving a formal accessory the gravity of an heirloom.',
+              copy: (
+                <>
+                  <span className="font-lambda">Λ</span> tribute to kingship and ceremony. Polished brass sits over dark walnut, giving a formal accessory the gravity of an heirloom.
+                </>
+              ),
               image: brandAssets.pharaohBowTie,
             },
             {
               title: 'Eye of Horus',
-              copy: 'Protection and precision meet in a carved wooden silhouette. The brass centerpiece catches light without raising its voice.',
+              copy: (
+                <>
+                  Protection and precision meet in a carved wooden silhouette. The brass centerpiece catches light without raising its voice.
+                </>
+              ),
               image: brandAssets.ankhBowTie,
             },
           ].map((symbol, index) => (
@@ -113,7 +121,7 @@ export default function HeritageSection() {
           viewport={{ once: false, margin: '-10%' }}
           transition={{ duration: 0.7 }}
         >
-          <h2 className="font-display text-4xl lg:text-6xl text-taupe max-w-4xl mx-auto leading-normal">
+          <h2 className="font-display text-4xl lg:text-6xl text-deep-walnut/85 max-w-4xl mx-auto leading-normal">
             "Not just <span className="font-lambda">Λ</span>n accessory.<br />Your <span className="text-espresso italic">signature</span>."
           </h2>
         </motion.div>

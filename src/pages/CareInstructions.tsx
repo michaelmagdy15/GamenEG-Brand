@@ -59,7 +59,7 @@ export default function CareInstructions() {
                 <tip.icon size={20} strokeWidth={1} className="text-champagne-gold/60" />
               </div>
               <div>
-                <h3 className="font-header text-lg text-champagne-gold mb-2">{tip.title}</h3>
+                <h2 className="font-header text-lg text-champagne-gold mb-2 font-semibold">{tip.title}</h2>
                 <p className="font-body text-sm text-warm-cream/60 leading-relaxed">{tip.text}</p>
               </div>
             </motion.div>
@@ -68,7 +68,7 @@ export default function CareInstructions() {
 
         {/* Storage */}
         <div className="mt-20 p-8 rounded-xl bg-champagne-gold/5 border border-champagne-gold/10 text-center">
-          <h3 className="font-header text-xl text-champagne-gold mb-4">Storage</h3>
+          <h2 className="font-header text-xl text-champagne-gold mb-4 font-semibold">Storage</h2>
           <p className="font-body text-sm text-warm-cream/60 leading-relaxed max-w-lg mx-auto">
             Always store your GΛMÉN piece in the included presentation box when not in use. 
             The box maintains a stable microclimate that protects the wood from humidity fluctuations and dust.

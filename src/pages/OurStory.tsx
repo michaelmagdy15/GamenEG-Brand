@@ -84,7 +84,7 @@ export default function OurStory() {
                 <span className="font-header text-5xl text-champagne-gold/20">{item.year}</span>
               </div>
               <div className="flex-1 border-l border-champagne-gold/15 pl-8">
-                <h3 className="font-header text-2xl text-champagne-gold mb-3">{item.title}</h3>
+                <h2 className="font-header text-2xl text-champagne-gold mb-3 font-semibold">{item.title}</h2>
                 <p className="font-body text-sm leading-relaxed text-warm-cream/60">{item.text}</p>
               </div>
             </motion.div>
@@ -125,7 +125,7 @@ export default function OurStory() {
                   <div className="w-16 h-16 rounded-full border border-champagne-gold/20 flex items-center justify-center mb-6 text-champagne-gold/60 group-hover:text-champagne-gold group-hover:border-champagne-gold/40 transition-colors duration-500">
                     <Icon size={24} strokeWidth={1.5} />
                   </div>
-                  <h4 className="font-header text-xl text-champagne-gold mb-4">{v.title}</h4>
+                  <h3 className="font-header text-xl text-champagne-gold mb-4 font-semibold">{v.title}</h3>
                   <p className="font-body text-sm leading-relaxed text-warm-cream/60 max-w-xs">{v.text}</p>
                 </div>
               );

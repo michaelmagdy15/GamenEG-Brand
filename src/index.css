@@ -230,17 +230,11 @@ a, button, [role="button"], input[type="checkbox"], input[type="radio"], select 
 }
 
 
-/* =============================================
-   RESPONSIVE TYPOGRAPHY (Headlines)
-   Ensures single-line display on mobile viewports
-   and prevents awkward wrapping/orphans.
-   ============================================= */
 @media (max-width: 768px) {
   h1, h2, h3 {
-    white-space: nowrap;
+    text-wrap: balance;
   }
   
-  /* Fallback clamp sizes if elements don't explicitly set them */
   h1 {
     font-size: clamp(2rem, 8vw, 4rem);
   }
