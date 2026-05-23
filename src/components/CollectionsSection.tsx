@@ -139,7 +139,7 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
 
   // Box blur and opacity values
   const boxBlur = useTransform(frameFloat, [13, 15], [0, 6]);
-  const filter = useMotionTemplate`blur(${boxBlur}px)`;
+  const filter = useMotionTemplate`blur(${boxBlur}px) drop-shadow(0 0 2px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))`;
   const boxOpacity = useTransform(frameFloat, [13, 15], [1, 0.6]);
   const boxScale = useTransform(frameFloat, [13, 15], [1, 0.95]);
 

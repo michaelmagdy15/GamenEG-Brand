@@ -72,8 +72,13 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
           <img
             src={`/unboxing/${FRAMES[currentFrame]}`}
             alt="Unboxing sequence"
+            style={{
+              filter: isUnboxed 
+                ? 'blur(12px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))' 
+                : 'drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))'
+            }}
             className={`w-full h-full object-contain transition-all duration-1000 ${
-              isUnboxed ? 'blur-md opacity-60 scale-95' : 'blur-0 opacity-100 scale-100'
+              isUnboxed ? 'opacity-60 scale-95' : 'opacity-100 scale-100'
             }`}
           />
         ) : (
