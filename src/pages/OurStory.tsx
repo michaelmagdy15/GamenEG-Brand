@@ -49,15 +49,23 @@ export default function OurStory() {
             camera={{ position: [0, 0, 4], fov: 45 }}
             className="absolute inset-0"
           >
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 5, 5]} intensity={1.4} />
-            <directionalLight position={[-5, -3, -2]} intensity={0.3} />
+            {/* Optimized High-Fidelity Lighting System */}
+            <ambientLight intensity={0.35} />
+            {/* Key light from top-right-front to define the main shape */}
+            <directionalLight position={[5, 6, 4]} intensity={1.2} />
+            {/* Back grazing/rim light to pop the wood grain and cylinder metal edges */}
+            <directionalLight position={[-6, 2, -3]} intensity={0.8} />
+            {/* Deep engraving highlight grazing light from bottom-back */}
+            <directionalLight position={[0, -5, -4]} intensity={0.6} />
+            {/* Front-fill light close to camera axis to create glistening glossy lacquer sheath */}
+            <directionalLight position={[1, 0.5, 5]} intensity={0.4} />
+
             <PresentationControls
               global
               rotation={[0.1, 0, 0]}
-              polar={[-Math.PI / 4, Math.PI / 4]}
-              azimuth={[-Math.PI / 4, Math.PI / 4]}
-              snap={true}
+              polar={[-Math.PI / 3, Math.PI / 3]}
+              azimuth={[-Math.PI, Math.PI]} // Full 360 rotation to inspect all details
+              snap // Luxurious, cushioned spring snap-back
             >
               <BowTieModel autoRotate />
             </PresentationControls>

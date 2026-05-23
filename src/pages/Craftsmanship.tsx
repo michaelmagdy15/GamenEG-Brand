@@ -104,13 +104,21 @@ export default function Craftsmanship() {
           <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10 relative">
             {isDesktop && (
               <OptimizedCanvas
-                frameloop="always"
+                frameloop="demand"
                 camera={{ position: [0, 0, 4], fov: 45 }}
                 className="absolute inset-0"
               >
-                <ambientLight intensity={0.6} />
-                <directionalLight position={[5, 5, 5]} intensity={1.4} />
-                <directionalLight position={[-5, -3, -2]} intensity={0.3} />
+                {/* Optimized High-Fidelity Lighting System */}
+                <ambientLight intensity={0.35} />
+                {/* Key light from top-right-front to define the main shape */}
+                <directionalLight position={[5, 6, 4]} intensity={1.2} />
+                {/* Back grazing/rim light to pop the wood grain and cylinder metal edges */}
+                <directionalLight position={[-6, 2, -3]} intensity={0.8} />
+                {/* Deep engraving highlight grazing light from bottom-back */}
+                <directionalLight position={[0, -5, -4]} intensity={0.6} />
+                {/* Front-fill light close to camera axis to create glistening glossy lacquer sheath */}
+                <directionalLight position={[1, 0.5, 5]} intensity={0.4} />
+                
                 <BowTieModel targetRotation={rotations[activeStep]} />
               </OptimizedCanvas>
             )}

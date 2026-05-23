@@ -7,13 +7,6 @@ export default function BowTieElement() {
   const groupRef = useRef<THREE.Group>(null);
   const { size } = useThree();
 
-  const scale = useMemo(() => {
-    const w = window.innerWidth;
-    if (w < 480) return 0.75;
-    if (w < 768) return 0.95;
-    return 1.35;
-  }, [size]);
-
   // Only re-render when scroll position actually changes
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -35,7 +28,7 @@ export default function BowTieElement() {
   });
 
   return (
-    <group ref={groupRef} scale={[scale, scale, scale]}>
+    <group ref={groupRef}>
       <BowTieModel />
     </group>
   );
