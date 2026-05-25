@@ -1,339 +1,279 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
     // ===============================================================
-    // Auth Helpers (Strike CRM)
+    // Helper Functions
     // ===============================================================
-
     function isAuthenticated() {
       return request.auth != null;
     }
 
+    function getUserData() {
+      let uid = request.auth != null ? request.auth.uid : 'anonymous';
+      let userPath = /databases/$(database)/documents/users/$(uid);
+      return (request.auth != null && exists(userPath)) ? get(userPath).data : {
+        "role": "none",
+        "name": "Anonymous",
+        "can_delete_payments": false,
+        "can_access_settings_and_history": false,
+        "can_view_global_dashboard": false
+      };
+    }
+
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return request.auth != null && request.auth.uid == userId;
     }
 
-    function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    function canDeletePayments() {
+      let data = getUserData();
+      return request.auth != null && (
+        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+        data.can_delete_payments == true
+      );
     }
 
-    function userExists() {
-      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    function canAccessSettings() {
+      let data = getUserData();
+      return request.auth != null && (
+        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+        data.can_access_settings_and_history == true
+      );
+    }
+
+    function canViewGlobalDashboard() {
+      let data = getUserData();
+      return request.auth != null && (
+        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+        data.can_view_global_dashboard == true
+      );
     }
 
     function isAdmin() {
-      return isAuthenticated() && (
-        (request.auth.token.email == "michaelmitry13@gmail.com") ||
-        (request.auth.token.email == "magd.gallab@gmail.com") ||
-        (request.auth.token.email == "admin@strike.eg") ||
-        (userExists() && getUserRole() in ['admin', 'manager', 'super_admin', 'crm_admin'])
+      let data = getUserData();
+      return request.auth != null && (
+        data.role in ['admin', 'super_admin', 'crm_admin', 'sales_manager', 'manager']
       );
     }
 
-    function isSuperAdmin() {
-      return isAuthenticated() && (
-        (request.auth.token.email == "michaelmitry13@gmail.com") ||
-        (request.auth.token.email == "magd.gallab@gmail.com") ||
-        (request.auth.token.email == "admin@strike.eg") ||
-        (userExists() && getUserRole() in ['super_admin', 'crm_admin'])
+    function isSalesManager() {
+      return canViewGlobalDashboard();
+    }
+
+    function isSalesRep() {
+      let data = getUserData();
+      return request.auth != null && (data.role == 'sales_rep' || data.role == 'rep');
+    }
+
+    // ===============================================================
+    // Match Prefixed Helper Functions
+    // ===============================================================
+    function getMatchUserData() {
+      let uid = request.auth != null ? request.auth.uid : 'anonymous';
+      let userPath = /databases/$(database)/documents/match_users/$(uid);
+      return (request.auth != null && exists(userPath)) ? get(userPath).data : {
+        "role": "none",
+        "name": "Anonymous",
+        "can_delete_payments": false,
+        "can_access_settings_and_history": false,
+        "can_view_global_dashboard": false
+      };
+    }
+
+    function canMatchAccessSettings() {
+      let data = getMatchUserData();
+      return request.auth != null && (
+        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+        data.can_access_settings_and_history == true
       );
     }
 
-    function isRep() {
-      return isAuthenticated() && userExists() && getUserRole() == 'rep';
+    function isMatchAdmin() {
+      let data = getMatchUserData();
+      return request.auth != null && (
+        data.role in ['admin', 'super_admin', 'crm_admin', 'sales_manager', 'manager']
+      );
     }
 
     // ===============================================================
-    // Field-Level Helpers (Strike CRM)
+    // Entity Validators
     // ===============================================================
-
-    function hasRequiredFields(fields) {
-      return request.resource.data.keys().hasAll(fields);
-    }
-
-    function hasOnlyAllowedFields(fields) {
-      return request.resource.data.keys().hasOnly(fields);
-    }
-
-    function isNonEmptyString(val) {
-      return val is string && val.size() > 0;
-    }
-
-    function isValidString(field, min, max) {
-      return request.resource.data[field] is string &&
-             request.resource.data[field].size() >= min &&
-             request.resource.data[field].size() <= max;
-    }
-
-    function isPositiveNumber(val) {
-      return val is number && val >= 0;
-    }
-
-    // ===============================================================
-    // Entity Validators (Strike CRM)
-    // ===============================================================
-
-    // --- Users ---
-    function isValidRole(role) {
-      return role in ['rep', 'manager', 'admin', 'super_admin', 'crm_admin'];
-    }
-
-    // Fields a user is allowed to touch on their own doc (safe self-edit)
-    function isSafeUserSelfEdit() {
-      let allowed = ['name', 'email', 'lastSeen', 'mustChangePassword', 'photoURL'];
-      // Ensure the incoming data only changes safe fields compared to current doc
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
-    }
-
-    function isValidUserWrite(data) {
-      return isNonEmptyString(data.name) && data.name.size() >= 2 &&
-             isNonEmptyString(data.email) && data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
-             isValidRole(data.role);
-    }
-
     function isValidClient(data) {
-      return isNonEmptyString(data.name) && data.name.size() >= 2 &&
-             isNonEmptyString(data.phone) && data.phone.size() >= 10 &&
-             data.status in ['Lead', 'Active', 'Nearly Expired', 'Expired', 'Hold'];
+      return data.name is string && data.name.size() > 0 &&
+             data.phone is string && data.phone.size() > 0 &&
+             data.status in ["Lead", "Active", "Nearly Expired", "Expired", "Hold"];
     }
 
-    // --- Payments ---
-    function isValidPaymentCreate(data) {
-      return isNonEmptyString(data.clientId) &&
-             isNonEmptyString(data.client_name) &&
-             isNonEmptyString(data.sales_rep_id) &&
-             isNonEmptyString(data.created_at) &&
-             data.amount is number && data.amount > 0 &&
-             data.amount_paid is number && data.amount_paid > 0 &&
-             isNonEmptyString(data.packageType) &&
-             data.package_category_type in ['Private Training', 'Group Training'] &&
-             data.method in ['Cash', 'Credit Card', 'Bank Transfer', 'Instapay', 'Other'] &&
-             // If instapayRef is present it must be exactly 12 digits
-             (!('instapayRef' in data) || (data.instapayRef is string && data.instapayRef.matches('^[0-9]{12}$')));
+    function isValidPayment(data) {
+      return data.clientId is string &&
+             data.amount_paid is number && data.amount_paid >= 0 &&
+             data.sales_rep_id is string;
     }
 
-    // On payment UPDATE: nobody can change the financial core or attribution
-    function paymentImmutableFieldsUnchanged() {
-      let immutable = ['clientId', 'client_name', 'amount', 'sales_rep_id', 'created_at',
-                       'package_category_type'];
-      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(immutable);
-    }
-
-    // --- Sessions (PT) ---
-    function isValidSession(data) {
-      return isNonEmptyString(data.clientId) &&
-             data.status in ['Scheduled', 'Attended', 'No Show', 'Cancelled'];
-    }
-
-    // --- Interactions ---
-    function isValidInteraction(data) {
-      return isNonEmptyString(data.date) &&
-             data.type in ['Call', 'WhatsApp', 'Email', 'Visit'] &&
-             data.outcome in ['Interested', 'Not Answered', 'Scheduled Trial', 'Rejected', 'Other'] &&
-             isNonEmptyString(data.author);
-    }
-
-    // --- Attendance ---
-    function isValidAttendance(data) {
-      return isNonEmptyString(data.clientId) &&
-             isNonEmptyString(data.branch) &&
-             isNonEmptyString(data.date) &&
-             isNonEmptyString(data.recordedBy);
-    }
-
-    // --- Tasks ---
-    function isValidTask(data) {
-      return isNonEmptyString(data.title) &&
-             isNonEmptyString(data.dueDate) &&
-             data.status in ['Pending', 'In Progress', 'Completed'] &&
-             data.priority in ['Low', 'Medium', 'High'] &&
-             isNonEmptyString(data.assignedTo) &&
-             isNonEmptyString(data.createdBy) &&
-             isNonEmptyString(data.createdAt);
-    }
-
-    function isTaskCreator() {
-      return isAuthenticated() &&
-             resource != null &&
-             resource.data.createdBy == request.auth.uid;
-    }
-
-    // --- Packages ---
-    // sessions == 0 means "unlimited" (time-governed only, e.g. 6-month package)
-    function isValidPackage(data) {
-      return isNonEmptyString(data.name) &&
-             data.price is number && data.price >= 0 &&
-             data.sessions is number && data.sessions >= 0 &&
-             data.expiryDays is number && data.expiryDays >= 0 &&
-             data.type in ['Private', 'Group', 'Other'];
-    }
-
-    // --- Coaches ---
-    function isValidCoach(data) {
-      return isNonEmptyString(data.name) &&
-             data.active is bool;
-    }
-
-    // --- Targets ---
-    function isValidTarget(data) {
-      return isNonEmptyString(data.userId) &&
-             data.targetAmount is number && data.targetAmount >= 0 &&
-             isNonEmptyString(data.month) &&
-             data.month.matches('^[0-9]{4}-[0-9]{2}$');
-    }
-
-    // --- Audit Logs ---
-    function isValidAuditLog(data) {
-      return isNonEmptyString(data.userId) &&
-             data.action in ['CREATE', 'UPDATE', 'DELETE'] &&
-             data.entityType in ['CLIENT', 'PAYMENT', 'PACKAGE_RECORD', 'LEAD',
-                                 'TARGET', 'ATTENDANCE', 'COACH', 'SYSTEM', 'BRANCH', 'SESSION'] &&
-             isNonEmptyString(data.entityId) &&
-             isNonEmptyString(data.timestamp);
-    }
-
-    // --- Branding ---
-    function isValidBranding(data) {
-      return data.keys().hasAny(['companyName', 'logoUrl', 'kioskPin', 'dailyCheckinPin']) &&
-             (!('companyName' in data) || isNonEmptyString(data.companyName)) &&
-             (!('logoUrl' in data) || data.logoUrl is string);
+    function isValidMatch(data) {
+      return data.maleId is string && data.maleId.size() > 0 &&
+             data.maleName is string && data.maleName.size() > 0 &&
+             data.femaleId is string && data.femaleId.size() > 0 &&
+             data.femaleName is string && data.femaleName.size() > 0 &&
+             data.status in [
+               "PENDING_PROFILE_APPROVAL",
+               "PENDING_PHOTO_APPROVAL",
+               "PENDING_CONTACT_SHARE",
+               "MATCH_ACTIVE",
+               "PENDING_FEEDBACK"
+             ];
     }
 
     // ===============================================================
-    // Collection Group Rules (subcollections - Strike CRM)
+    // Rules
     // ===============================================================
-
-    match /{path=**}/comments/{commentId} {
+    match /users/{userId} {
       allow read: if isAuthenticated();
-      // Writes handled by the parent /clients/{clientId}/comments rule below
+      allow create: if isOwner(userId) || isAdmin();
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /targets/{targetId} {
+      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.sales_rep_id == request.auth.uid);
+      allow list: if canViewGlobalDashboard() || isSalesRep();
+      allow write: if isSalesManager();
+    }
+
+    match /userTargets/{targetId} {
+      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.userId == request.auth.uid);
+      allow list: if canViewGlobalDashboard() || isSalesRep();
+      allow write: if isSalesManager();
+    }
+
+    match /payments/{paymentId} {
+      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.sales_rep_id == request.auth.uid);
+      allow list: if canViewGlobalDashboard() || isSalesRep();
+      allow create: if isAuthenticated() && isValidPayment(request.resource.data);
+      allow update, delete: if canDeletePayments();
+    }
+
+    match /settings/{settingId} {
+      allow read: if canAccessSettings();
+      allow write: if canAccessSettings();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if canAccessSettings();
+      allow create: if isAuthenticated();
+      allow delete: if canAccessSettings();
+    }
+
+    // ===============================================================
+    // Collection Group Rules
+    // ===============================================================
+    match /{path=**}/comments/{commentId} {
+      allow read, create: if isAuthenticated();
+      allow delete: if isAdmin();
     }
 
     match /{path=**}/interactions/{interactionId} {
-      allow read: if isAuthenticated();
-      // Writes handled by the parent /clients/{clientId}/interactions rule below
+      allow read, create: if isAuthenticated();
+      allow delete: if isAdmin();
     }
 
-    match /{path=**}/attendance/{attendanceId} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && isValidAttendance(request.resource.data);
-    }
-
-    // ===============================================================
-    // Collection Rules (Strike CRM)
-    // ===============================================================
-
-    // --- Users ---
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isSuperAdmin() || isOwner(userId);
-      allow update: if (isOwner(userId) && isSafeUserSelfEdit()) || isAdmin();
-      allow delete: if isSuperAdmin();
-    }
-
-    // --- Clients ---
     match /clients/{clientId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isValidClient(request.resource.data);
-      allow update: if isAuthenticated() && isValidClient(request.resource.data);
-      allow delete: if isAdmin();
-
-      match /comments/{commentId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated();
-        allow update, delete: if isAdmin();
-      }
-
-      match /interactions/{interactionId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && isValidInteraction(request.resource.data);
-        allow update: if isAuthenticated() && isValidInteraction(request.resource.data);
-        allow delete: if isAdmin();
-      }
-    }
-
-    // --- Payments ---
-    match /payments/{paymentId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidPaymentCreate(request.resource.data);
-      allow update: if isAdmin() && paymentImmutableFieldsUnchanged();
-      allow delete: if isSuperAdmin();
-    }
-
-    // --- Sessions (PT package records) ---
-    match /sessions/{sessionId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && isValidSession(request.resource.data);
+      allow update: if isAuthenticated();
       allow delete: if isAdmin();
     }
 
-    // --- Tasks ---
-    match /tasks/{taskId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidTask(request.resource.data);
-      allow update: if isAuthenticated() && isValidTask(request.resource.data);
-      allow delete: if isAdmin() || isTaskCreator();
-    }
-
-    // --- Packages ---
     match /packages/{packageId} {
       allow read: if isAuthenticated();
-      allow create, update: if isAdmin() && isValidPackage(request.resource.data);
-      allow delete: if isAdmin();
+      allow write: if isAdmin();
     }
 
-    // --- Coaches ---
     match /coaches/{coachId} {
       allow read: if isAuthenticated();
-      allow create, update: if isAdmin() && isValidCoach(request.resource.data);
+      allow write: if isAdmin();
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
       allow delete: if isAdmin();
     }
 
-    // --- Targets (sales targets) ---
-    match /targets/{targetId} {
+    match /matches/{matchId} {
       allow read: if isAuthenticated();
-      allow create, update: if isAdmin() && isValidTarget(request.resource.data);
+      allow create: if isAuthenticated() && isValidMatch(request.resource.data);
+      allow update: if isAuthenticated();
       allow delete: if isAdmin();
     }
 
-    // --- Audit Logs ---
-    match /auditLogs/{logId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated() && isValidAuditLog(request.resource.data);
-      allow update: if false;
-      allow delete: if isSuperAdmin();
+    match /attendance/{attendanceId} {
+      allow read, create: if isAuthenticated();
+      allow delete: if isAdmin();
     }
 
-    // --- Settings (branding, global config) ---
-    match /settings/{settingId} {
-      allow read: if settingId == 'branding' || isAuthenticated();
-      allow write: if isAdmin() && (settingId != 'branding' || isValidBranding(request.resource.data));
+    match /tasks/{taskId} {
+      allow read, write: if isAuthenticated();
     }
 
-    // --- Pending Accounts (sign-up requests) ---
-    match /pendingAccounts/{docId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
-    }
-
-    // --- Password Reset Requests ---
-    match /passwordResetRequests/{docId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
-    }
-
-    // --- Import Batches ---
-    match /importBatches/{batchId} {
-      allow read: if isAuthenticated();
-      allow write, delete: if isAdmin();
-    }
-
-    // --- Counters (sequential member IDs) ---
     match /counters/{counterId} {
-      allow read: if isAuthenticated();
-      allow write: if counterId == 'clients' ? isAuthenticated() : isAdmin();
+      allow read, write: if isAuthenticated();
     }
 
+    match /importBatches/{batchId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ===============================================================
+    // Duplicated Rules for Prefixed collections (match_*)
+    // ===============================================================
+    match /match_users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) || isMatchAdmin();
+      allow update: if isOwner(userId) || isMatchAdmin();
+      allow delete: if isMatchAdmin();
+    }
+
+    match /match_clients/{clientId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidClient(request.resource.data);
+      allow update: if isAuthenticated();
+      allow delete: if isMatchAdmin();
+    }
+
+    match /match_matches/{matchId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidMatch(request.resource.data);
+      allow update: if isAuthenticated();
+      allow delete: if isMatchAdmin();
+    }
+
+    match /{path=**}/match_comments/{commentId} {
+      allow read, create: if isAuthenticated();
+      allow delete: if isMatchAdmin();
+    }
+
+    match /{path=**}/match_interactions/{interactionId} {
+      allow read, create: if isAuthenticated();
+      allow delete: if isMatchAdmin();
+    }
+
+    match /match_tasks/{taskId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /match_auditLogs/{logId} {
+      allow read: if canMatchAccessSettings();
+      allow create: if isAuthenticated();
+      allow delete: if canMatchAccessSettings();
+    }
+
+    match /match_importBatches/{batchId} {
+      allow read, write: if isMatchAdmin();
+    }
+
+    match /match_counters/{counterId} {
+      allow read, write: if isAuthenticated();
+    }
 
     // ===============================================================
     // GAMÉN Luxury Brand Collections
