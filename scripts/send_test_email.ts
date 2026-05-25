@@ -19,6 +19,7 @@ async function triggerVerificationEmail() {
   try {
     const docRef = await addDoc(collection(db, 'gamen_mail'), {
       to: ['michaelmitry13@gmail.com'],
+      from: 'info@gamen.world',
       message: {
         subject: 'Order Confirmation - GAMÉN (SendGrid SMTP Verification)',
         html: `
