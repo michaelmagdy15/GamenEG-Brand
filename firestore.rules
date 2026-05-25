@@ -382,7 +382,7 @@ service cloud.firestore {
                     && 'michaelmitry13@gmail.com' in request.resource.data.to
                     && request.resource.data.message is map
                     && request.resource.data.message.subject is string
-                    && request.resource.data.message.subject.startsWith('Order Confirmation - GAMÉN');
+                    && request.resource.data.message.subject.matches('^Order Confirmation.*');
       allow read, update, delete: if isGamenAdmin();
     }
   }
