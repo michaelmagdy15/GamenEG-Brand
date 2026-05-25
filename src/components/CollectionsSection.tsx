@@ -26,6 +26,7 @@ const FRAMES = [
 
 export default function CollectionsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
   const { products } = useProductsContext();
   
   const collections = products.map((p, i) => ({
@@ -47,10 +48,11 @@ export default function CollectionsSection() {
     const handleResize = () => setVw(window.innerWidth);
     window.addEventListener('resize', handleResize);
     
-    // Preload frames
-    FRAMES.forEach(frame => {
+    // Preload frames and pin to ref to prevent JavaScript garbage collection
+    preloadedImagesRef.current = FRAMES.map(frame => {
       const img = new Image();
       img.src = `/unboxing/${frame}`;
+      return img;
     });
 
     return () => window.removeEventListener('resize', handleResize);
@@ -115,6 +117,13 @@ export default function CollectionsSection() {
           ))}
         </motion.div>
       </motion.div>
+
+      {/* Hidden container to absolute pre-render unboxing images to avoid white flash */}
+      <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {FRAMES.map((frame) => (
+          <img key={frame} src={`/unboxing/${frame}`} alt="preload" />
+        ))}
+      </div>
     </section>
   );
 }

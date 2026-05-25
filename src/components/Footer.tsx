@@ -1,27 +1,27 @@
 import { useState, type FormEvent } from 'react';
 import { Instagram, Facebook, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import BrandWordmark from './BrandWordmark';
-
-const FORMSPREE_ID = 'xpwdgejq';
+import { subscribeToNewsletter } from '../lib/firestore';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleNewsletter = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || loading) return;
+    setLoading(true);
     try {
-      await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: 'POST',
-        body: JSON.stringify({ email, _subject: 'New GΛMÉN Newsletter Subscriber' }),
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      });
+      await subscribeToNewsletter(email, 'footer');
       setSubscribed(true);
       setEmail('');
-    } catch {
-      // Silently fail - non-critical
+    } catch (err) {
+      console.error('Error subscribing to newsletter:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,23 +37,47 @@ export default function Footer() {
             <p className="font-body text-sm text-warm-cream/70 mb-6">
               Invitations to private viewings, new wood drops, and artisan meetups.
             </p>
-            {subscribed ? (
-              <p className="font-body text-sm text-champagne-gold">Welcome to the circle.</p>
-            ) : (
-              <form onSubmit={handleNewsletter} className="flex border-b border-warm-cream/30 focus-within:border-champagne-gold transition-colors pb-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  className="bg-transparent border-none outline-none text-warm-cream placeholder-warm-cream/30 flex-grow font-body text-sm"
-                />
-                <button type="submit" className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold hover:text-warm-cream transition-colors">
-                  JOIN
-                </button>
-              </form>
-            )}
+            <AnimatePresence mode="wait">
+              {subscribed ? (
+                <motion.p
+                  key="success"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="font-body text-sm text-champagne-gold"
+                >
+                  Welcome to the circle.
+                </motion.p>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  onSubmit={handleNewsletter}
+                  className="flex border-b border-warm-cream/30 focus-within:border-champagne-gold transition-colors pb-2"
+                >
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    disabled={loading}
+                    className="bg-transparent border-none outline-none text-warm-cream placeholder-warm-cream/30 flex-grow font-body text-sm disabled:opacity-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-champagne-gold hover:text-warm-cream transition-colors disabled:opacity-50 min-w-[40px] text-right"
+                  >
+                    {loading ? '...' : 'JOIN'}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 

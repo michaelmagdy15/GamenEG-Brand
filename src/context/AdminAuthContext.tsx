@@ -30,7 +30,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setError(null);
     const cleanEmail = email.trim().toLowerCase();
-    if (cleanEmail !== 'michaelmitry13@gmail.com') {
+    if (cleanEmail !== 'michaelmitry13@gmail.com' && cleanEmail !== 'admin@gamen.eg') {
       setError('Access Denied: Unauthorized administrator email.');
       throw new Error('Unauthorized account');
     }
@@ -46,7 +46,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
   };
 
-  const isAdmin = !!admin && admin.email === 'michaelmitry13@gmail.com';
+  const isAdmin = !!admin && (admin.email === 'michaelmitry13@gmail.com' || admin.email === 'admin@gamen.eg');
 
   return (
     <AdminAuthContext.Provider

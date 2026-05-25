@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 
 const FRAMES = [
@@ -29,10 +29,12 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isUnboxed, setIsUnboxed] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const imageRefs = useRef<HTMLImageElement[]>([]);
 
   useEffect(() => {
     // Preload images
     let loadedCount = 0;
+    const loadedImages: HTMLImageElement[] = [];
     FRAMES.forEach((frame) => {
       const img = new Image();
       img.src = `/unboxing/${frame}`;
@@ -42,7 +44,9 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
           setImagesLoaded(true);
         }
       };
+      loadedImages.push(img);
     });
+    imageRefs.current = loadedImages;
   }, []);
 
   useEffect(() => {
@@ -96,6 +100,12 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
             className="absolute z-10 max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl"
           />
         )}
+      </div>
+
+      <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {FRAMES.map((frame) => (
+          <img key={frame} src={`/unboxing/${frame}`} alt="preload" />
+        ))}
       </div>
     </div>
   );

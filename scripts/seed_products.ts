@@ -1,21 +1,25 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../src/lib/firebase';
 import { products } from '../src/data/products';
 
 async function seedProducts() {
   try {
-    const productsRef = collection(db, 'products');
-    console.log(`Seeding ${products.length} products to Firestore...`);
+    console.log(`Seeding ${products.length} products to "gamen_products" collection in Firestore...`);
     for (const p of products) {
-      // Remove the local ID and create a new doc in firestore
+      // Destructure to separate ID and get the rest of the fields
       const { id, ...productData } = p;
-      const docRef = await addDoc(productsRef, {
+      const docRef = doc(db, 'gamen_products', id);
+      
+      // Perform an idempotent upsert of the product document
+      await setDoc(docRef, {
         ...productData,
         createdAt: serverTimestamp(),
-      });
-      console.log(`Added product ${p.name} with ID: ${docRef.id}`);
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      
+      console.log(`Successfully seeded/updated product: "${p.name}" (ID: ${id})`);
     }
-    console.log('Seeding complete!');
+    console.log('Seeding GΛMÉN products complete!');
     process.exit(0);
   } catch (error) {
     console.error('Error seeding products:', error);

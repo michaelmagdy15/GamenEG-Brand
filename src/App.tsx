@@ -16,6 +16,7 @@ import CartDrawer from './components/CartDrawer';
 import CustomCursor from './components/CustomCursor';
 import BackToTop from './components/BackToTop';
 import AdminRoute from './components/AdminRoute';
+import { logTrafficEvent } from './lib/firestore';
 
 /* ─── Lazy-loaded pages — only fetched when the user navigates to them ── */
 const Home             = lazy(() => import('./pages/Home'));
@@ -69,6 +70,43 @@ function ScrollToTop() {
   return null;
 }
 
+function AnalyticsTracker() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (pathname.startsWith('/admin')) return;
+
+    let action = 'Visited Storefront';
+    if (pathname === '/') {
+      action = 'Viewed Home Page';
+    } else if (pathname === '/shop') {
+      action = 'Viewed Shop';
+    } else if (pathname.startsWith('/product/')) {
+      const slug = pathname.split('/').pop() || '';
+      const formattedSlug = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      action = `Viewed ${formattedSlug} details`;
+    } else if (pathname === '/our-story') {
+      action = 'Viewed Our Story';
+    } else if (pathname === '/contact') {
+      action = 'Viewed Contact Page';
+    } else if (pathname === '/craftsmanship') {
+      action = 'Viewed Craftsmanship';
+    } else if (pathname === '/care') {
+      action = 'Viewed Care Guidelines';
+    } else if (pathname === '/shipping') {
+      action = 'Viewed Shipping & Returns';
+    } else if (pathname === '/checkout') {
+      action = 'Viewed Checkout';
+    } else if (pathname === '/order-confirmation') {
+      action = 'Visited Order Confirmation';
+    }
+
+    logTrafficEvent(pathname, action);
+  }, [pathname]);
+
+  return null;
+}
+
 function AppContent() {
   const [loading, setLoading] = useState(true);
 
@@ -87,6 +125,7 @@ function AppContent() {
       </AnimatePresence>
 
       <ScrollToTop />
+      <AnalyticsTracker />
 
       {isAdminPage ? (
         <Suspense fallback={<PageFallback />}>

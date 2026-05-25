@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 
 export default function AdminRoute({ children }: { children: ReactNode }) {
   const { admin, isAdmin, loading } = useAdminAuth();
-  const isTrueAdmin = isAdmin && admin?.email === 'michaelmitry13@gmail.com';
+  const isTrueAdmin = isAdmin && (admin?.email === 'michaelmitry13@gmail.com' || admin?.email === 'admin@gamen.eg');
 
   if (loading) {
     return (

@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { saveOrder, sendEmailNotification } from '../lib/firestore';
+import { saveOrder, sendEmailNotification, subscribeToNewsletter, logTrafficEvent } from '../lib/firestore';
 
 interface CheckoutForm {
   name: string;
@@ -28,6 +28,7 @@ export default function Checkout() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [subscribe, setSubscribe] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -95,6 +96,16 @@ export default function Checkout() {
         totalPrice,
       };
       await saveOrder(newOrder);
+      logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${totalPrice} EGP)`);
+
+      // Save newsletter subscription if checked
+      if (subscribe) {
+        try {
+          await subscribeToNewsletter(form.email, 'checkout');
+        } catch (subErr) {
+          console.error('Failed to subscribe to newsletter:', subErr);
+        }
+      }
       
       // Attempt to send email, but don't fail the checkout if it errors
       try {
@@ -214,6 +225,46 @@ export default function Checkout() {
                 aria-label="Order Notes"
                 className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[60px]"
               />
+            </div>
+
+            {/* Premium custom-styled newsletter checkbox */}
+            <div 
+              className="flex items-start gap-3 py-2 cursor-pointer select-none" 
+              onClick={() => setSubscribe(!subscribe)}
+            >
+              <div 
+                className={`w-5 h-5 flex items-center justify-center border transition-colors duration-300 mt-0.5 ${
+                  subscribe 
+                    ? 'bg-champagne-gold border-champagne-gold text-deep-walnut' 
+                    : 'border-champagne-gold/30 hover:border-champagne-gold/60'
+                }`}
+                role="checkbox"
+                aria-checked={subscribe}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    setSubscribe(!subscribe);
+                  }
+                }}
+              >
+                {subscribe && (
+                  <motion.svg
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </motion.svg>
+                )}
+              </div>
+              <span className="font-body text-xs text-warm-cream/70 leading-normal hover:text-warm-cream transition-colors">
+                Subscribe to the GΛMÉN Circle for private viewings and new wood drops
+              </span>
             </div>
 
             {error && (

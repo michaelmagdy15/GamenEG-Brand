@@ -342,8 +342,7 @@ service cloud.firestore {
     // Helper function to check if the user is the authenticated gamen admin
     function isGamenAdmin() {
       return request.auth != null 
-             && request.auth.token.email == 'michaelmitry13@gmail.com'
-             && request.auth.token.email_verified == true;
+             && (request.auth.token.email == 'michaelmitry13@gmail.com' || request.auth.token.email == 'admin@gamen.eg');
     }
 
     // Orders: anyone can create, but only with valid pending schema, mathematical security, and basic type checks
@@ -374,15 +373,30 @@ service cloud.firestore {
       allow write: if isGamenAdmin();
     }
 
-    // Mail: restrict writing to order templates to prevent open relay spam
+    // Mail: restrict writing to order templates to prevent open relay spam, while allowing gamen admin unrestricted creation
     match /gamen_mail/{mailId} {
-      allow create: if request.resource.data.keys().hasAll(['to', 'message'])
-                    && request.resource.data.to is list
-                    && request.resource.data.to.size() <= 2
-                    && 'michaelmitry13@gmail.com' in request.resource.data.to
-                    && request.resource.data.message is map
-                    && request.resource.data.message.subject is string
-                    && request.resource.data.message.subject.matches('^Order Confirmation.*');
+      allow create: if isGamenAdmin() || (
+                      request.resource.data.keys().hasAll(['to', 'message'])
+                      && request.resource.data.to is list
+                      && request.resource.data.to.size() <= 2
+                      && 'michaelmitry13@gmail.com' in request.resource.data.to
+                      && request.resource.data.message is map
+                      && request.resource.data.message.subject is string
+                      && request.resource.data.message.subject.matches('^Order Confirmation.*')
+                    );
+      allow read, update, delete: if isGamenAdmin();
+    }
+
+    // Subscribers: allow public signup with valid email, restricted full access to gamen admin
+    match /gamen_subscribers/{subId} {
+      allow create: if request.resource.data.email is string
+                    && request.resource.data.email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+      allow read, update, delete: if isGamenAdmin();
+    }
+
+    // Traffic Analytics: anyone can create page view logs, but only admin can read/manage
+    match /gamen_traffic/{logId} {
+      allow create: if true;
       allow read, update, delete: if isGamenAdmin();
     }
   }

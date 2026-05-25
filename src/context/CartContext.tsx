@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { Product } from '../data/products';
+import { logTrafficEvent } from '../lib/firestore';
 
 export interface CartItem {
   product: Product;
@@ -51,6 +52,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prev, { product, quantity: 1 }];
     });
     setIsOpen(true);
+    logTrafficEvent(window.location.pathname, `Added ${product.name} to cart`);
   }, []);
 
   const removeItem = useCallback((productId: string) => {
