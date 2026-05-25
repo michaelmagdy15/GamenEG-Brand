@@ -83,7 +83,7 @@ function AppContent() {
     <>
       <CustomCursor />
       <AnimatePresence>
-        {loading && !isAdminPage && <LoadingScreen onComplete={handleLoadingComplete} />}
+        {loading && !isAdminPage && <LoadingScreen key="loading-screen" onComplete={handleLoadingComplete} />}
       </AnimatePresence>
 
       <ScrollToTop />

@@ -69,7 +69,7 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-16 sm:translate-y-24 md:translate-y-28 lg:translate-y-40">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-6 sm:translate-y-8 md:translate-y-12 lg:translate-y-16">
           <div className="text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name */}
@@ -114,7 +114,7 @@ export default function HeroSection() {
         {/* Scroll indicator — visible only at start */}
         <motion.div
           style={{ opacity: brandOpacity }}
-          className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute bottom-[24vh] sm:bottom-[29vh] md:bottom-[34vh] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         >
           <p className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold/30">
             Scroll

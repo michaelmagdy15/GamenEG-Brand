@@ -4,7 +4,8 @@ import { useAdminAuth } from '../context/AdminAuthContext';
 import type { ReactNode } from 'react';
 
 export default function AdminRoute({ children }: { children: ReactNode }) {
-  const { isAdmin, loading } = useAdminAuth();
+  const { admin, isAdmin, loading } = useAdminAuth();
+  const isTrueAdmin = isAdmin && admin?.email === 'michaelmitry13@gmail.com';
 
   if (loading) {
     return (
@@ -14,7 +15,7 @@ export default function AdminRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isAdmin) {
+  if (!isTrueAdmin) {
     return <Navigate to="/admin/login" replace />;
   }
 

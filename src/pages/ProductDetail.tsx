@@ -97,11 +97,12 @@ export default function ProductDetail() {
             <div className="flex items-end gap-8 mb-12">
               <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
               <button
+                disabled={product.isSoldOut}
                 onClick={() => addItem(product)}
-                className="flex-1 max-w-xs flex items-center justify-center gap-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
+                className="flex-1 max-w-xs flex items-center justify-center gap-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <ShoppingBag size={16} strokeWidth={1.5} />
-                Add to Bag
+                {product.isSoldOut ? 'Sold Out' : 'Add to Bag'}
               </button>
             </div>
 

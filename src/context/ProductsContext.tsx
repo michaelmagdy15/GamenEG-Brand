@@ -29,7 +29,7 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
       // Fall back to static products if Firestore has none
       setProducts(data && data.length > 0 ? data : staticProducts);
     } catch (err) {
-      console.error('Failed to load products from Firebase:', err);
+      console.warn('Using local static products (Firestore read pending rules):', err instanceof Error ? err.message : err);
       setError(err instanceof Error ? err : new Error('Failed to load products'));
       // Always show static products on error so the site is never blank
       setProducts(staticProducts);

@@ -10,12 +10,21 @@ export default function CartDrawer() {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = '';
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -98,7 +107,11 @@ export default function CartDrawer() {
                   Your Bag ({totalItems})
                 </h2>
               </div>
-              <button onClick={() => setIsOpen(false)} className="p-2 -mr-2 text-champagne-gold/60 hover:text-champagne-gold transition-colors">
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="p-3 -mr-3 text-champagne-gold/60 hover:text-champagne-gold transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
+                aria-label="Close cart"
+              >
                 <X size={24} strokeWidth={1} />
               </button>
             </div>
@@ -142,7 +155,7 @@ export default function CartDrawer() {
                     </div>
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="text-warm-cream/30 hover:text-warm-cream/60 transition-colors p-2.5 -m-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center self-start"
+                      className="text-warm-cream/30 hover:text-warm-cream/60 transition-colors p-3 -m-3 min-w-[48px] min-h-[48px] flex items-center justify-center self-start"
                       aria-label="Remove item"
                     >
                       <X size={14} />

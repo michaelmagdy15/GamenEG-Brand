@@ -1,5 +1,4 @@
-// src/pages/OrderConfirmation.tsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
@@ -7,7 +6,19 @@ import { CheckCircle, ShoppingBag } from 'lucide-react';
 export default function OrderConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { orderRef, customerName } = (location.state as { orderRef: string; customerName: string }) || {};
+  
+  const [orderInfo, setOrderInfo] = useState<{ orderRef: string; customerName: string } | null>(() => {
+    if (location.state) return location.state as { orderRef: string; customerName: string };
+    try {
+      const backup = sessionStorage.getItem('last_order');
+      return backup ? JSON.parse(backup) : null;
+    } catch (err) {
+      console.warn('Failed to load order receipt backup:', err);
+      return null;
+    }
+  });
+
+  const { orderRef, customerName } = orderInfo || {};
 
   useEffect(() => {
     if (!orderRef) navigate('/shop', { replace: true });

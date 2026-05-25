@@ -1,8 +1,5 @@
 import { motion } from 'motion/react';
 import { Landmark, PenTool, Fingerprint } from 'lucide-react';
-import { PresentationControls } from '@react-three/drei';
-import { BowTieModel } from '../components/canvas/BowTieModel';
-import OptimizedCanvas from '../components/canvas/OptimizedCanvas';
 import { brandAssets } from '../brandAssets';
 
 const story = [
@@ -41,37 +38,26 @@ export default function OurStory() {
         </motion.div>
       </section>
 
-      {/* 3D Model Display */}
+      {/* 3D Model Display replaced with premium spinning GIF */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto mb-24 h-[50vh] sm:h-[70vh]">
-        <div className="w-full h-full rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5 relative">
-          <OptimizedCanvas
-            frameloop="always"
-            camera={{ position: [0, 0, 4], fov: 45 }}
-            className="absolute inset-0"
+        <div className="w-full h-full rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5 relative flex items-center justify-center p-8 group">
+          {/* Ambient lighting / luxury gold glow */}
+          <div className="absolute w-[60%] h-[60%] rounded-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.11),transparent_70%)] blur-3xl pointer-events-none" />
+          
+          <motion.div 
+            whileHover={{ scale: 1.04, rotate: 1.5 }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            className="w-full h-full max-w-2xl flex items-center justify-center cursor-grab active:cursor-grabbing"
           >
-            {/* Optimized High-Fidelity Lighting System */}
-            <ambientLight intensity={0.35} />
-            {/* Key light from top-right-front to define the main shape */}
-            <directionalLight position={[5, 6, 4]} intensity={1.2} />
-            {/* Back grazing/rim light to pop the wood grain and cylinder metal edges */}
-            <directionalLight position={[-6, 2, -3]} intensity={0.8} />
-            {/* Deep engraving highlight grazing light from bottom-back */}
-            <directionalLight position={[0, -5, -4]} intensity={0.6} />
-            {/* Front-fill light close to camera axis to create glistening glossy lacquer sheath */}
-            <directionalLight position={[1, 0.5, 5]} intensity={0.4} />
-
-            <PresentationControls
-              global
-              rotation={[0.1, 0, 0]}
-              polar={[-Math.PI / 3, Math.PI / 3]}
-              azimuth={[-Math.PI, Math.PI]} // Full 360 rotation to inspect all details
-              snap // Luxurious, cushioned spring snap-back
-            >
-              <BowTieModel autoRotate />
-            </PresentationControls>
-          </OptimizedCanvas>
+            <img
+              src="/Images/bowtie 3d spin/BOWSPIN.gif"
+              alt="GΛMÉN Signature Bow Tie Rotation"
+              className="w-full h-full object-contain mix-blend-screen drop-shadow-[0_25px_60px_rgba(0,0,0,0.9)] filter contrast-125 saturate-105"
+              style={{ clipPath: 'inset(0% 3% 0% 3%)' }}
+            />
+          </motion.div>
           <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
-            <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/50">Interactive 3D View</span>
+            <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/50">Signature Bow Tie Rotation</span>
           </div>
         </div>
       </section>

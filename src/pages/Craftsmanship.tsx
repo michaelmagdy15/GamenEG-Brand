@@ -1,15 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { BowTieModel } from '../components/canvas/BowTieModel';
-import OptimizedCanvas from '../components/canvas/OptimizedCanvas';
-
-const rotations = [
-  { x: 0, y: 0, z: 0 },                       // 01: Selection (Front View)
-  { x: 0, y: Math.PI / 2.5, z: 0 },           // 02: Shaping (Angled Side View)
-  { x: -Math.PI / 6, y: 0, z: 0 },            // 03: Detailing (Tilted up)
-  { x: 0, y: 0, z: Math.PI / 6 },             // 04: Finishing (Rotated slightly)
-  { x: 0, y: Math.PI, z: 0 },                 // 05: Assembly (Back View)
-];
 
 const steps = [
   {
@@ -99,29 +89,53 @@ export default function Craftsmanship() {
       {/* Split Scroll Section */}
       <section className="relative px-6 sm:px-10 max-w-7xl mx-auto mb-24 lg:flex lg:gap-16">
         
-        {/* Sticky 3D Model Container */}
+        {/* Sticky Spinning Model Container */}
         <div className="hidden lg:block w-1/2 relative">
-          <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10 relative">
+          <div className="sticky top-32 h-[60vh] w-full rounded-2xl overflow-hidden bg-warm-cream/5 border border-champagne-gold/10 relative flex items-center justify-center p-8">
+            
+            {/* Ambient gold glow that changes opacity/blur based on activeStep */}
+            <div 
+              className="absolute w-[70%] h-[70%] rounded-full transition-all duration-1000 blur-3xl pointer-events-none"
+              style={{
+                background: activeStep === 0 
+                  ? 'radial-gradient(circle, rgba(139,94,60,0.15) 0%, transparent 70%)' // Walnut wood glow
+                  : activeStep === 1
+                  ? 'radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%)'  // Golden shaping glow
+                  : activeStep === 2
+                  ? 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)'  // Strong detailing highlight
+                  : activeStep === 3
+                  ? 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)' // Soft finishing polish
+                  : 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' // Full assembly shine
+              }}
+            />
+
+            {/* Glowing borders/accents */}
+            <div className="absolute inset-0 border border-champagne-gold/5 pointer-events-none" />
+            
             {isDesktop && (
-              <OptimizedCanvas
-                frameloop="demand"
-                camera={{ position: [0, 0, 4], fov: 45 }}
-                className="absolute inset-0"
+              <motion.div
+                key={activeStep}
+                initial={{ scale: 0.96, opacity: 0.9 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                className="w-full h-full flex items-center justify-center"
               >
-                {/* Optimized High-Fidelity Lighting System */}
-                <ambientLight intensity={0.35} />
-                {/* Key light from top-right-front to define the main shape */}
-                <directionalLight position={[5, 6, 4]} intensity={1.2} />
-                {/* Back grazing/rim light to pop the wood grain and cylinder metal edges */}
-                <directionalLight position={[-6, 2, -3]} intensity={0.8} />
-                {/* Deep engraving highlight grazing light from bottom-back */}
-                <directionalLight position={[0, -5, -4]} intensity={0.6} />
-                {/* Front-fill light close to camera axis to create glistening glossy lacquer sheath */}
-                <directionalLight position={[1, 0.5, 5]} intensity={0.4} />
-                
-                <BowTieModel targetRotation={rotations[activeStep]} />
-              </OptimizedCanvas>
+                <img
+                  src="/Images/bowtie 3d spin/BOWSPIN.gif"
+                  alt="GΛMÉN Bow Tie Craftsmanship Showcase"
+                  className="w-full h-full object-contain mix-blend-screen drop-shadow-[0_20px_50px_rgba(0,0,0,0.85)] filter contrast-125 saturate-105"
+                  style={{ clipPath: 'inset(0% 3% 0% 3%)' }}
+                />
+              </motion.div>
             )}
+            
+            {/* Step HUD indicator at the top right of the sticky window */}
+            <div className="absolute top-6 right-6 pointer-events-none select-none">
+              <span className="font-accent text-[9px] tracking-[0.25em] text-champagne-gold/25 uppercase">
+                STAGE {steps[activeStep].num} // {steps[activeStep].title}
+              </span>
+            </div>
+
           </div>
         </div>
 

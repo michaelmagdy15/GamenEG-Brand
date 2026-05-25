@@ -21,7 +21,7 @@ const pieces = [
     id: 'signature',
     name: 'GΛMÉN Signature',
     detail: 'Brass monogram over dark walnut',
-    image: brandAssets.heroBowTie,
+    image: brandAssets.signatureBowTie,
     accent: 'A signature of individuality and prestige.',
   },
 ];

@@ -31,6 +31,7 @@ export default function Checkout() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (error) setError('');
   };
 
   const generateRef = () => {
@@ -42,17 +43,48 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.email || !form.phone || !form.city || !form.address) {
-      setError('Please fill in all required fields.');
+
+    const trimmedName = form.name.trim();
+    if (!trimmedName || trimmedName.split(/\s+/).length < 2) {
+      setError('Please enter your full name (first and last name).');
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    const phoneRegex = /^(01)[0125]\d{8}$/;
+    const cleanPhone = form.phone.replace(/[\s\-\+\(\)]/g, ''); // clean formatting characters
+    const cleanEGPhone = cleanPhone.length > 11 ? cleanPhone.slice(-11) : cleanPhone;
+    if (!phoneRegex.test(cleanEGPhone)) {
+      setError('Please enter a valid Egyptian mobile number (e.g., 01XXXXXXXXX).');
+      return;
+    }
+
+    if (!form.city.trim()) {
+      setError('Please enter/select your delivery city.');
+      return;
+    }
+
+    if (form.address.trim().length < 10) {
+      setError('Please enter a comprehensive delivery address (including building/apartment).');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const orderRef = generateRef();
       const newOrder = {
         orderRef,
         status: 'pending' as const,
-        customer: form,
+        customer: {
+          ...form,
+          name: trimmedName,
+          phone: cleanEGPhone,
+        },
         items: items.map((i) => ({
           productId: i.product.id,
           productName: i.product.name,
@@ -70,8 +102,16 @@ export default function Checkout() {
       } catch (emailErr) {
         console.error('Failed to send email notification:', emailErr);
       }
+
+      // Save order details to sessionStorage for page-refresh resilience
+      try {
+        sessionStorage.setItem('last_order', JSON.stringify({ orderRef, customerName: trimmedName }));
+      } catch (sessErr) {
+        console.warn('Failed to cache order receipt:', sessErr);
+      }
+
       clearCart();
-      navigate('/order-confirmation', { state: { orderRef, customerName: form.name } });
+      navigate('/order-confirmation', { state: { orderRef, customerName: trimmedName } });
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');
@@ -129,17 +169,17 @@ export default function Checkout() {
                 Contact Information
               </p>
               <div className="grid md:grid-cols-2 gap-4">
-                <InputField label="Full Name *" name="name" value={form.name} onChange={handleChange} placeholder="Mohamed El Sayed" />
-                <InputField label="Email *" name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" />
-                <InputField label="Phone *" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+20 1XX XXXX XXX" />
-                <InputField label="City *" name="city" value={form.city} onChange={handleChange} placeholder="Cairo" />
+                <InputField label="Full Name *" name="name" value={form.name} onChange={handleChange} placeholder="Mohamed El Sayed" autoComplete="name" />
+                <InputField label="Email *" name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" autoComplete="email" />
+                <InputField label="Phone *" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="01XXXXXXXXX" autoComplete="tel" />
+                <InputField label="City *" name="city" value={form.city} onChange={handleChange} placeholder="Cairo" autoComplete="address-level2" />
               </div>
             </div>
 
             <div>
               <label 
                 htmlFor="checkout-address"
-                className="block font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-4"
+                className="block font-accent text-xs uppercase tracking-[0.2em] text-warm-cream/60 mb-3"
               >
                 Delivery Address *
               </label>
@@ -150,14 +190,16 @@ export default function Checkout() {
                 onChange={handleChange}
                 placeholder="Full address including building, floor, and apartment number…"
                 rows={3}
-                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3 placeholder:text-warm-cream/25 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none"
+                autoComplete="street-address"
+                required
+                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[80px]"
               />
             </div>
 
             <div>
               <label 
                 htmlFor="checkout-notes"
-                className="block font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-2"
+                className="block font-accent text-xs uppercase tracking-[0.2em] text-warm-cream/60 mb-2"
               >
                 Order Notes (Optional)
               </label>
@@ -168,12 +210,14 @@ export default function Checkout() {
                 onChange={handleChange}
                 placeholder="Gift wrapping, special requests, gifting occasion…"
                 rows={2}
-                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3 placeholder:text-warm-cream/25 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none"
+                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[60px]"
               />
             </div>
 
             {error && (
-              <p className="text-red-400 font-body text-sm">{error}</p>
+              <div role="alert" aria-live="assertive">
+                <p className="text-red-400 font-body text-sm">{error}</p>
+              </div>
             )}
 
             <button
@@ -262,6 +306,7 @@ function InputField({
   onChange,
   placeholder,
   type = 'text',
+  autoComplete,
 }: {
   label: string;
   name: string;
@@ -269,12 +314,13 @@ function InputField({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   type?: string;
+  autoComplete?: string;
 }) {
   return (
     <div>
       <label 
         htmlFor={`checkout-${name}`}
-        className="block font-accent text-[9px] uppercase tracking-[0.15em] text-warm-cream/40 mb-1.5"
+        className="block font-accent text-xs uppercase tracking-[0.15em] text-warm-cream/60 mb-2"
       >
         {label}
       </label>
@@ -285,7 +331,12 @@ function InputField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3 placeholder:text-warm-cream/25 focus:outline-none focus:border-champagne-gold/40 transition-colors"
+        autoComplete={autoComplete}
+        required
+        autoCapitalize={name === 'email' ? 'none' : 'words'}
+        autoCorrect={name === 'email' ? 'off' : 'on'}
+        spellCheck={name !== 'email'}
+        className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors min-h-[48px]"
       />
     </div>
   );

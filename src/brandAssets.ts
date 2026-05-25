@@ -1,13 +1,13 @@
 export const brandAssets = {
   // Transparent PNGs (for 3D/canvas/product cards)
-  heroBowTie: '/Images/TRANSPARENT/PNG/IMG-2217_transparent.webp',
-  pharaohBowTie: '/Images/TRANSPARENT/PNG/IMG-2211_transparent.webp',
-  ankhBowTie: '/Images/TRANSPARENT/PNG/IMG_2215_transparent.webp',
-  signatureBowTie: '/Images/TRANSPARENT/PNG/IMG_2220_transparent.webp',
-  twoToneBowTie: '/Images/TRANSPARENT/PNG/IMG_2212_transparent.webp',
-  darkClassicBowTie: '/Images/TRANSPARENT/PNG/IMG_2214_transparent.webp',
+  heroBowTie: '/Images/NEW/gamen classic.png',
+  pharaohBowTie: '/Images/NEW/l\'or royal.png',
+  ankhBowTie: '/Images/NEW/ankh eternel.png',
+  signatureBowTie: '/Images/NEW/gamen signature.png',
+  twoToneBowTie: '/Images/NEW/eclipse du bois.png',
+  darkClassicBowTie: '/Images/NEW/l\'eclat.png',
   gamenClassique: '/Images/categories/gamen_classique.png',
-  epoqueWatch: '/Images/TRANSPARENT/PNG/IMG_2486_transparent.webp',
+  epoqueWatch: '/Images/NEW/gamen epoque.png',
 
   // Full source images (for product detail backgrounds/hero images)
   heroBowTieJpg: '/Images/IMG_2217.PNG',

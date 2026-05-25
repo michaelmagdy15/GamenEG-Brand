@@ -1,13 +1,12 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { useProgress } from '@react-three/drei';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<'intro' | 'brand' | 'tagline' | 'exit'>('intro');
   const [progress, setProgress] = useState(0);
-  const { active: assetsLoading } = useProgress();
+  const [isUnmounted, setIsUnmounted] = useState(false);
 
   useEffect(() => {
     // Phase 1: Show brand name early
@@ -15,15 +14,10 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     // Phase 2: Show tagline at ~1s
     const t2 = setTimeout(() => setPhase('tagline'), 1000);
 
-    // Phase 3: Progress bar fills
+    // Phase 3: Progress bar fills smoothly in ~1.5 seconds
     let current = 0;
     const interval = setInterval(() => {
       current += 1.5;
-      
-      // Cap simulated progress at 90% if Three.js assets are still loading
-      if (current >= 90 && assetsLoading) {
-        current = 90;
-      }
       
       if (current >= 100) {
         current = 100;
@@ -37,21 +31,32 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [assetsLoading]);
+  }, []);
 
   // Phase 4: Handle exit and complete states
   useEffect(() => {
-    if (progress >= 100 && !assetsLoading) {
-      const exitTimeout = setTimeout(() => {
+    let exitTimeoutId: NodeJS.Timeout;
+    let completeTimeoutId: NodeJS.Timeout;
+
+    if (progress >= 100) {
+      exitTimeoutId = setTimeout(() => {
         setPhase('exit');
-        const completeTimeout = setTimeout(onComplete, 1600); // 1.6s matches door animation duration
-        return () => clearTimeout(completeTimeout);
+        completeTimeoutId = setTimeout(() => {
+          setIsUnmounted(true);
+          onComplete();
+        }, 1600); // 1.6s matches door animation duration
       }, 500);
-      return () => clearTimeout(exitTimeout);
     }
-  }, [progress, assetsLoading, onComplete]);
+
+    return () => {
+      if (exitTimeoutId) clearTimeout(exitTimeoutId);
+      if (completeTimeoutId) clearTimeout(completeTimeoutId);
+    };
+  }, [progress, onComplete]);
 
   const isExiting = phase === 'exit';
+
+  if (isUnmounted) return null;
 
 
 

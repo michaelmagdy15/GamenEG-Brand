@@ -105,11 +105,12 @@ function ClipIllustration({ isActive }: { isActive: boolean }) {
       </motion.g>
       {/* Click flash */}
       <motion.circle
-        cx={100} cy={120}
-        r={0}
+        cx={100}
+        cy={120}
         fill="none"
         stroke="#f2eee6"
         strokeWidth="2"
+        initial={{ r: 0, opacity: 0 }}
         animate={isActive ? {
           r: [0, 20, 40],
           opacity: [0.8, 0.4, 0],
@@ -161,14 +162,14 @@ function FinishIllustration({ isActive }: { isActive: boolean }) {
       <path d="M40 200 L40 80 Q100 60 160 80 L160 200" stroke="#cfc5b2" strokeWidth="2" fill="#462718" />
       {/* Collars folded down */}
       <motion.path
-        d="M40 80 L100 120 L100 95 Q70 60 40 55 Z"
         fill="#5a3220" stroke="#cfc5b2" strokeWidth="1.5"
+        initial={{ d: "M40 80 L100 120 L100 95 Q70 60 40 55 Z" }}
         animate={{ d: isActive ? "M40 80 L100 115 L100 90 Q70 55 40 50 Z" : "M40 80 L100 120 L100 95 Q70 60 40 55 Z" }}
         transition={{ duration: 0.6, delay: 0.3 }}
       />
       <motion.path
-        d="M160 80 L100 120 L100 95 Q130 60 160 55 Z"
         fill="#5a3220" stroke="#cfc5b2" strokeWidth="1.5"
+        initial={{ d: "M160 80 L100 120 L100 95 Q130 60 160 55 Z" }}
         animate={{ d: isActive ? "M160 80 L100 115 L100 90 Q130 55 160 50 Z" : "M160 80 L100 120 L100 95 Q130 60 160 55 Z" }}
         transition={{ duration: 0.6, delay: 0.3 }}
       />
@@ -285,7 +286,7 @@ export default function HowToWear() {
 
   if (!isDesktop) {
     return (
-      <section id="how-to-wear-print-section" className="bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
+      <section id="how-to-wear-print-section" ref={containerRef} className="relative bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">

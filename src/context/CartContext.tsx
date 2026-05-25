@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { Product } from '../data/products';
 
 export interface CartItem {
@@ -21,8 +21,24 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const local = localStorage.getItem('gamen_cart');
+      return local ? JSON.parse(local) : [];
+    } catch (err) {
+      console.warn('Failed to parse cart from localStorage:', err);
+      return [];
+    }
+  });
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('gamen_cart', JSON.stringify(items));
+    } catch (err) {
+      console.warn('Failed to save cart to localStorage:', err);
+    }
+  }, [items]);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
