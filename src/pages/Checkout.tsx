@@ -192,6 +192,7 @@ export default function Checkout() {
                 rows={3}
                 autoComplete="street-address"
                 required
+                aria-label="Delivery Address"
                 className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[80px]"
               />
             </div>
@@ -210,6 +211,7 @@ export default function Checkout() {
                 onChange={handleChange}
                 placeholder="Gift wrapping, special requests, gifting occasion…"
                 rows={2}
+                aria-label="Order Notes"
                 className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[60px]"
               />
             </div>
@@ -336,6 +338,7 @@ function InputField({
         autoCapitalize={name === 'email' ? 'none' : 'words'}
         autoCorrect={name === 'email' ? 'off' : 'on'}
         spellCheck={name !== 'email'}
+        aria-label={label.replace(' *', '')}
         className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors min-h-[48px]"
       />
     </div>

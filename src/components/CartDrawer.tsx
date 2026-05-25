@@ -109,7 +109,7 @@ export default function CartDrawer() {
               </div>
               <button 
                 onClick={() => setIsOpen(false)} 
-                className="p-3 -mr-3 text-champagne-gold/60 hover:text-champagne-gold transition-colors min-w-[48px] min-h-[48px] flex items-center justify-center"
+                className="w-12 h-12 -mr-3 flex items-center justify-center text-champagne-gold/60 hover:text-champagne-gold transition-colors touch-manipulation"
                 aria-label="Close cart"
               >
                 <X size={24} strokeWidth={1} />
@@ -155,7 +155,7 @@ export default function CartDrawer() {
                     </div>
                     <button
                       onClick={() => removeItem(item.product.id)}
-                      className="text-warm-cream/30 hover:text-warm-cream/60 transition-colors p-3 -m-3 min-w-[48px] min-h-[48px] flex items-center justify-center self-start"
+                      className="w-12 h-12 -m-3 flex items-center justify-center text-warm-cream/30 hover:text-warm-cream/60 transition-colors self-start touch-manipulation"
                       aria-label="Remove item"
                     >
                       <X size={14} />

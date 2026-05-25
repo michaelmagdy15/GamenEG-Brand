@@ -46,7 +46,7 @@ export interface Order {
 // ─── ORDERS ──────────────────────────────────────────────────────────────────
 
 export async function saveOrder(order: Omit<Order, 'id' | 'createdAt'>): Promise<string> {
-  const docRef = await addDoc(collection(db, 'orders'), {
+  const docRef = await addDoc(collection(db, 'gamen_orders'), {
     ...order,
     createdAt: serverTimestamp(),
   });
@@ -54,19 +54,19 @@ export async function saveOrder(order: Omit<Order, 'id' | 'createdAt'>): Promise
 }
 
 export async function getOrders(): Promise<Order[]> {
-  const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(50));
+  const q = query(collection(db, 'gamen_orders'), orderBy('createdAt', 'desc'), limit(50));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Order));
 }
 
 export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<void> {
-  await updateDoc(doc(db, 'orders', orderId), { status });
+  await updateDoc(doc(db, 'gamen_orders', orderId), { status });
 }
 
 export async function sendEmailNotification(order: Order, ownerEmail: string = 'michaelmitry13@gmail.com') {
-  // We add a document to the "mail" collection. 
+  // We add a document to the "gamen_mail" collection. 
   // The Firebase "Trigger Email" extension will listen to this collection and send the email.
-  await addDoc(collection(db, 'mail'), {
+  await addDoc(collection(db, 'gamen_mail'), {
     to: [order.customer.email, ownerEmail],
     message: {
       subject: `Order Confirmation - GAMÉN (${order.orderRef})`,
@@ -94,13 +94,13 @@ export async function sendEmailNotification(order: Order, ownerEmail: string = '
 // ─── PRODUCTS ──────────────────────────────────────────────────────────────────
 
 export async function getProducts(): Promise<Product[]> {
-  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, 'gamen_products'), orderBy('createdAt', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
 }
 
 export async function addProduct(product: Omit<Product, 'id'>): Promise<string> {
-  const docRef = await addDoc(collection(db, 'products'), {
+  const docRef = await addDoc(collection(db, 'gamen_products'), {
     ...product,
     createdAt: serverTimestamp(),
   });
@@ -108,11 +108,11 @@ export async function addProduct(product: Omit<Product, 'id'>): Promise<string> 
 }
 
 export async function updateProduct(id: string, data: Partial<Product>): Promise<void> {
-  await updateDoc(doc(db, 'products', id), data as Record<string, unknown>);
+  await updateDoc(doc(db, 'gamen_products', id), data as Record<string, unknown>);
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  await deleteDoc(doc(db, 'products', id));
+  await deleteDoc(doc(db, 'gamen_products', id));
 }
 
 // ─── ADMIN PRODUCTS & OVERRIDES ──────────────────────────────────────────────
@@ -123,15 +123,15 @@ export interface AdminProduct extends Partial<Product> {
 }
 
 export async function getAdminProducts(): Promise<AdminProduct[]> {
-  const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, 'gamen_products'), orderBy('createdAt', 'desc'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as AdminProduct));
 }
 
 export async function updateAdminProduct(id: string, data: Partial<AdminProduct>): Promise<void> {
-  await updateDoc(doc(db, 'products', id), data as Record<string, unknown>);
+  await updateDoc(doc(db, 'gamen_products', id), data as Record<string, unknown>);
 }
 
 export async function deleteAdminProduct(id: string): Promise<void> {
-  await deleteDoc(doc(db, 'products', id));
+  await deleteDoc(doc(db, 'gamen_products', id));
 }
