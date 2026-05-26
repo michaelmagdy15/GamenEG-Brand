@@ -224,11 +224,13 @@ export default function AtelierExperience() {
           </div>
 
           {/* 2. Product name in natural flex flow (below the image) */}
-          <div className="mt-3 md:mt-6 text-center max-w-xs px-4">
-            <h3 className="text-base sm:text-xl font-header text-warm-cream tracking-wide">
-              {activeProduct.name}
-            </h3>
-          </div>
+          {activeCategoryId !== 'signature' && (
+            <div className="mt-3 md:mt-6 text-center max-w-xs px-4">
+              <h3 className="text-base sm:text-xl font-header text-warm-cream tracking-wide">
+                {activeProduct.name}
+              </h3>
+            </div>
+          )}
 
           {/* 3. Interactive Sub-Product Thumbnails (No box frames, no text, just clean floating bow ties) */}
           <div className="relative mt-4 sm:mt-6 flex justify-center gap-6 sm:gap-8 z-20">

@@ -65,17 +65,34 @@ export default function SignatureUnboxing() {
   useEffect(() => {
     if (!imagesLoaded || !hasEnteredView) return;
 
-    let frame = 0;
-    const interval = setInterval(() => {
-      if (frame < FRAMES.length - 1) {
-        frame++;
-        setCurrentFrame(frame);
-      } else {
-        clearInterval(interval);
-      }
-    }, 60);
+    setCurrentFrame(0);
 
-    return () => clearInterval(interval);
+    let intervalId: any;
+    
+    // Perfect time sequence parameters:
+    // 1. A 600ms initial closed box delay to display the closed luxury box after entering view
+    const startTimeout = setTimeout(() => {
+      let frame = 0;
+      
+      // 2. 800ms smooth frame cycle opening
+      const totalDuration = 800;
+      const frameTransitions = FRAMES.length - 1;
+      const intervalDuration = totalDuration / frameTransitions; // ~53.33ms per frame
+      
+      intervalId = setInterval(() => {
+        if (frame < FRAMES.length - 1) {
+          frame++;
+          setCurrentFrame(frame);
+        } else {
+          clearInterval(intervalId);
+        }
+      }, intervalDuration);
+    }, 600);
+
+    return () => {
+      clearTimeout(startTimeout);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [imagesLoaded, hasEnteredView]);
 
   return (

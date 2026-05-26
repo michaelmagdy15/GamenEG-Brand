@@ -182,6 +182,30 @@ export const products: Product[] = [
     careNote:
       'Λvoid submerging in water. Wipe with a slightly damp cloth if needed. Λpply wood conditioner every 6 months. Store in the included box when not worn.',
   },
+  {
+    id: 'w-forme-du-temps',
+    slug: 'forme-du-temps',
+    name: 'GΛMÉN Forme du Temps',
+    category: 'watch',
+    collection: 'watches',
+    price: 299,
+    tagline: 'The modern geometry of time.',
+    description:
+      'A bold, square-profile timepiece that redefines wooden watchmaking. The Forme du Temps features a striking angular design that perfectly balances the organic warmth of wood with sharp, modern architectural lines.',
+    image: brandAssets.formeDuTempsWatch,
+    heroImage: brandAssets.epoqueWatchJpg,
+    wood: 'Dark Walnut & Stainless Steel',
+    details: [
+      'Bold square-profile walnut case',
+      'Precision automatic movement',
+      'Minimalist dial design',
+      'Premium leather and wood hybrid strap',
+      'Water resistant to 3 ATM',
+      "Comes in luxury GΛMÉN collector's box",
+    ],
+    careNote:
+      'Keep away from strong magnetic fields. Wipe gently to clean. Store in its box to prevent scratches.',
+  },
 ];
 
 export const getProductBySlug = (slug: string): Product | undefined =>

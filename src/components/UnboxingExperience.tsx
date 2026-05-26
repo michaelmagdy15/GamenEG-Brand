@@ -20,6 +20,33 @@ const FRAMES = [
   'gamenbox_000000_0000_gamenbox_000015.png'
 ];
 
+const SPARKLES = [
+  { x: -110, y: -90, delay: 0.25, size: 14, rotate: 15 },
+  { x: 120, y: -70, delay: 0.35, size: 10, rotate: 45 },
+  { x: -130, y: 40, delay: 0.15, size: 12, rotate: -25 },
+  { x: 100, y: 90, delay: 0.45, size: 8, rotate: 35 },
+  { x: -50, y: -140, delay: 0.3, size: 16, rotate: 10 },
+  { x: 60, y: 120, delay: 0.4, size: 10, rotate: -15 },
+  { x: -140, y: -30, delay: 0.2, size: 8, rotate: 50 },
+  { x: 140, y: 10, delay: 0.5, size: 12, rotate: -40 },
+];
+
+function SparkleIcon({ size, color }: { size: number; color: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={color}
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ filter: 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.8))' }}
+      className="pointer-events-none"
+    >
+      <path d="M12 0L14.8 9.2L24 12L14.8 14.8L12 24L9.2 14.8L0 12L9.2 9.2L12 0Z" />
+    </svg>
+  );
+}
+
 interface UnboxingExperienceProps {
   productImage: string;
   productName: string;
@@ -65,25 +92,42 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
   }, [productImage]);
 
   useEffect(() => {
-    if (!imagesLoaded) return;
+    if (!imagesLoaded) {
+      setCurrentFrame(0);
+      setIsUnboxed(false);
+      return;
+    }
+
+    // Explicitly guarantee starting fully closed (frame 0) and not unboxed
+    setCurrentFrame(0);
+    setIsUnboxed(false);
 
     let intervalId: any;
     
-    // A elegant 800ms delay to display the closed box and initial product visual
+    // Perfect time sequence parameters:
+    // 1. A 600ms initial closed box delay to display the closed luxury box
     const startTimeout = setTimeout(() => {
       let frame = 0;
+      
+      // 2. 800ms smooth frame cycle opening
+      const totalDuration = 800;
+      const frameTransitions = FRAMES.length - 1;
+      const intervalDuration = totalDuration / frameTransitions; // ~53.33ms per frame
+      
       intervalId = setInterval(() => {
         if (frame < FRAMES.length - 1) {
           frame++;
           setCurrentFrame(frame);
         } else {
           clearInterval(intervalId);
+          
+          // 3. A 300ms deliberate pause at fully opened box state before product emergence
           setTimeout(() => {
             setIsUnboxed(true);
-          }, 300); // slight delay before product rising
+          }, 300);
         }
-      }, 60); // ~16 fps for a smooth opening
-    }, 800);
+      }, intervalDuration);
+    }, 600);
 
     return () => {
       clearTimeout(startTimeout);
@@ -100,38 +144,38 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
     },
     shrinking: {
       opacity: 0,
-      scale: 0.15,
-      y: 80, // shrink and move into the box
+      scale: 0.05,
+      y: 160, // sink deep into the bottom of the box
       filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))',
       transition: {
-        duration: 0.5,
+        duration: 0.45,
         ease: [0.32, 0, 0.67, 0] as const // fast ease-in for fading/shrinking down into the box
       }
     },
     reveal: {
       opacity: 1,
-      scale: 1.15, // spectacular scale-up
-      y: -30, // 'y: -30px' spring rise-up as requested
-      filter: 'drop-shadow(0 0 25px rgba(212, 175, 55, 0.95)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.55))', // gold radial drop shadow + physical dark shadow
+      scale: 1.25, // dramatic grand scale-up
+      y: -100, // rise up high above the box for maximum dramatic emphasis
+      filter: 'drop-shadow(0 4px 12px rgba(43, 20, 12, 0.45)) drop-shadow(0 0 35px rgba(215, 185, 115, 0.9)) drop-shadow(0 20px 45px rgba(43, 20, 12, 0.35))', // enhanced luxury gold glow and layered design-themed drop shadow
       transition: {
         y: {
           type: 'spring',
-          stiffness: 110,  // robust springiness
-          damping: 11,     // subtle premium overshoot bounce
-          mass: 0.75,
+          stiffness: 150,  // high energy snap
+          damping: 12,     // lower damping relative to stiffness for a pronounced, professional overshoot bounce
+          mass: 0.65,      // lightweight feel for punchy acceleration
         },
         scale: {
           type: 'spring',
-          stiffness: 110,
-          damping: 11,
-          mass: 0.75,
+          stiffness: 160,
+          damping: 14,
+          mass: 0.7,
         },
         opacity: {
-          duration: 0.35,
+          duration: 0.3,
           ease: 'easeOut'
         },
         filter: {
-          duration: 1.2,
+          duration: 1.4,
           ease: 'easeOut'
         }
       }
@@ -173,49 +217,150 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
             animate={getAnimationState()}
             className="absolute z-10 max-w-[75%] max-h-[75%] flex items-center justify-center pointer-events-none select-none"
           >
-            {/* Spectacular Radial Shimmer Glow Backdrop */}
+            {/* Spectacular Multi-Layered Radial Shimmer Glow Backdrop */}
             {isUnboxed && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.3 }}
-                animate={{
-                  opacity: [0, 0.9, 0.7, 0],
-                  scale: [0.3, 1.25, 1.75, 2.2],
-                }}
-                transition={{
-                  duration: 1.6,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.15,
-                }}
-                className="absolute w-[280px] h-[280px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.8)_0%,rgba(212,175,55,0.2)_45%,transparent_70%)] blur-2xl z-0"
-              />
-            )}
-
-            {/* Image container holds the sweep shimmer sheen */}
-            <div className="relative overflow-hidden rounded-2xl flex items-center justify-center p-2">
-              <img
-                src={productImage}
-                alt={productName}
-                className="max-w-full max-h-[280px] lg:max-h-[320px] object-contain z-10"
-              />
-
-              {/* Shimmer Sweep Sheen Flash */}
-              {isUnboxed && (
+              <>
+                {/* Elegant, deep breathing gold background glow that stays */}
                 <motion.div
-                  initial={{ x: '-150%', opacity: 0 }}
+                  initial={{ opacity: 0, scale: 0.5 }}
                   animate={{
-                    x: '150%',
-                    opacity: [0, 1, 1, 0],
+                    opacity: [0.3, 0.65, 0.3],
+                    scale: [0.95, 1.05, 0.95],
                   }}
                   transition={{
-                    duration: 1.4,
-                    ease: [0.16, 1, 0.3, 1],
-                    times: [0, 0.2, 0.7, 1],
-                    delay: 0.2,
+                    opacity: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                    scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                    default: { duration: 1.2, ease: "easeOut" }
                   }}
-                  className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-12 z-20 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(215, 185, 115, 0.35) 0%, rgba(215, 185, 115, 0.1) 50%, transparent 70%)',
+                    filter: 'blur(35px)',
+                  }}
+                  className="absolute w-[340px] h-[340px] rounded-full z-0 pointer-events-none"
                 />
-              )}
-            </div>
+
+                {/* Instant high-energy golden flash expansion */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.2 }}
+                  animate={{
+                    opacity: [0, 1, 0.8, 0],
+                    scale: [0.2, 2.4],
+                  }}
+                  transition={{
+                    duration: 1.8,
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: 0.1,
+                  }}
+                  style={{
+                    background: 'radial-gradient(circle, rgba(255, 236, 179, 0.85) 0%, rgba(215, 185, 115, 0.3) 45%, transparent 70%)',
+                    filter: 'blur(20px)',
+                  }}
+                  className="absolute w-[300px] h-[300px] rounded-full z-0 pointer-events-none"
+                />
+
+                {/* Concentric Luxury Ring Halos rotating in opposite directions */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 0.25, scale: 1 }}
+                  transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                  className="absolute w-[320px] h-[320px] rounded-full border border-dashed border-champagne-gold/25 z-0 pointer-events-none animate-slow-spin"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 0.15, scale: 0.85 }}
+                  transition={{ duration: 1.5, ease: "easeOut", delay: 0.3 }}
+                  className="absolute w-[320px] h-[320px] rounded-full border border-double border-champagne-gold/20 z-0 pointer-events-none animate-slow-spin-reverse"
+                />
+
+                {/* Magical Sparkle Burst */}
+                {SPARKLES.map((sparkle, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ x: 0, y: 0, scale: 0, opacity: 0, rotate: 0 }}
+                    animate={{
+                      x: sparkle.x,
+                      y: sparkle.y,
+                      scale: [0, 1.25, 0.85, 0],
+                      opacity: [0, 1, 1, 0],
+                      rotate: sparkle.rotate + 180,
+                    }}
+                    transition={{
+                      duration: 1.8,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: sparkle.delay,
+                    }}
+                    className="absolute z-30 pointer-events-none"
+                  >
+                    <SparkleIcon size={sparkle.size} color={idx % 2 === 0 ? '#f5e6c8' : '#e5c158'} />
+                  </motion.div>
+                ))}
+              </>
+            )}
+
+            {/* Inner Floating wrapper for gentle weightless suspension */}
+            <motion.div
+              animate={isUnboxed ? {
+                y: [-4, 4, -4],
+              } : {}}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="relative flex items-center justify-center p-2"
+            >
+              {/* Image container holds the sweep shimmer sheen */}
+              <div className="relative overflow-hidden rounded-2xl flex items-center justify-center p-2">
+                <img
+                  src={productImage}
+                  alt={productName}
+                  className="max-w-full max-h-[280px] lg:max-h-[320px] object-contain z-10"
+                />
+
+                {/* Double Shimmer Sweep Sheen Flash */}
+                {isUnboxed && (
+                  <>
+                    {/* Primary intense white-gold reflection sweep */}
+                    <motion.div
+                      initial={{ x: '-150%', opacity: 0 }}
+                      animate={{
+                        x: '150%',
+                        opacity: [0, 1, 1, 0],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        ease: [0.16, 1, 0.3, 1],
+                        times: [0, 0.2, 0.8, 1],
+                        delay: 0.3,
+                      }}
+                      style={{
+                        background: 'linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.75) 45%, rgba(255, 244, 215, 0.95) 50%, rgba(255, 255, 255, 0.75) 55%, rgba(255, 255, 255, 0) 70%, transparent 80%)'
+                      }}
+                      className="absolute inset-y-0 w-full -skew-x-20 z-20 pointer-events-none"
+                    />
+
+                    {/* Secondary subtle champagne-gold follow-up reflection sweep */}
+                    <motion.div
+                      initial={{ x: '-150%', opacity: 0 }}
+                      animate={{
+                        x: '150%',
+                        opacity: [0, 0.8, 0.8, 0],
+                      }}
+                      transition={{
+                        duration: 1.1,
+                        ease: [0.16, 1, 0.3, 1],
+                        times: [0, 0.15, 0.85, 1],
+                        delay: 0.75,
+                      }}
+                      style={{
+                        background: 'linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0) 40%, rgba(207, 197, 178, 0.55) 50%, rgba(255, 255, 255, 0) 60%, transparent 70%)'
+                      }}
+                      className="absolute inset-y-0 w-full -skew-x-20 z-20 pointer-events-none"
+                    />
+                  </>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </div>

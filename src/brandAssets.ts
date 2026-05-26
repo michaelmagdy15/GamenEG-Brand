@@ -8,6 +8,7 @@ export const brandAssets = {
   darkClassicBowTie: '/Images/NEW/l\'eclat.png',
   gamenClassique: '/Images/categories/gamen_classique.png',
   epoqueWatch: '/Images/NEW/gamen epoque.png',
+  formeDuTempsWatch: '/Images/NEW/gamen forme du temps.png',
 
   // Full source images (for product detail backgrounds/hero images)
   heroBowTieJpg: '/Images/IMG_2217.PNG',

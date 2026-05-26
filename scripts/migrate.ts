@@ -171,8 +171,8 @@ const staticProducts = [
     price: 3500,
     tagline: 'Time, carved from nature.',
     description: 'The GΛMÉN Époque extends our woodcraft philosophy to the wrist with a classic circular profile. A fully handcrafted wooden timepiece featuring a walnut case, stainless steel movement housing, and a multi-link wooden bracelet.',
-    image: '/assets/Epoque-Watch.png',
-    heroImage: '/assets/Epoque-Watch.jpg',
+    image: '/Images/NEW/gamen epoque.png',
+    heroImage: '/Images/IMG_2486.JPG.jpeg',
     wood: 'Walnut & Stainless Steel',
     details: [
       'Handcrafted walnut case — 42mm circular diameter',
@@ -193,8 +193,8 @@ const staticProducts = [
     price: 4000,
     tagline: 'The modern geometry of time.',
     description: 'A bold, square-profile timepiece that redefines wooden watchmaking. The Forme du Temps features a striking angular design that perfectly balances the organic warmth of wood with sharp, modern architectural lines.',
-    image: '/assets/Epoque-Watch.png',
-    heroImage: '/assets/Epoque-Watch.jpg',
+    image: '/Images/NEW/gamen forme du temps.png',
+    heroImage: '/Images/IMG_2486.JPG.jpeg',
     wood: 'Dark Walnut & Stainless Steel',
     details: [
       'Bold square-profile walnut case',

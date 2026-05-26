@@ -1,28 +1,9 @@
 import { motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import type { ProductCollection, Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
-
-const FRAMES = [
-  'gamenbox_000000_0015_Layer-1.png',
-  'gamenbox_000000_0014_gamenbox_000001.png',
-  'gamenbox_000000_0013_gamenbox_000002.png',
-  'gamenbox_000000_0012_gamenbox_000003.png',
-  'gamenbox_000000_0011_gamenbox_000004.png',
-  'gamenbox_000000_0010_gamenbox_000005.png',
-  'gamenbox_000000_0009_gamenbox_000006.png',
-  'gamenbox_000000_0008_gamenbox_000007.png',
-  'gamenbox_000000_0007_gamenbox_000008.png',
-  'gamenbox_000000_0006_gamenbox_000009.png',
-  'gamenbox_000000_0005_gamenbox_000010.png',
-  'gamenbox_000000_0004_gamenbox_000011.png',
-  'gamenbox_000000_0003_gamenbox_000012.png',
-  'gamenbox_000000_0002_gamenbox_000013.png',
-  'gamenbox_000000_0001_gamenbox_000014.png',
-  'gamenbox_000000_0000_gamenbox_000015.png'
-];
 
 interface ProductCardProps {
   product: Product;
@@ -32,46 +13,21 @@ interface ProductCardProps {
 
 function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
   const navigate = useNavigate();
-  const [state, setState] = useState<'idle' | 'unboxing' | 'revealed'>('idle');
-  const [currentFrame, setCurrentFrame] = useState(0);
 
-  // Trigger unboxing on card click
+  // Navigate to details on card click
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent event handling if user clicked on button or link element
     if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) {
       return;
     }
-
-    if (state === 'idle') {
-      setState('unboxing');
-    } else if (state === 'revealed') {
-      navigate(`/product/${product.slug}`);
-    }
+    navigate(`/product/${product.slug}`);
   };
-
-  useEffect(() => {
-    if (state !== 'unboxing') return;
-
-    let frame = 0;
-    setCurrentFrame(0);
-    const interval = setInterval(() => {
-      if (frame < FRAMES.length - 1) {
-        frame++;
-        setCurrentFrame(frame);
-      } else {
-        clearInterval(interval);
-        setState('revealed');
-      }
-    }, 60); // Cycle at roughly 16 frames per second (~62.5ms, 60ms is perfectly smooth)
-
-    return () => clearInterval(interval);
-  }, [state]);
 
   if (product.isSoldOut) {
     return (
       <div className="block opacity-80 cursor-not-allowed">
         <div className="aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box" style={{ perspective: '1200px' }}>
-          <div className="relative w-full h-full rounded-2xl border border-champagne-gold/10 bg-gradient-to-br from-warm-cream/5 to-transparent transform-style-3d">
+          <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
             
             {/* Sold Out Badge */}
             <div className="absolute top-4 right-4 z-30 bg-espresso/90 border border-champagne-gold/30 px-3 py-1 rounded-full">
@@ -97,9 +53,7 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
                 loading="lazy"
               />
             </div>
-            
-            {/* Inner Shadow / Depth */}
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
+
           </div>
         </div>
 
@@ -139,76 +93,45 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
   return (
     <div 
       onClick={handleCardClick}
-      className={`block transition-all duration-500 cursor-pointer ${
-        state === 'revealed' ? 'hover:-translate-y-2' : ''
-      }`}
+      className="block transition-all duration-500 cursor-pointer hover:-translate-y-2"
     >
       <div 
-        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 ${
-          state === 'revealed' ? 'border border-champagne-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)]' : 'border border-champagne-gold/10'
-        }`} 
+        className="aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 border border-champagne-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)]"
         style={{ perspective: '1200px' }}
       >
-        <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-warm-cream/5 to-transparent transform-style-3d">
+        <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
           
-          {/* Box Sequence Background */}
+          {/* Box Sequence Background (Blury Presentation Box) */}
           <div className="absolute inset-0 flex items-center justify-center z-0 p-8 pointer-events-none">
             <img
-              src={`/unboxing/${FRAMES[currentFrame]}`}
+              src="/unboxing/gamenbox_000000_0000_gamenbox_000015.png"
               alt={`GAMÉN ${product.name} Presentation Box`}
-              className={`w-full h-full object-contain transition-[opacity,transform] duration-500 ${
-                state === 'idle' ? 'opacity-60 scale-95' : 'opacity-85 scale-100'
-              }`}
+              className="w-full h-full object-contain opacity-85 scale-100"
               style={{
-                filter: `blur(${12 * (1 - currentFrame / (FRAMES.length - 1))}px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))`
+                filter: 'blur(12px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))'
               }}
               loading="lazy"
             />
           </div>
 
-          {/* Interactive Lock Overlay in Idle State */}
-          {state === 'idle' && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/45 backdrop-blur-[2px] transition-all duration-500 opacity-0 group-hover/box:opacity-100 rounded-2xl">
-              <motion.div 
-                animate={{ scale: [1, 1.08, 1] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="flex flex-col items-center gap-3"
-              >
-                <div className="w-12 h-12 rounded-full border border-champagne-gold/40 flex items-center justify-center bg-espresso/90 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-champagne-gold">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                  </svg>
-                </div>
-                <span className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold font-bold">Tap to Unbox</span>
-              </motion.div>
-            </div>
-          )}
+          {/* Premium Ambient Radial Glow */}
+          <div className="absolute inset-0 z-5 pointer-events-none flex items-center justify-center">
+            <div className="w-4/5 h-4/5 rounded-full bg-champagne-gold/15 blur-[45px] animate-pulse" />
+          </div>
 
-          {/* Premium Ambient Radial Glow in Revealed State */}
-          {state === 'revealed' && (
-            <div className="absolute inset-0 z-5 pointer-events-none flex items-center justify-center">
-              <div className="w-4/5 h-4/5 rounded-full bg-champagne-gold/15 blur-[45px] animate-pulse" />
-            </div>
-          )}
-
-          {/* The Product Image - Only emerges and glows in revealed state */}
+          {/* The Product Image - Immediately sharp, unblurred, and visible */}
           <div className="absolute inset-0 flex items-center justify-center p-8 z-10 pointer-events-none">
-            {state === 'revealed' ? (
-              <motion.img
-                src={product.image}
-                alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
-                initial={{ opacity: 0, y: 100, scale: 0.5 }}
-                animate={{ opacity: 1, y: -20, scale: 1.08 }}
-                whileHover={{ y: -30, scale: 1.18 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-                className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] filter saturate-[1.1] contrast-[1.05]"
-                loading="lazy"
-              />
-            ) : null}
+            <motion.img
+              src={product.image}
+              alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
+              initial={{ opacity: 1, y: -20, scale: 1.08 }}
+              whileHover={{ y: -30, scale: 1.18 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
+              className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] filter saturate-[1.1] contrast-[1.05]"
+              loading="lazy"
+            />
           </div>
           
-          {/* Inner Shadow / Depth */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
         </div>
       </div>
 
@@ -235,52 +158,33 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
 
       {/* Action Buttons */}
       <div className="mt-6 px-2 flex gap-4">
-        {state === 'revealed' ? (
-          <>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                addItem(product);
-              }}
-              className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
-                isHeritage
-                  ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
-                  : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
-              }`}
-            >
-              Add
-            </button>
-            <Link
-              to={`/product/${product.slug}`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border text-center ${
-                isHeritage
-                  ? 'bg-espresso text-warm-cream border-espresso hover:bg-transparent hover:text-espresso hover:border-deep-walnut/30'
-                  : 'bg-champagne-gold text-deep-walnut border-champagne-gold hover:bg-transparent hover:text-champagne-gold hover:border-champagne-gold/20'
-              }`}
-            >
-              View Details
-            </Link>
-          </>
-        ) : (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setState('unboxing');
-            }}
-            className={`w-full py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border ${
-              isHeritage
-                ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
-                : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
-            }`}
-          >
-            {state === 'unboxing' ? 'Unboxing...' : 'Unbox to View'}
-          </button>
-        )}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            addItem(product);
+          }}
+          className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
+            isHeritage
+              ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
+              : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
+          }`}
+        >
+          Add
+        </button>
+        <Link
+          to={`/product/${product.slug}`}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border text-center ${
+            isHeritage
+              ? 'bg-espresso text-warm-cream border-espresso hover:bg-transparent hover:text-espresso hover:border-deep-walnut/30'
+              : 'bg-champagne-gold text-deep-walnut border-champagne-gold hover:bg-transparent hover:text-champagne-gold hover:border-champagne-gold/20'
+          }`}
+        >
+          View Details
+        </Link>
       </div>
     </div>
   );
@@ -318,12 +222,10 @@ export default function Shop() {
   const collections: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
   const heritageSectionRef = useRef<HTMLElement>(null);
 
-  // Preload unboxing frames on mount
+  // Preload unboxing frames on mount and hold them in a ref to prevent garbage collection
   useEffect(() => {
-    FRAMES.forEach((frame) => {
-      const img = new Image();
-      img.src = `/unboxing/${frame}`;
-    });
+    const img = new Image();
+    img.src = '/unboxing/gamenbox_000000_0000_gamenbox_000015.png';
   }, []);
 
   return (
@@ -425,6 +327,7 @@ export default function Shop() {
           );
         })}
       </div>
+
     </main>
   );
 }
