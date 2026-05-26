@@ -152,7 +152,7 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
       opacity: 1,
       scale: 1.0, // Fits perfectly on mobile screens
       y: -30, // Rises elegantly above the open box without overflowing or overlapping navigation
-      filter: 'drop-shadow(0 4px 12px rgba(43, 20, 12, 0.3)) drop-shadow(0 0 25px rgba(215, 185, 115, 0.75)) drop-shadow(0 10px 25px rgba(43, 20, 12, 0.2))', // luxury gold glow backdrop
+      filter: 'drop-shadow(0 4px 12px rgba(43, 20, 12, 0.2)) drop-shadow(0 10px 25px rgba(43, 20, 12, 0.15))', // clean natural wood shadows
       transition: {
         y: {
           type: 'spring',
@@ -292,48 +292,7 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
                   className="max-w-full max-h-[280px] lg:max-h-[320px] object-contain z-10"
                 />
 
-                {/* Double Shimmer Sweep Sheen Flash */}
-                {isUnboxed && (
-                  <>
-                    {/* Primary intense white-gold reflection sweep */}
-                    <motion.div
-                      initial={{ x: '-150%', opacity: 0 }}
-                      animate={{
-                        x: '150%',
-                        opacity: [0, 1, 1, 0],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        ease: [0.16, 1, 0.3, 1],
-                        times: [0, 0.2, 0.8, 1],
-                        delay: 0.3,
-                      }}
-                      style={{
-                        background: 'linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.75) 45%, rgba(255, 244, 215, 0.95) 50%, rgba(255, 255, 255, 0.75) 55%, rgba(255, 255, 255, 0) 70%, transparent 80%)'
-                      }}
-                      className="absolute inset-y-0 w-full -skew-x-20 z-20 pointer-events-none"
-                    />
 
-                    {/* Secondary subtle champagne-gold follow-up reflection sweep */}
-                    <motion.div
-                      initial={{ x: '-150%', opacity: 0 }}
-                      animate={{
-                        x: '150%',
-                        opacity: [0, 0.8, 0.8, 0],
-                      }}
-                      transition={{
-                        duration: 1.1,
-                        ease: [0.16, 1, 0.3, 1],
-                        times: [0, 0.15, 0.85, 1],
-                        delay: 0.75,
-                      }}
-                      style={{
-                        background: 'linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0) 40%, rgba(207, 197, 178, 0.55) 50%, rgba(255, 255, 255, 0) 60%, transparent 70%)'
-                      }}
-                      className="absolute inset-y-0 w-full -skew-x-20 z-20 pointer-events-none"
-                    />
-                  </>
-                )}
               </div>
             </motion.div>
           </motion.div>
