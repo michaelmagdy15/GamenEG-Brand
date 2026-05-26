@@ -45,18 +45,7 @@ export default function HeroSection() {
         {/* Ambient radial glow */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(207,197,178,0.12),transparent_58%)]" />
 
-        {/* Giant background typography — parallax drift */}
-        <motion.div
-          style={{ y: bgY, opacity: bgOpacity }}
-          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden"
-        >
-          <span className="font-display text-[12vw] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
-            ÉLÉGΛNCE
-          </span>
-          <span className="font-display text-[12vw] sm:text-[72px] md:text-[180px] text-champagne-gold font-light leading-none whitespace-nowrap">
-            TΛILLÉE
-          </span>
-        </motion.div>
+
 
         {/* 3D Scene — fades down as scroll progresses */}
         <motion.div

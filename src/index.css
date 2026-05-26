@@ -61,6 +61,15 @@ body {
   background: var(--color-deep-walnut);
 }
 
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .text-balance {
   text-wrap: balance;
 }
@@ -229,7 +238,17 @@ a, button, [role="button"], input[type="checkbox"], input[type="radio"], select 
   }
 }
 
+/* Kerning balance for the logo wordmark GΛMÉN */
+span.font-lambda {
+  margin-left: -0.06em;
+  margin-right: -0.06em;
+}
 
+/* =============================================
+   RESPONSIVE TYPOGRAPHY (Headlines)
+   Ensures single-line display on mobile viewports
+   and prevents awkward wrapping/orphans.
+   ============================================= */
 @media (max-width: 768px) {
   h1, h2, h3 {
     text-wrap: balance;

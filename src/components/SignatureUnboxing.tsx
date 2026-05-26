@@ -1,4 +1,4 @@
-﻿import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
 
 const INITIALS = ['MW', 'AF', 'MF', 'YG'];

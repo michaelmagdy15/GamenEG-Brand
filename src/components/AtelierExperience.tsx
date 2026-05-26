@@ -26,9 +26,49 @@ const pieces = [
   },
 ];
 
+const signatureEngravings = [
+  {
+    id: 'walnut',
+    name: 'Walnut & Gold',
+    material: 'Walnut Wood',
+    accentColor: 'Gold Monogram',
+    image: brandAssets.heroBowTie,
+    description: 'Rich dark walnut base paired with a brilliant 24k gold monogram engraving.',
+  },
+  {
+    id: 'ebony',
+    name: 'Ebony & Silver',
+    material: 'Ebony Wood',
+    accentColor: 'Silver Monogram',
+    image: brandAssets.darkClassicBowTie,
+    description: 'Deep, charcoal-toned ebony wood accented with a pristine sterling silver monogram.',
+  },
+  {
+    id: 'sycamore',
+    name: 'Sycamore & Bronze',
+    material: 'Sycamore Wood',
+    accentColor: 'Bronze Monogram',
+    image: brandAssets.twoToneBowTie,
+    description: 'Golden sycamore wood adorned with a rustic, hand-polished bronze monogram.',
+  },
+] as const;
+
 export default function AtelierExperience() {
   const [activeId, setActiveId] = useState(pieces[0].id);
-  const activePiece = pieces.find((piece) => piece.id === activeId) ?? pieces[0];
+  const [selectedEngraving, setSelectedEngraving] = useState<'walnut' | 'ebony' | 'sycamore'>('walnut');
+
+  const basePiece = pieces.find((piece) => piece.id === activeId) ?? pieces[0];
+  const isSignatureActive = activeId === 'signature';
+  
+  const currentEngraving = signatureEngravings.find(e => e.id === selectedEngraving) ?? signatureEngravings[0];
+  
+  const activePiece = {
+    ...basePiece,
+    image: isSignatureActive ? currentEngraving.image : basePiece.image,
+    detail: isSignatureActive ? `${currentEngraving.material} with ${currentEngraving.accentColor.toLowerCase()}` : basePiece.detail,
+    accent: isSignatureActive ? currentEngraving.description : basePiece.accent,
+  };
+
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: false, margin: '-100px' });
 
@@ -78,31 +118,77 @@ export default function AtelierExperience() {
             Every bow tie keeps the same sculpted silhouette. The emotion changes with the emblem.
           </motion.p>
 
-          {/* Selection buttons — horizontal on mobile, vertical grid on desktop */}
-          <div className="mt-6 md:mt-12 flex flex-row flex-wrap md:grid gap-2 md:gap-3 max-w-xl justify-center md:justify-start">
-            {pieces.map((piece, i) => (
-              <motion.button
-                key={piece.id}
-                initial={{ opacity: 0, x: -30 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={staggerDelay(3 + i)}
-                onClick={() => setActiveId(piece.id)}
-                className={`group text-left border px-3 py-2 md:px-5 md:py-4 transition-all duration-300 flex-1 md:flex-initial text-center md:text-left ${
-                  activeId === piece.id
-                    ? 'border-champagne-gold bg-champagne-gold text-deep-walnut scale-[1.02]'
-                    : 'border-champagne-gold/20 text-champagne-gold hover:border-champagne-gold/50 hover:bg-champagne-gold/5'
-                }`}
-              >
-                <span className="block font-header text-sm md:text-xl lg:text-2xl whitespace-nowrap">{piece.name}</span>
-                <span
-                  className={`hidden md:block font-body text-xs md:text-sm mt-1 transition-colors ${
-                    activeId === piece.id ? 'text-deep-walnut/70' : 'text-champagne-gold/50'
+          {/* Selection buttons — horizontal/wrap on mobile, vertical grid on desktop */}
+          <div className="mt-6 md:mt-12 flex flex-col sm:flex-row sm:flex-wrap md:grid gap-3 max-w-xl justify-center md:justify-start">
+            {pieces.map((piece, i) => {
+              const isActive = activeId === piece.id;
+              
+              if (piece.id === 'signature' && isActive) {
+                return (
+                  <motion.div
+                    key={piece.id}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={staggerDelay(3 + i)}
+                    className="text-left border px-5 py-4 border-champagne-gold bg-champagne-gold text-deep-walnut scale-[1.02] transition-all duration-300 rounded w-full"
+                  >
+                    <span className="block font-header text-xl sm:text-2xl">{piece.name}</span>
+                    <span className="block font-body text-sm mt-1 text-deep-walnut/70">
+                      {activePiece.detail}
+                    </span>
+                    
+                    {/* Exquisite bespoke engraving options */}
+                    <div className="mt-4 pt-4 border-t border-deep-walnut/15">
+                      <p className="font-accent text-[9px] uppercase tracking-wider mb-2 text-deep-walnut/60 font-semibold">
+                        Bespoke Engravings:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {signatureEngravings.map((engr) => (
+                          <button
+                            key={engr.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedEngraving(engr.id);
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide border transition-all duration-200 cursor-pointer ${
+                              selectedEngraving === engr.id
+                                ? 'bg-deep-walnut text-champagne-gold border-deep-walnut font-bold'
+                                : 'bg-transparent text-deep-walnut/80 border-deep-walnut/20 hover:border-deep-walnut/40'
+                            }`}
+                          >
+                            {engr.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              }
+
+              return (
+                <motion.button
+                  key={piece.id}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={staggerDelay(3 + i)}
+                  onClick={() => setActiveId(piece.id)}
+                  className={`group text-left border px-5 py-4 transition-all duration-300 rounded flex-1 sm:flex-initial ${
+                    isActive
+                      ? 'border-champagne-gold bg-champagne-gold text-deep-walnut scale-[1.02]'
+                      : 'border-champagne-gold/20 text-champagne-gold hover:border-champagne-gold/50 hover:bg-champagne-gold/5'
                   }`}
                 >
-                  {piece.detail}
-                </span>
-              </motion.button>
-            ))}
+                  <span className="block font-header text-xl sm:text-2xl">{piece.name}</span>
+                  <span
+                    className={`block font-body text-sm mt-1 transition-colors ${
+                      isActive ? 'text-deep-walnut/70' : 'text-champagne-gold/50'
+                    }`}
+                  >
+                    {piece.detail}
+                  </span>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
 
@@ -130,7 +216,7 @@ export default function AtelierExperience() {
             {/* Product image with AnimatePresence crossfade */}
             <AnimatePresence mode="wait">
               <motion.div
-                key={activePiece.id}
+                key={activePiece.id + (activeId === 'signature' ? '-' + selectedEngraving : '')}
                 initial={{ opacity: 0, scale: 0.82, rotateY: -15 }}
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 exit={{ opacity: 0, scale: 0.82, rotateY: 15 }}

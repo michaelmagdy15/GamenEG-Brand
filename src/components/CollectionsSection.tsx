@@ -188,6 +188,7 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
                 draggable={false}
               />
             </motion.div>
+
           </div>
         </div>
 
