@@ -1,6 +1,7 @@
 import { motion, useTransform, useMotionValue, useMotionValueEvent, useMotionTemplate } from 'motion/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { preload } from 'react-dom';
 import type { Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { MotionValue } from 'motion/react';
@@ -30,22 +31,61 @@ export default function CollectionsSection() {
   const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
   const { products } = useProductsContext();
   
-  const collections = products.map((p, i) => ({
-    id: i + 1,
-    name: p.name,
-    tagline: p.tagline,
-    image: p.image,
-    wood: p.wood,
-    slug: p.slug,
-    isSoldOut: p.isSoldOut,
-    product: p,
-  }));
+  const collections = useMemo(() => {
+    return products.map((p) => ({
+      id: p.id,
+      name: p.name,
+      tagline: p.tagline,
+      image: p.image,
+      wood: p.wood,
+      slug: p.slug,
+      isSoldOut: p.isSoldOut,
+      product: p,
+    }));
+  }, [products]);
   
   const count = collections.length;
   const x = useMotionValue(0);
 
   const [vw, setVw] = useState(typeof window !== 'undefined' ? window.innerWidth : 1000);
   const [hasDragged, setHasDragged] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const dynamicPinnedImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
+
+  // Track active slide index based on drag/swipe progress
+  useMotionValueEvent(x, 'change', (latest) => {
+    const currentIdx = Math.min(count - 1, Math.max(0, Math.round(-latest / vw)));
+    if (currentIdx !== activeIndex) {
+      setActiveIndex(currentIdx);
+    }
+  });
+
+  // Dynamic image cache-pinning & priority preloading for active/adjacent carousel items
+  useEffect(() => {
+    const adjacentIndices = [activeIndex - 1, activeIndex, activeIndex + 1].filter(
+      i => i >= 0 && i < count
+    );
+    
+    adjacentIndices.forEach(idx => {
+      const item = collections[idx];
+      if (item && item.image) {
+        // Dynamic cache-pinning: instantiate Image in memory and store in persistent map to avoid GC
+        if (!dynamicPinnedImagesRef.current.has(item.image)) {
+          const img = new Image();
+          img.setAttribute('fetchpriority', 'high');
+          img.src = item.image;
+          dynamicPinnedImagesRef.current.set(item.image, img);
+        }
+        
+        // Priority preloading
+        try {
+          preload(item.image, { as: 'image', fetchPriority: 'high' });
+        } catch (e) {
+          // fallback
+        }
+      }
+    });
+  }, [activeIndex, collections, count]);
   
   useEffect(() => {
     const handleResize = () => setVw(window.innerWidth);
@@ -117,16 +157,22 @@ export default function CollectionsSection() {
           onDragStart={() => setHasDragged(true)}
           className="flex items-center h-full cursor-grab active:cursor-grabbing"
         >
-          {collections.map((item, index) => (
-            <CollectionItem 
-              key={item.id} 
-              item={item} 
-              index={index} 
-              count={count} 
-              x={x} 
-              vw={vw} 
-            />
-          ))}
+          {collections.map((item, index) => {
+            const isActive = index === activeIndex;
+            const isAdjacent = Math.abs(index - activeIndex) <= 1;
+            return (
+              <CollectionItem 
+                key={item.id} 
+                item={item} 
+                index={index} 
+                count={count} 
+                x={x} 
+                vw={vw} 
+                isActive={isActive}
+                isAdjacent={isAdjacent}
+              />
+            );
+          })}
         </motion.div>
       </motion.div>
 
@@ -143,7 +189,23 @@ export default function CollectionsSection() {
   );
 }
 
-function CollectionItem({ item, index, count, x, vw }: { item: { id: number; name: string; tagline: string; image: string; wood: string; slug: string; isSoldOut?: boolean; product: Product }, index: number, count: number, x: MotionValue<number>, vw: number }) {
+const CollectionItem = memo(function CollectionItem({ 
+  item, 
+  index, 
+  count, 
+  x, 
+  vw,
+  isActive,
+  isAdjacent
+}: { 
+  item: { id: string; name: string; tagline: string; image: string; wood: string; slug: string; isSoldOut?: boolean; product: Product }, 
+  index: number, 
+  count: number, 
+  x: MotionValue<number>, 
+  vw: number,
+  isActive: boolean,
+  isAdjacent: boolean
+}) {
   const { addItem } = useCart();
   const centerPosition = -index * vw;
   const startPosition = centerPosition + vw * 0.8;
@@ -177,15 +239,22 @@ function CollectionItem({ item, index, count, x, vw }: { item: { id: number; nam
         
 
         <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0 pointer-events-auto" style={{ perspective: '1000px' }}>
-          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0">
-            {/* The Box Sequence */}
-            <motion.img
-              src={`/unboxing/${FRAMES[frameIndex]}`}
-              alt="Box sequence"
-              style={{ filter, opacity: boxOpacity, scale: boxScale }}
-              className="absolute w-full h-full object-contain pointer-events-none"
-              draggable={false}
-            />
+          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0 bg-espresso/30 rounded-2xl">
+            {/* The Box Sequence (Pre-rendered and toggled by opacity to avoid dynamic src-swapping white flash) */}
+            {FRAMES.map((frame, idx) => (
+              <motion.img
+                key={frame}
+                src={`/unboxing/${frame}`}
+                alt="Box sequence"
+                style={{ 
+                  filter, 
+                  opacity: idx === frameIndex ? boxOpacity : 0, 
+                  scale: boxScale 
+                }}
+                className="absolute w-full h-full object-contain pointer-events-none transition-opacity duration-75"
+                draggable={false}
+              />
+            ))}
 
             {/* Sold Out Badge */}
             {item.isSoldOut && (
@@ -205,7 +274,9 @@ function CollectionItem({ item, index, count, x, vw }: { item: { id: number; nam
                 className={`w-full h-full max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl transition-all duration-300 ${
                   item.isSoldOut ? 'grayscale opacity-40 contrast-125' : ''
                 }`}
-                loading="lazy"
+                decoding="async"
+                loading={isAdjacent ? "eager" : "lazy"}
+                fetchPriority={isActive ? "high" : isAdjacent ? "high" : "low"}
                 draggable={false}
               />
             </motion.div>
@@ -250,5 +321,5 @@ function CollectionItem({ item, index, count, x, vw }: { item: { id: number; nam
       </div>
     </div>
   );
-}
+});
 

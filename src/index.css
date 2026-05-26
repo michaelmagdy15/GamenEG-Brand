@@ -289,3 +289,49 @@ span.font-lambda {
     display: none !important;
   }
 }
+
+/* =============================================
+   PREMIUM DARK ESPRESSO SKELETON LOADER ANIMATIONS
+   ============================================= */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.bg-shimmer-espresso {
+  background: linear-gradient(
+    90deg,
+    #180b06 25%,
+    #2b140c 37%,
+    #180b06 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2.2s infinite linear;
+}
+
+.bg-shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    rgba(207, 197, 178, 0.04) 25%,
+    rgba(207, 197, 178, 0.12) 37%,
+    rgba(207, 197, 178, 0.04) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2.2s infinite linear;
+}
+
+.bg-shimmer-cream {
+  background: linear-gradient(
+    90deg,
+    #e8e1d5 25%,
+    #f2eee6 37%,
+    #e8e1d5 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2.2s infinite linear;
+}
+

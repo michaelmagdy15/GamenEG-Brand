@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, memo } from 'react';
 import type { ProductCollection, Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
@@ -11,7 +11,7 @@ interface ProductCardProps {
   addItem: (product: Product) => void;
 }
 
-function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
+const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
   const navigate = useNavigate();
 
   // Navigate to details on card click
@@ -26,7 +26,9 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
   if (product.isSoldOut) {
     return (
       <div className="block opacity-80 cursor-not-allowed">
-        <div className="aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box" style={{ perspective: '1200px' }}>
+        <div className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box ${
+          isHeritage ? 'bg-warm-cream/50' : 'bg-espresso/45'
+        }`} style={{ perspective: '1200px' }}>
           <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
             
             {/* Sold Out Badge */}
@@ -40,7 +42,7 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
                 src="/unboxing/gamenbox_000000_0000_gamenbox_000015.png"
                 alt={`GAMÉN ${product.name} Presentation Box`}
                 className="w-full h-full object-contain opacity-40 grayscale contrast-125"
-                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -50,7 +52,7 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
                 src={product.image}
                 alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
                 className="w-full h-full max-w-[85%] max-h-[85%] object-contain grayscale contrast-125 opacity-40"
-                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -96,7 +98,9 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
       className="block transition-all duration-500 cursor-pointer hover:-translate-y-2"
     >
       <div 
-        className="aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 border border-champagne-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)]"
+        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 border border-champagne-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)] ${
+          isHeritage ? 'bg-warm-cream/50' : 'bg-espresso/45'
+        }`}
         style={{ perspective: '1200px' }}
       >
         <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
@@ -110,7 +114,7 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
               style={{
                 filter: 'blur(12px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))'
               }}
-              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -128,7 +132,7 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
               whileHover={{ y: -30, scale: 1.18 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] filter saturate-[1.1] contrast-[1.05]"
-              loading="lazy"
+              decoding="async"
             />
           </div>
           
@@ -188,12 +192,168 @@ function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
       </div>
     </div>
   );
-}
+});
 
 const HIEROGLYPHS = '𓀀𓀁𓀂𓀃𓀄𓀅𓀆𓀇𓀈𓀉𓀊𓀋𓀌𓀍𓀎𓀏𓀐𓀑𓀒𓀓𓀔𓀕𓀖𓀗𓀘𓀙𓀚𓀛𓀜𓀝𓀞𓀟𓀠𓀡𓀢𓀣𓀤𓀥𓀦𓀧𓀨𓀩𓀪𓀫𓀬𓀭𓀮𓀯';
 const hieroglyphRows = Array.from({ length: 10 }, () =>
   Array.from({ length: 28 }, () => HIEROGLYPHS[Math.floor(Math.random() * HIEROGLYPHS.length)]).join('')
 );
+
+const HieroglyphicBackground = memo(function HieroglyphicBackground() {
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {hieroglyphRows.map((row, idx) => (
+        <motion.div
+          key={idx}
+          className="whitespace-nowrap font-serif text-[2.5rem] tracking-[0.8em] text-deep-walnut/[0.04] leading-none select-none"
+          animate={{ x: idx % 2 === 0 ? [0, -60] : [-60, 0] }}
+          transition={{ duration: 35 + idx * 4, repeat: Infinity, ease: 'linear', repeatType: 'mirror' }}
+        >
+          {row}
+        </motion.div>
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-b from-warm-cream via-transparent to-warm-cream" />
+      <div className="absolute inset-0 bg-gradient-to-r from-warm-cream via-transparent to-warm-cream" />
+    </div>
+  );
+});
+
+function ProductCardSkeleton({ isHeritage }: { isHeritage: boolean }) {
+  return (
+    <div>
+      <div 
+        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden border ${
+          isHeritage 
+            ? 'border-deep-walnut/15 bg-[#e5decf]' 
+            : 'border-champagne-gold/10 bg-espresso/30'
+        }`}
+      >
+        {/* Shimmer gradient overlay */}
+        <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-85`} />
+        
+        {/* Premium ambient radial glow */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <div className={`w-3/5 h-3/5 rounded-full blur-[35px] ${
+            isHeritage ? 'bg-deep-walnut/5' : 'bg-champagne-gold/5'
+          }`} />
+        </div>
+
+        {/* Outer watch/box outline placeholder */}
+        <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className={`w-3/4 h-3/4 rounded-full border border-dashed ${
+            isHeritage ? 'border-deep-walnut/10' : 'border-champagne-gold/10'
+          } flex items-center justify-center opacity-40`}>
+            <div className={`w-1/2 h-1/2 rounded-full border border-dashed ${
+              isHeritage ? 'border-deep-walnut/10' : 'border-champagne-gold/10'
+            }`} />
+          </div>
+        </div>
+      </div>
+
+      {/* Info Placeholder */}
+      <div className="flex items-start justify-between px-2">
+        <div className="flex-1 space-y-2.5">
+          {/* Title */}
+          <div className={`h-5 rounded-md w-2/3 relative overflow-hidden ${
+            isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
+          }`}>
+            <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-40`} />
+          </div>
+          {/* Subtitle / Wood */}
+          <div className={`h-3 rounded-md w-1/3 relative overflow-hidden ${
+            isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
+          }`}>
+            <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-25`} />
+          </div>
+        </div>
+        {/* Price */}
+        <div className={`h-4 rounded-md w-1/5 relative overflow-hidden ${
+          isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
+        }`}>
+          <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-40`} />
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div className="mt-6 px-2 flex gap-4">
+        {/* Add button placeholder */}
+        <div className={`flex-1 h-12 rounded-xl border relative overflow-hidden ${
+          isHeritage ? 'border-deep-walnut/10' : 'border-champagne-gold/10'
+        }`}>
+          <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-15`} />
+        </div>
+        {/* Details button placeholder */}
+        <div className={`flex-1 h-12 rounded-xl relative overflow-hidden ${
+          isHeritage ? 'bg-[#d2c7b5]/30' : 'bg-[#180b06]'
+        }`}>
+          <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-35`} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShopSkeleton() {
+  return (
+    <div className="space-y-32">
+      {/* 1. Dark Espresso Section */}
+      <section className="relative">
+        <div className="mb-12 border-l pl-6 border-champagne-gold/20">
+          {/* Skeleton Section Title */}
+          <div className="h-9 rounded-md w-64 bg-[#180b06] relative overflow-hidden mb-3">
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-50" />
+          </div>
+          {/* Skeleton Section Subtitle */}
+          <div className="h-4 rounded-md w-96 max-w-full bg-[#180b06] relative overflow-hidden">
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-30" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <ProductCardSkeleton isHeritage={false} />
+          <ProductCardSkeleton isHeritage={false} />
+          <ProductCardSkeleton isHeritage={false} />
+        </div>
+      </section>
+
+      {/* 2. Heritage Warm Cream Section */}
+      <section className="rounded-none sm:rounded-2xl overflow-hidden py-16 px-6 sm:px-10 -mx-6 sm:-mx-10 bg-warm-cream relative">
+        {/* Mock Hieroglyphs bg */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30" aria-hidden="true">
+          {hieroglyphRows.slice(0, 4).map((row, idx) => (
+            <div
+              key={idx}
+              className="whitespace-nowrap font-serif text-[2.5rem] tracking-[0.8em] text-deep-walnut/[0.04] leading-none select-none"
+            >
+              {row}
+            </div>
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-b from-warm-cream via-transparent to-warm-cream" />
+        </div>
+
+        <div className="relative z-10">
+          <div className="mb-12 border-l pl-6 border-deep-walnut/30">
+            {/* Skeleton Section Title */}
+            <div className="h-9 rounded-md w-72 bg-[#d2c7b5] relative overflow-hidden mb-3">
+              <div className="absolute inset-0 bg-shimmer-cream opacity-80" />
+            </div>
+            {/* Skeleton Section Subtitle */}
+            <div className="h-4 rounded-md w-10/12 max-w-xl bg-[#d2c7b5] relative overflow-hidden">
+              <div className="absolute inset-0 bg-shimmer-cream opacity-55" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <ProductCardSkeleton isHeritage={true} />
+            <ProductCardSkeleton isHeritage={true} />
+            <ProductCardSkeleton isHeritage={true} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 
 const collectionTitles: Record<ProductCollection, { title: string; subtitle: string }> = {
   classique: { 
@@ -250,9 +410,7 @@ export default function Shop() {
 
         {/* Collections */}
         {loading ? (
-          <div className="flex justify-center items-center py-24">
-            <div className="w-16 h-16 border-t-2 border-champagne-gold border-solid rounded-full animate-spin"></div>
-          </div>
+          <ShopSkeleton />
         ) : collections.map((colKey) => {
           const collectionProducts = products.filter(p => p.collection === colKey);
           if (collectionProducts.length === 0) return null;
@@ -268,22 +426,7 @@ export default function Shop() {
               }`}
             >
               {/* Heritage: animated hieroglyphic background */}
-              {isHeritage && (
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-                  {hieroglyphRows.map((row, idx) => (
-                    <motion.div
-                      key={idx}
-                      className="whitespace-nowrap font-serif text-[2.5rem] tracking-[0.8em] text-deep-walnut/[0.04] leading-none select-none"
-                      animate={{ x: idx % 2 === 0 ? [0, -60] : [-60, 0] }}
-                      transition={{ duration: 35 + idx * 4, repeat: Infinity, ease: 'linear', repeatType: 'mirror' }}
-                    >
-                      {row}
-                    </motion.div>
-                  ))}
-                  <div className="absolute inset-0 bg-gradient-to-b from-warm-cream via-transparent to-warm-cream" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-warm-cream via-transparent to-warm-cream" />
-                </div>
-              )}
+              {isHeritage && <HieroglyphicBackground />}
 
               <div className="relative z-10">
               <motion.div
