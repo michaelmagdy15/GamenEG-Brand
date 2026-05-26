@@ -12,15 +12,15 @@ const hieroglyphRows = Array.from({ length: 10 }, () =>
 
 const collectionTitles: Record<ProductCollection, { title: string; subtitle: string }> = {
   classique: { 
-    title: 'La Maison Classique', 
+    title: 'I. GΛMÉN Classiques', 
     subtitle: 'The timeless modern classics' 
   },
   heritage: { 
-    title: 'Les Héritiers du Nil', 
+    title: 'II. GΛMÉN Héritage', 
     subtitle: 'The Heirs of the Nile — inspired by Egyptian royalty & mythology' 
   },
   signature: { 
-    title: 'La Signature Privée', 
+    title: 'III. GΛMÉN Signature', 
     subtitle: 'The Private Signature — personalized bespoke pieces' 
   },
   watches: { 

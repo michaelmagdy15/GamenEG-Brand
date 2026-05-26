@@ -5,21 +5,21 @@ import { brandAssets } from '../brandAssets';
 const pieces = [
   {
     id: 'classique',
-    name: 'GΛMÉN Classiques',
+    name: 'I. GΛMÉN Classiques',
     detail: 'Refined essentials',
     image: brandAssets.gamenClassique,
     accent: 'Refined essentials for distinguished style.',
   },
   {
     id: 'pharaoh',
-    name: 'GΛMÉN Héritage',
+    name: 'II. GΛMÉN Héritage',
     detail: 'Ceremonial brass centerpiece',
     image: brandAssets.pharaohBowTie,
     accent: 'Where royal legacy meets contemporary artistry.',
   },
   {
     id: 'signature',
-    name: 'GΛMÉN Signature',
+    name: 'III. GΛMÉN Signature',
     detail: 'Brass monogram over dark walnut',
     image: brandAssets.signatureBowTie,
     accent: 'A signature of individuality and prestige.',

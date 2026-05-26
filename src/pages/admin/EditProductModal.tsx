@@ -115,9 +115,9 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
                 onChange={handleChange}
                 className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40"
               >
-                <option value="signature">La Signature Privée</option>
-                <option value="classique">La Maison Classique</option>
-                <option value="heritage">Les Héritiers du Nil</option>
+                <option value="classique">I. GΛMÉN Classiques</option>
+                <option value="heritage">II. GΛMÉN Héritage</option>
+                <option value="signature">III. GΛMÉN Signature</option>
                 <option value="watches">Watches</option>
               </select>
             </div>

@@ -64,7 +64,7 @@ export async function updateOrderStatus(orderId: string, status: Order['status']
   await updateDoc(doc(db, 'gamen_orders', orderId), { status });
 }
 
-export async function sendEmailNotification(order: Order, ownerEmail: string = 'michaelmitry13@gmail.com') {
+export async function sendEmailNotification(order: Order, ownerEmail: string = 'info@gamen.world') {
   // We add a document to the "gamen_mail" collection. 
   // The Firebase "Trigger Email" extension will listen to this collection and send the email.
   await addDoc(collection(db, 'gamen_mail'), {
