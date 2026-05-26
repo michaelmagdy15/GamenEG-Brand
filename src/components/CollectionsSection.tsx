@@ -292,7 +292,7 @@ const CollectionItem = memo(function CollectionItem({
 
   // Box blur and opacity values
   const boxBlur = useTransform(frameFloat, [13, 15], [0, 6]);
-  const filter = useMotionTemplate`blur(${boxBlur}px) drop-shadow(0 0 2px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))`;
+  const filter = useMotionTemplate`blur(${boxBlur}px)`;
   const boxOpacity = useTransform(frameFloat, [13, 15], [1, 0.6]);
   const boxScale = useTransform(frameFloat, [13, 15], [1, 0.95]);
 
@@ -305,22 +305,20 @@ const CollectionItem = memo(function CollectionItem({
         
 
         <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0 pointer-events-auto" style={{ perspective: '1000px' }}>
-          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0 bg-espresso/30 rounded-2xl">
-            {/* The Box Sequence (Pre-rendered and toggled by opacity to avoid dynamic src-swapping white flash) */}
-            {FRAMES.map((frame, idx) => (
-              <motion.img
-                key={frame}
-                src={`/unboxing/${frame}`}
-                alt="Box sequence"
-                style={{ 
-                  filter, 
-                  opacity: idx === frameIndex ? boxOpacity : 0, 
-                  scale: boxScale 
-                }}
-                className="absolute w-full h-full object-contain pointer-events-none transition-opacity duration-75"
-                draggable={false}
-              />
-            ))}
+          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0 bg-espresso rounded-2xl select-none overflow-hidden">
+            {/* The Box Image - Rendered as a single image to prevent Safari layer memory limits on mobile viewports */}
+            <motion.img
+              src={`/unboxing/${FRAMES[frameIndex]}`}
+              alt="Box sequence"
+              style={{ 
+                filter, 
+                opacity: boxOpacity, 
+                scale: boxScale 
+              }}
+              className="absolute w-full h-full object-contain pointer-events-none bg-transparent"
+              draggable={false}
+              decoding="sync"
+            />
 
             {/* Sold Out Badge */}
             {item.isSoldOut && (
@@ -337,10 +335,10 @@ const CollectionItem = memo(function CollectionItem({
               <img
                 src={item.image}
                 alt={item.name}
-                className={`w-full h-full max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl transition-all duration-300 ${
+                className={`w-full h-full max-w-[80%] max-h-[80%] object-contain pointer-events-none select-none bg-transparent ${
                   item.isSoldOut ? 'grayscale opacity-40 contrast-125' : ''
                 }`}
-                decoding="async"
+                decoding="sync"
                 loading={isAdjacent ? "eager" : "lazy"}
                 fetchPriority={isActive ? "high" : isAdjacent ? "high" : "low"}
                 draggable={false}
