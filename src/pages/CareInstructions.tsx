@@ -53,7 +53,7 @@ export default function CareInstructions() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: '-60px' }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
-              className="flex gap-6 p-6 rounded-xl border border-champagne-gold/10"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-5 sm:p-6 rounded-xl border border-champagne-gold/10"
             >
               <div className="w-12 h-12 rounded-full bg-champagne-gold/5 flex items-center justify-center flex-shrink-0">
                 <tip.icon size={20} strokeWidth={1} className="text-champagne-gold/60" />

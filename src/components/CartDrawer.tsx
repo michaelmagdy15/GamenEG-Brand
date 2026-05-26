@@ -100,7 +100,7 @@ export default function CartDrawer() {
             className="fixed right-0 top-0 bottom-0 w-full sm:max-w-md bg-deep-walnut z-50 flex flex-col border-l border-champagne-gold/15"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-6 border-b border-champagne-gold/15">
+            <div className="flex items-center justify-between px-6 pt-[max(env(safe-area-inset-top),1.5rem)] pb-6 border-b border-champagne-gold/15">
               <div className="flex items-center gap-3">
                 <ShoppingBag size={20} strokeWidth={1} className="text-champagne-gold" />
                 <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold">
@@ -132,7 +132,7 @@ export default function CartDrawer() {
                     <div className="flex-1 min-w-0">
                       <h4 className="font-header text-sm text-champagne-gold truncate">{item.product.name}</h4>
                       <p className="font-body text-xs text-warm-cream/50 mt-1">{item.product.wood}</p>
-                      <div className="flex items-center justify-between mt-3">
+                      <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-3 mt-3">
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
@@ -150,7 +150,7 @@ export default function CartDrawer() {
                             <Plus size={12} />
                           </button>
                         </div>
-                        <span className="font-accent text-xs text-champagne-gold">LE {item.product.price * item.quantity}</span>
+                        <span className="font-accent text-xs text-champagne-gold whitespace-nowrap">LE {item.product.price * item.quantity}</span>
                       </div>
                     </div>
                     <button
@@ -166,7 +166,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-6 border-t border-champagne-gold/15 mt-auto">
+            <div className="px-6 pt-6 pb-[max(env(safe-area-inset-bottom),1.5rem)] border-t border-champagne-gold/15 mt-auto">
               {items.length > 0 && (
                 <>
                   <div className="flex items-center justify-between mb-6">
@@ -175,7 +175,7 @@ export default function CartDrawer() {
                   </div>
                   <button
                     onClick={() => { setIsOpen(false); navigate('/checkout'); }}
-                    className="w-full mb-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
+                    className="w-full mb-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors min-h-[48px] flex items-center justify-center"
                   >
                     Proceed to Checkout
                   </button>
@@ -183,7 +183,7 @@ export default function CartDrawer() {
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full py-4 border border-champagne-gold/20 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] hover:bg-champagne-gold/10 transition-colors"
+                className="w-full py-4 border border-champagne-gold/20 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] hover:bg-champagne-gold/10 transition-colors min-h-[48px] flex items-center justify-center"
               >
                 Continue Shopping
               </button>

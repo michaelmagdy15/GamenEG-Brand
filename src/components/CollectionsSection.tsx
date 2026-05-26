@@ -1,4 +1,4 @@
-import { motion, useTransform, useMotionValue, useMotionValueEvent, useMotionTemplate } from 'motion/react';
+import { motion, useTransform, useMotionValue, useMotionValueEvent, useMotionTemplate, animate } from 'motion/react';
 import { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { preload } from 'react-dom';
@@ -112,6 +112,12 @@ export default function CollectionsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const dynamicPinnedImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
 
+  // Sync ref to always contain latest activeIndex for stale-closure-free window resize snap
+  const activeIndexRef = useRef(activeIndex);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
   // Track active slide index based on drag/swipe progress
   useMotionValueEvent(x, 'change', (latest) => {
     const currentIdx = Math.min(count > 0 ? count - 1 : 0, Math.max(0, Math.round(-latest / vw)));
@@ -148,7 +154,11 @@ export default function CollectionsSection() {
   }, [activeIndex, collections, count]);
   
   useEffect(() => {
-    const handleResize = () => setVw(window.innerWidth);
+    const handleResize = () => {
+      const newVw = window.innerWidth;
+      setVw(newVw);
+      x.set(-activeIndexRef.current * newVw);
+    };
     window.addEventListener('resize', handleResize);
     
     // Preload unboxing frames and pin to ref to prevent JavaScript garbage collection
@@ -219,6 +229,32 @@ export default function CollectionsSection() {
               dragElastic={0.1}
               style={{ x }}
               onDragStart={() => setHasDragged(true)}
+              onDragEnd={(event, info) => {
+                const swipeThreshold = 50; // px
+                const velocityThreshold = 0.5; // px/ms
+                const offset = info.offset.x;
+                const velocity = info.velocity.x;
+
+                // Safely calculate drag origin without stale activeIndex closure issues
+                const startIndex = Math.min(count - 1, Math.max(0, Math.round((x.get() - offset) / -vw)));
+                let nextIndex = startIndex;
+
+                if (offset < -swipeThreshold || velocity < -velocityThreshold) {
+                  nextIndex = Math.min(count - 1, startIndex + 1);
+                } else if (offset > swipeThreshold || velocity > velocityThreshold) {
+                  nextIndex = Math.max(0, startIndex - 1);
+                }
+
+                setActiveIndex(nextIndex);
+
+                animate(x, -nextIndex * vw, {
+                  type: 'spring',
+                  stiffness: 150,
+                  damping: 22,
+                  mass: 0.8,
+                  restDelta: 0.01
+                });
+              }}
               className="flex items-center h-full cursor-grab active:cursor-grabbing"
             >
               {collections.map((item, index) => {
@@ -352,12 +388,9 @@ const CollectionItem = memo(function CollectionItem({
           <span className="font-accent text-[10px] tracking-[0.2em] font-medium text-champagne-gold/60 uppercase text-center block w-full select-none">
             Collection // {item.wood}
           </span>
-          <h3 className="font-header text-4xl lg:text-7xl text-warm-cream text-center leading-tight select-none">
+          <h3 className="font-header text-3xl md:text-5xl lg:text-7xl text-warm-cream text-center leading-tight select-none">
             {item.name}
           </h3>
-          <p className="font-french italic text-lg lg:text-3xl leading-tight text-warm-cream/80 max-w-[280px] lg:max-w-none text-center select-none">
-            {item.tagline}
-          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-4 lg:mt-8">
             <Link to={`/product/${item.slug}`} className="group inline-flex items-center justify-center gap-4 text-warm-cream font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border border-warm-cream/20 hover:border-warm-cream hover:bg-warm-cream/5 transition-colors">

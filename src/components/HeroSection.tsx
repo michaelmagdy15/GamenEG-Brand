@@ -47,7 +47,7 @@ export default function HeroSection() {
         {/* 3D Scene — fades down as scroll progresses */}
         <motion.div
           style={{ opacity: sceneOpacity }}
-          className="absolute inset-0 flex items-center justify-center -translate-y-[15vh] sm:-translate-y-[18vh] md:-translate-y-[20vh]"
+          className="absolute inset-0 flex items-center justify-center -translate-y-[10vh] sm:-translate-y-[18vh] md:-translate-y-[20vh]"
         >
           <HeroScene />
         </motion.div>
@@ -55,15 +55,15 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-[8vh] sm:translate-y-[10vh] md:translate-y-[12vh]">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-[4vh] sm:translate-y-[8vh] md:translate-y-[12vh]">
           <div className="relative text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name & Tagline */}
             <motion.div style={{ opacity: brandOpacity, scale: brandScale, y: brandY }}>
-              <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
+              <h1 className="font-display text-3xl sm:text-6xl md:text-8xl lg:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
                 G<span className="font-lambda">Λ</span>MÉN
               </h1>
-              <p translate="no" className="notranslate font-french italic text-lg sm:text-2xl md:text-3xl lg:text-4xl text-champagne-gold/75 font-light leading-snug mt-3 sm:mt-4 lg:mt-5">
+              <p translate="no" className="notranslate font-french italic text-sm sm:text-xl md:text-2xl lg:text-4xl text-champagne-gold/75 font-light leading-snug mt-3 sm:mt-4 lg:mt-5">
                 L'élégance taillée <span className="text-champagne-gold">en bois.</span>
               </p>
             </motion.div>
@@ -73,7 +73,7 @@ export default function HeroSection() {
               style={{ opacity: ctaOpacity, y: ctaY }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-8 px-6"
             >
-              <p className="font-display text-xl sm:text-4xl md:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
+              <p className="font-display text-lg sm:text-3xl md:text-5xl lg:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
                 H<span className="font-lambda">Λ</span>NDCR<span className="font-lambda">Λ</span>FTED IN EGYPT
               </p>
               <div className="h-px w-16 bg-champagne-gold/30" />
@@ -88,12 +88,12 @@ export default function HeroSection() {
         {/* Scroll indicator — visible only at start */}
         <motion.div
           style={{ opacity: brandOpacity }}
-          className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-4 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
           <p className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold/30">
             Scroll
           </p>
-          <div className="w-px h-10 sm:h-16 bg-champagne-gold/15 overflow-hidden">
+          <div className="w-px h-8 sm:h-16 bg-champagne-gold/15 overflow-hidden">
             <div className="w-full h-1/2 bg-champagne-gold/50 animate-scroll-hint" />
           </div>
         </motion.div>

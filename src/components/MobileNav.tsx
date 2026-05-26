@@ -30,7 +30,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
           {/* Close button */}
           <motion.button
             onClick={onClose}
-            className="absolute top-8 right-6 sm:right-10 text-champagne-gold z-10"
+            className="absolute top-[max(env(safe-area-inset-top),2rem)] right-6 sm:right-10 text-champagne-gold z-10 w-12 h-12 flex items-center justify-center"
             initial={{ opacity: 0, rotate: -90 }}
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: 90 }}
@@ -68,7 +68,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 <Link
                   to={link.to}
                   onClick={onClose}
-                  className="font-header text-4xl sm:text-5xl text-warm-cream hover:text-champagne-gold transition-colors duration-300"
+                  className="font-header text-4xl sm:text-5xl text-warm-cream hover:text-champagne-gold transition-colors duration-300 min-h-[48px] flex items-center justify-center py-2"
                 >
                   {link.label}
                 </Link>
@@ -82,7 +82,7 @@ export default function MobileNav({ isOpen, onClose }: MobileNavProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
-            className="absolute bottom-12 text-center"
+            className="absolute bottom-[max(env(safe-area-inset-bottom),3rem)] text-center"
           >
             <p className="font-french italic text-champagne-gold/50 text-lg">
               L'élégance taillée en bois

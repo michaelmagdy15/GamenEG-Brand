@@ -82,7 +82,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 px-6 sm:px-10 py-6 transition-colors duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-40 px-6 sm:px-10 pt-[max(env(safe-area-inset-top),1.5rem)] pb-6 transition-colors duration-500 ${
           isScrolled ? 'bg-deep-walnut/90 backdrop-blur-md' : 'bg-transparent'
         }`}
       >
@@ -95,7 +95,7 @@ export default function Navbar() {
             <Menu size={24} strokeWidth={1} />
           </button>
 
-          <Link to="/" className="flex-shrink-0 text-center mr-auto lg:mr-0 pl-4 lg:pl-0">
+          <Link to="/" className="flex-shrink-0 text-center mr-auto lg:mr-0 pl-4 lg:pl-0 min-h-[48px] flex items-center" aria-label="Gamen brand logo">
             <BrandWordmark className="block text-2xl tracking-[0.3em] text-champagne-gold" />
           </Link>
 
@@ -153,7 +153,7 @@ export default function Navbar() {
               aria-modal="true"
               className="fixed left-0 top-0 bottom-0 w-[80vw] max-w-sm bg-deep-walnut z-50 flex flex-col border-r border-champagne-gold/15"
             >
-              <div className="flex items-center justify-between px-6 py-6 border-b border-champagne-gold/15">
+              <div className="flex items-center justify-between px-6 pt-[max(env(safe-area-inset-top),1.5rem)] pb-6 border-b border-champagne-gold/15">
                 <BrandWordmark className="text-lg tracking-[0.2em] text-champagne-gold" />
                 <button
                   onClick={() => setMobileOpen(false)}
@@ -176,8 +176,8 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <div className="mt-auto pt-8 border-t border-champagne-gold/10 space-y-3 safe-bottom">
-                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-3">Care Instructions</Link>
-                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors py-3">Shipping &amp; Returns</Link>
+                  <Link to="/care" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors min-h-[48px] flex items-center py-2">Care Instructions</Link>
+                  <Link to="/shipping" className="block font-body text-sm text-warm-cream/40 hover:text-champagne-gold transition-colors min-h-[48px] flex items-center py-2">Shipping &amp; Returns</Link>
                 </div>
               </div>
             </motion.div>

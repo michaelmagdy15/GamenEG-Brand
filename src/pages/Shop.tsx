@@ -67,9 +67,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
   if (product.isSoldOut) {
     return (
       <div ref={cardRef} className="block opacity-80 cursor-not-allowed">
-        <div className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box ${
-          isHeritage ? 'bg-warm-cream/50' : 'bg-espresso/45'
-        }`} style={{ perspective: '1200px' }}>
+        <div className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box bg-transparent`} style={{ perspective: '1200px' }}>
           <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
             
             {/* Sold Out Badge */}
@@ -105,19 +103,16 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
         </div>
 
         {/* Product Info */}
-        <div className="flex items-start justify-between px-2">
+        <div className="flex flex-col min-[380px]:flex-row items-start justify-between gap-2 px-2">
           <div>
-            <h3 className={`font-header text-xl transition-colors ${
+            <h3 className={`font-header text-lg sm:text-xl transition-colors ${
               isHeritage ? 'text-espresso' : 'text-champagne-gold'
             }`}>
               {product.name}
             </h3>
-            <p className={`font-body text-[10px] mt-1 uppercase tracking-widest ${
-              isHeritage ? 'text-espresso/40' : 'text-warm-cream/30'
-            }`}>{product.wood}</p>
           </div>
-          <div className="text-right">
-            <span className={`block font-accent text-sm ${
+          <div className="text-left min-[380px]:text-right flex-shrink-0">
+            <span className={`block font-accent text-sm sm:text-base ${
               isHeritage ? 'text-espresso' : 'text-champagne-gold'
             }`}>LE {product.price.toLocaleString()}</span>
             <span className="text-[10px] text-espresso uppercase tracking-tighter line-through opacity-45">Archived</span>
@@ -128,7 +123,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
         <div className="mt-6 px-2">
           <button
             disabled
-            className="w-full py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border border-espresso/10 text-espresso/20 cursor-not-allowed bg-transparent"
+            className="w-full min-h-[48px] flex items-center justify-center py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border border-espresso/10 text-espresso/20 cursor-not-allowed bg-transparent"
           >
             Nul Part Ailleurs
           </button>
@@ -144,9 +139,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
       className="block transition-all duration-500 cursor-pointer hover:-translate-y-2"
     >
       <div 
-        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 border border-champagne-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)] ${
-          isHeritage ? 'bg-warm-cream/50' : 'bg-espresso/45'
-        }`}
+        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 bg-transparent`}
         style={{ perspective: '1200px' }}
       >
         <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
@@ -190,35 +183,32 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
       </div>
 
       {/* Product Info */}
-      <div className="flex items-start justify-between px-2">
+      <div className="flex flex-col min-[380px]:flex-row items-start justify-between gap-2 px-2">
         <div>
-          <h3 className={`font-header text-xl transition-colors ${
+          <h3 className={`font-header text-lg sm:text-xl transition-colors ${
             isHeritage
               ? 'text-espresso group-hover:text-deep-walnut'
               : 'text-champagne-gold group-hover:text-warm-cream'
           }`}>
             {product.name}
           </h3>
-          <p className={`font-body text-[10px] mt-1 uppercase tracking-widest ${
-            isHeritage ? 'text-espresso/40' : 'text-warm-cream/30'
-          }`}>{product.wood}</p>
         </div>
-        <div className="text-right">
-          <span className={`block font-accent text-sm ${
+        <div className="text-left min-[380px]:text-right flex-shrink-0">
+          <span className={`block font-accent text-sm sm:text-base ${
             isHeritage ? 'text-espresso' : 'text-champagne-gold'
           }`}>LE {product.price.toLocaleString()}</span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-6 px-2 flex gap-4">
+      <div className="mt-6 px-2 flex flex-col min-[480px]:flex-row gap-2 min-[480px]:gap-4">
         <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             addItem(product);
           }}
-          className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
+          className={`flex-1 py-4 min-h-[48px] flex items-center justify-center rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
             isHeritage
               ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
               : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
@@ -231,7 +221,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className={`flex-1 py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border text-center ${
+          className={`flex-1 py-4 min-h-[48px] flex items-center justify-center rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border text-center ${
             isHeritage
               ? 'bg-espresso text-warm-cream border-espresso hover:bg-transparent hover:text-espresso hover:border-deep-walnut/30'
               : 'bg-champagne-gold text-deep-walnut border-champagne-gold hover:bg-transparent hover:text-champagne-gold hover:border-champagne-gold/20'
@@ -272,11 +262,7 @@ function ProductCardSkeleton({ isHeritage }: { isHeritage: boolean }) {
   return (
     <div>
       <div 
-        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden border ${
-          isHeritage 
-            ? 'border-deep-walnut/15 bg-[#e5decf]' 
-            : 'border-champagne-gold/10 bg-espresso/30'
-        }`}
+        className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden bg-transparent`}
       >
         {/* Shimmer gradient overlay */}
         <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-85`} />
@@ -301,23 +287,17 @@ function ProductCardSkeleton({ isHeritage }: { isHeritage: boolean }) {
       </div>
 
       {/* Info Placeholder */}
-      <div className="flex items-start justify-between px-2">
-        <div className="flex-1 space-y-2.5">
+      <div className="flex flex-col min-[380px]:flex-row items-start justify-between gap-2 px-2">
+        <div className="flex-1 space-y-2.5 w-full">
           {/* Title */}
           <div className={`h-5 rounded-md w-2/3 relative overflow-hidden ${
             isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
           }`}>
             <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-40`} />
           </div>
-          {/* Subtitle / Wood */}
-          <div className={`h-3 rounded-md w-1/3 relative overflow-hidden ${
-            isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
-          }`}>
-            <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-25`} />
-          </div>
         </div>
         {/* Price */}
-        <div className={`h-4 rounded-md w-1/5 relative overflow-hidden ${
+        <div className={`h-4 rounded-md w-1/5 relative overflow-hidden flex-shrink-0 ${
           isHeritage ? 'bg-[#d2c7b5]' : 'bg-[#180b06]'
         }`}>
           <div className={`absolute inset-0 ${isHeritage ? 'bg-shimmer-cream' : 'bg-shimmer-espresso'} opacity-40`} />
@@ -325,7 +305,7 @@ function ProductCardSkeleton({ isHeritage }: { isHeritage: boolean }) {
       </div>
 
       {/* Buttons */}
-      <div className="mt-6 px-2 flex gap-4">
+      <div className="mt-6 px-2 flex flex-col min-[480px]:flex-row gap-2 min-[480px]:gap-4">
         {/* Add button placeholder */}
         <div className={`flex-1 h-12 rounded-xl border relative overflow-hidden ${
           isHeritage ? 'border-deep-walnut/10' : 'border-champagne-gold/10'
@@ -359,7 +339,7 @@ function ShopSkeleton() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-3 gap-6 min-[360px]:gap-4 sm:gap-8 lg:gap-10">
           <ProductCardSkeleton isHeritage={false} />
           <ProductCardSkeleton isHeritage={false} />
           <ProductCardSkeleton isHeritage={false} />
@@ -393,7 +373,7 @@ function ShopSkeleton() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-3 gap-6 min-[360px]:gap-4 sm:gap-8 lg:gap-10">
             <ProductCardSkeleton isHeritage={true} />
             <ProductCardSkeleton isHeritage={true} />
             <ProductCardSkeleton isHeritage={true} />
@@ -403,7 +383,6 @@ function ShopSkeleton() {
     </div>
   );
 }
-
 
 const collectionTitles: Record<ProductCollection, { title: string; subtitle: string }> = {
   classique: { 
@@ -424,12 +403,25 @@ const collectionTitles: Record<ProductCollection, { title: string; subtitle: str
   },
 };
 
+const collectionsFilter: { key: 'all' | ProductCollection; label: string }[] = [
+  { key: 'all', label: 'All Creations' },
+  { key: 'signature', label: 'Signature' },
+  { key: 'classique', label: 'Classique' },
+  { key: 'heritage', label: 'Héritage' },
+  { key: 'watches', label: 'Horlogerie' }
+];
+
 export default function Shop() {
   const { addItem } = useCart();
   const { products, loading } = useProductsContext();
   
+  // States for filtering & sorting
+  const [selectedCollection, setSelectedCollection] = useState<'all' | ProductCollection>('all');
+  const [selectedWood, setSelectedWood] = useState<'all' | 'walnut' | 'mahogany' | 'sycamore' | 'ebony'>('all');
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
+
   // Signature first — client requirement: bespoke tier shown prominently at top
-  const collections: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
+  const collectionsList: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
   const heritageSectionRef = useRef<HTMLElement>(null);
 
   const pinnedBoxRef = useRef<HTMLImageElement | null>(null);
@@ -440,6 +432,18 @@ export default function Shop() {
     pinnedBoxRef.current = img;
   }, []);
 
+  // Filter products based on selected parameters
+  const filteredProducts = products.filter(product => {
+    // 1. Collection filter
+    const matchesCollection = selectedCollection === 'all' || product.collection === selectedCollection;
+    
+    // 2. Wood filter
+    const matchesWood = selectedWood === 'all' || 
+      product.wood.toLowerCase().includes(selectedWood.toLowerCase());
+      
+    return matchesCollection && matchesWood;
+  });
+
   return (
     <main className="min-h-screen bg-deep-walnut pt-36 pb-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
@@ -449,7 +453,7 @@ export default function Shop() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-24"
+          className="text-center mb-16"
         >
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[0.9] text-champagne-gold tracking-tighter mb-4">
             The <span className="italic font-light">Collection</span>
@@ -460,12 +464,107 @@ export default function Shop() {
           </p>
         </motion.div>
 
+        {/* Filters and Sorting controls */}
+        <div className="mb-16 flex flex-col lg:flex-row gap-6 items-center justify-between border-y border-champagne-gold/10 py-6">
+          {/* Main Filters (Chips) */}
+          <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start w-full lg:w-auto">
+            {collectionsFilter.map((opt) => {
+              const isActive = selectedCollection === opt.key;
+              return (
+                <button
+                  key={opt.key}
+                  onClick={() => setSelectedCollection(opt.key)}
+                  className={`px-5 py-3 min-h-[48px] rounded-full font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border flex items-center justify-center ${
+                    isActive
+                      ? 'bg-champagne-gold text-deep-walnut border-champagne-gold shadow-[0_0_15px_rgba(212,175,55,0.25)] font-bold'
+                      : 'bg-transparent text-warm-cream/60 border-champagne-gold/15 hover:text-champagne-gold hover:border-champagne-gold/30'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Dropdown Filters */}
+          <div className="flex flex-col min-[380px]:flex-row gap-3 items-center justify-center w-full lg:w-auto">
+            {/* Wood Dropdown */}
+            <div className="relative w-full min-[380px]:w-[180px] h-12">
+              <select
+                value={selectedWood}
+                onChange={(e) => setSelectedWood(e.target.value as any)}
+                className="w-full h-full px-4 rounded-xl bg-espresso border border-champagne-gold/15 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] appearance-none cursor-pointer focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 pr-10"
+              >
+                <option value="all">All Woods</option>
+                <option value="walnut">Walnut</option>
+                <option value="mahogany">Mahogany</option>
+                <option value="sycamore">Sycamore</option>
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-champagne-gold/60">
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.576 0 0.436 0.445 0.408 1.197 0 1.615l-4.695 4.502c-0.218 0.219-0.57 0.219-0.788 0l-4.695-4.502c-0.408-0.418-0.436-1.17 0-1.615z"/>
+                </svg>
+              </div>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative w-full min-[380px]:w-[180px] h-12">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="w-full h-full px-4 rounded-xl bg-espresso border border-champagne-gold/15 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] appearance-none cursor-pointer focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 pr-10"
+              >
+                <option value="default">Default Sort</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-champagne-gold/60">
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.576 0 0.436 0.445 0.408 1.197 0 1.615l-4.695 4.502c-0.218 0.219-0.57 0.219-0.788 0l-4.695-4.502c-0.408-0.418-0.436-1.17 0-1.615z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Collections */}
         {loading ? (
           <ShopSkeleton />
-        ) : collections.map((colKey) => {
-          const collectionProducts = products.filter(p => p.collection === colKey);
+        ) : filteredProducts.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-20 border border-dashed border-champagne-gold/15 rounded-2xl bg-espresso/20 px-6"
+          >
+            <p className="font-display text-2xl text-champagne-gold mb-2">No matching creations found</p>
+            <p className="font-body text-warm-cream/40 text-xs uppercase tracking-widest mb-6">
+              Try adjusting your filter selection or wood type
+            </p>
+            <button
+              onClick={() => {
+                setSelectedCollection('all');
+                setSelectedWood('all');
+                setSortBy('default');
+              }}
+              className="px-6 py-3 min-h-[48px] rounded-full bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-warm-cream inline-flex items-center justify-center"
+            >
+              Reset Filters
+            </button>
+          </motion.div>
+        ) : collectionsList.map((colKey) => {
+          // Verify if collection matches selectedCollection
+          if (selectedCollection !== 'all' && colKey !== selectedCollection) return null;
+
+          const collectionProducts = filteredProducts.filter(p => p.collection === colKey);
           if (collectionProducts.length === 0) return null;
+
+          // Apply sorting within the collection
+          let sortedProducts = [...collectionProducts];
+          if (sortBy === 'price-asc') {
+            sortedProducts.sort((a, b) => a.price - b.price);
+          } else if (sortBy === 'price-desc') {
+            sortedProducts.sort((a, b) => b.price - a.price);
+          }
 
           const isHeritage = colKey === 'heritage';
 
@@ -481,49 +580,47 @@ export default function Shop() {
               {isHeritage && <HieroglyphicBackground />}
 
               <div className="relative z-10">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className={`mb-12 border-l pl-6 ${
-                  isHeritage ? 'border-deep-walnut/30' : 'border-champagne-gold/20'
-                }`}
-              >
-                <h2 className={`font-display text-3xl md:text-4xl mb-2 ${
-                  isHeritage ? 'text-espresso' : 'text-champagne-gold'
-                }`}>
-                  {collectionTitles[colKey].title}
-                </h2>
-                <p className={`font-body text-xs md:text-sm uppercase tracking-widest italic ${
-                  isHeritage ? 'text-deep-walnut/50' : 'text-warm-cream/40'
-                }`}>
-                  {collectionTitles[colKey].subtitle}
-                </p>
-              </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className={`mb-12 border-l pl-6 ${
+                    isHeritage ? 'border-deep-walnut/30' : 'border-champagne-gold/20'
+                  }`}
+                >
+                  <h2 className={`font-display text-3xl md:text-4xl mb-2 ${
+                    isHeritage ? 'text-espresso' : 'text-champagne-gold'
+                  }`}>
+                    {collectionTitles[colKey].title}
+                  </h2>
+                  <p className={`font-body text-xs md:text-sm uppercase tracking-widest italic ${
+                    isHeritage ? 'text-deep-walnut/50' : 'text-warm-cream/40'
+                  }`}>
+                    {collectionTitles[colKey].subtitle}
+                  </p>
+                </motion.div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {collectionProducts.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                  >
-                    <ProductCard
-                      product={product}
-                      isHeritage={isHeritage}
-                      addItem={addItem}
-                    />
-                  </motion.div>
-                ))}
-              </div>
+                <div className="grid grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-3 gap-6 min-[360px]:gap-4 sm:gap-8 lg:gap-10">
+                  {sortedProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                    >
+                      <ProductCard
+                        product={product}
+                        isHeritage={isHeritage}
+                        addItem={addItem}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
               </div>{/* end grid wrapper */}
             </section>
           );
         })}
       </div>
-
     </main>
   );
 }
-

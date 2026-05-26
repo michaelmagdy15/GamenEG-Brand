@@ -268,28 +268,7 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
                   className="absolute w-36 h-36 lg:w-80 lg:h-80 rounded-full border border-double border-champagne-gold/20 z-0 pointer-events-none animate-slow-spin-reverse"
                 />
 
-                {/* Magical Sparkle Burst */}
-                {SPARKLES.map((sparkle, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ x: 0, y: 0, scale: 0, opacity: 0, rotate: 0 }}
-                    animate={{
-                      x: sparkle.x,
-                      y: sparkle.y,
-                      scale: [0, 1.25, 0.85, 0],
-                      opacity: [0, 1, 1, 0],
-                      rotate: sparkle.rotate + 180,
-                    }}
-                    transition={{
-                      duration: 1.8,
-                      ease: [0.16, 1, 0.3, 1],
-                      delay: sparkle.delay,
-                    }}
-                    className="absolute z-30 pointer-events-none"
-                  >
-                    <SparkleIcon size={sparkle.size} color={idx % 2 === 0 ? '#f5e6c8' : '#e5c158'} />
-                  </motion.div>
-                ))}
+
               </>
             )}
 

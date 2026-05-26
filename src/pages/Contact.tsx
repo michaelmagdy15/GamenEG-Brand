@@ -101,7 +101,7 @@ export default function Contact() {
                       type={field.type}
                       name={field.name}
                       required
-                      className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold outline-none text-warm-cream font-body text-sm py-3 transition-colors"
+                      className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold focus:ring-0 focus:outline-none text-warm-cream font-body text-base md:text-sm py-3 transition-colors min-h-[48px]"
                     />
                   </div>
                 ))}
@@ -116,7 +116,7 @@ export default function Contact() {
                     id="contact-subject"
                     name="subject"
                     required
-                    className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold outline-none text-warm-cream font-body text-sm py-3 transition-colors"
+                    className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold focus:ring-0 focus:outline-none text-warm-cream font-body text-base md:text-sm py-3 transition-colors min-h-[48px]"
                   >
                     <option value="" className="bg-deep-walnut">Select a topic</option>
                     <option value="General Inquiry" className="bg-deep-walnut">General Inquiry</option>
@@ -138,13 +138,13 @@ export default function Contact() {
                     name="message"
                     required
                     rows={5}
-                    className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold outline-none text-warm-cream font-body text-sm py-3 transition-colors resize-none"
+                    className="w-full bg-transparent border-b border-champagne-gold/20 focus:border-champagne-gold focus:ring-0 focus:outline-none text-warm-cream font-body text-base md:text-sm py-3 transition-colors resize-none min-h-[120px]"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="flex items-center gap-3 px-8 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center gap-3 px-8 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-50 min-h-[48px] w-full sm:w-auto"
                 >
                   <Send size={14} strokeWidth={1.5} />
                   {sending ? 'Sending...' : 'Send Message'}
