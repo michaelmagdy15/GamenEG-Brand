@@ -34,6 +34,7 @@ html, body, #root {
   /* iPhone: use dynamic viewport height so the sticky hero
      accounts for Safari's collapsible address bar */
   min-height: 100dvh;
+  touch-action: manipulation; /* Disable double-tap to zoom globally */
 }
 
 

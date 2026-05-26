@@ -137,45 +137,41 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
 
   const productVariants: any = {
     initial: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      filter: 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.15))',
+      opacity: 0,
+      scale: 0.1,
+      y: 120, // start hidden deep inside the box
+      filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))',
     },
     shrinking: {
       opacity: 0,
-      scale: 0.05,
-      y: 160, // sink deep into the bottom of the box
+      scale: 0.1,
+      y: 120,
       filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))',
-      transition: {
-        duration: 0.45,
-        ease: [0.32, 0, 0.67, 0] as const // fast ease-in for fading/shrinking down into the box
-      }
     },
     reveal: {
       opacity: 1,
-      scale: 1.25, // dramatic grand scale-up
-      y: -100, // rise up high above the box for maximum dramatic emphasis
-      filter: 'drop-shadow(0 4px 12px rgba(43, 20, 12, 0.45)) drop-shadow(0 0 35px rgba(215, 185, 115, 0.9)) drop-shadow(0 20px 45px rgba(43, 20, 12, 0.35))', // enhanced luxury gold glow and layered design-themed drop shadow
+      scale: 1.0, // Fits perfectly on mobile screens
+      y: -30, // Rises elegantly above the open box without overflowing or overlapping navigation
+      filter: 'drop-shadow(0 4px 12px rgba(43, 20, 12, 0.3)) drop-shadow(0 0 25px rgba(215, 185, 115, 0.75)) drop-shadow(0 10px 25px rgba(43, 20, 12, 0.2))', // luxury gold glow backdrop
       transition: {
         y: {
           type: 'spring',
-          stiffness: 150,  // high energy snap
-          damping: 12,     // lower damping relative to stiffness for a pronounced, professional overshoot bounce
-          mass: 0.65,      // lightweight feel for punchy acceleration
+          stiffness: 120,
+          damping: 15,
+          mass: 0.65,
         },
         scale: {
           type: 'spring',
-          stiffness: 160,
-          damping: 14,
+          stiffness: 130,
+          damping: 17,
           mass: 0.7,
         },
         opacity: {
-          duration: 0.3,
+          duration: 0.35,
           ease: 'easeOut'
         },
         filter: {
-          duration: 1.4,
+          duration: 1.2,
           ease: 'easeOut'
         }
       }
@@ -236,7 +232,7 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
                     background: 'radial-gradient(circle, rgba(215, 185, 115, 0.35) 0%, rgba(215, 185, 115, 0.1) 50%, transparent 70%)',
                     filter: 'blur(35px)',
                   }}
-                  className="absolute w-[340px] h-[340px] rounded-full z-0 pointer-events-none"
+                  className="absolute w-40 h-40 lg:w-[340px] lg:h-[340px] rounded-full z-0 pointer-events-none"
                 />
 
                 {/* Instant high-energy golden flash expansion */}
@@ -255,7 +251,7 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
                     background: 'radial-gradient(circle, rgba(255, 236, 179, 0.85) 0%, rgba(215, 185, 115, 0.3) 45%, transparent 70%)',
                     filter: 'blur(20px)',
                   }}
-                  className="absolute w-[300px] h-[300px] rounded-full z-0 pointer-events-none"
+                  className="absolute w-32 h-32 lg:w-[300px] lg:h-[300px] rounded-full z-0 pointer-events-none"
                 />
 
                 {/* Concentric Luxury Ring Halos rotating in opposite directions */}
@@ -263,13 +259,13 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 0.25, scale: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-                  className="absolute w-[320px] h-[320px] rounded-full border border-dashed border-champagne-gold/25 z-0 pointer-events-none animate-slow-spin"
+                  className="absolute w-36 h-36 lg:w-80 lg:h-80 rounded-full border border-dashed border-champagne-gold/25 z-0 pointer-events-none animate-slow-spin"
                 />
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 0.15, scale: 0.85 }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.3 }}
-                  className="absolute w-[320px] h-[320px] rounded-full border border-double border-champagne-gold/20 z-0 pointer-events-none animate-slow-spin-reverse"
+                  className="absolute w-36 h-36 lg:w-80 lg:h-80 rounded-full border border-double border-champagne-gold/20 z-0 pointer-events-none animate-slow-spin-reverse"
                 />
 
                 {/* Magical Sparkle Burst */}

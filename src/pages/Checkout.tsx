@@ -156,7 +156,7 @@ export default function Checkout() {
         >
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 text-warm-cream/40 hover:text-warm-cream/70 transition-colors mb-8 font-accent text-[10px] uppercase tracking-[0.2em]"
+            className="inline-flex items-center gap-2 text-warm-cream/40 hover:text-warm-cream/70 transition-colors mb-8 font-accent text-[10px] uppercase tracking-[0.2em] min-h-[48px] py-2"
           >
             <ArrowLeft size={14} /> Back to Shop
           </Link>
@@ -204,7 +204,7 @@ export default function Checkout() {
                 autoComplete="street-address"
                 required
                 aria-label="Delivery Address"
-                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[80px]"
+                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-base md:text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 transition-colors resize-none min-h-[80px]"
               />
             </div>
 
@@ -223,13 +223,13 @@ export default function Checkout() {
                 placeholder="Gift wrapping, special requests, gifting occasion…"
                 rows={2}
                 aria-label="Order Notes"
-                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors resize-none min-h-[60px]"
+                className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-base md:text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 transition-colors resize-none min-h-[60px]"
               />
             </div>
 
             {/* Premium custom-styled newsletter checkbox */}
             <div 
-              className="flex items-start gap-3 py-2 cursor-pointer select-none" 
+              className="flex items-start gap-3 py-3 cursor-pointer select-none min-h-[48px]" 
               onClick={() => setSubscribe(!subscribe)}
             >
               <div 
@@ -276,7 +276,7 @@ export default function Checkout() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full min-h-[48px] py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               {submitting ? (
                 <>
@@ -390,7 +390,7 @@ function InputField({
         autoCorrect={name === 'email' ? 'off' : 'on'}
         spellCheck={name !== 'email'}
         aria-label={label.replace(' *', '')}
-        className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 transition-colors min-h-[48px]"
+        className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-base md:text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 transition-colors min-h-[48px]"
       />
     </div>
   );

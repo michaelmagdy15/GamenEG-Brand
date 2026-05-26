@@ -59,10 +59,10 @@ export default function ProductDetail() {
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col lg:flex-row">
         {/* Image Side */}
-        <div className="w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen relative bg-gradient-to-br from-warm-cream/5 to-warm-cream/10 flex items-center justify-center p-8 lg:p-16">
+        <div className="w-full lg:w-1/2 min-h-[60vh] lg:min-h-screen relative bg-gradient-to-br from-warm-cream/5 to-warm-cream/10 flex items-center justify-center pt-24 pb-12 px-8 lg:p-16">
           <Link
             to="/shop"
-            className="absolute top-28 left-6 lg:left-12 z-10 flex items-center gap-2 font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 hover:text-champagne-gold transition-colors"
+            className="absolute top-24 lg:top-28 left-6 lg:left-12 z-10 flex items-center gap-2 font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 hover:text-champagne-gold transition-colors"
           >
             <ArrowLeft size={14} /> Back
           </Link>
