@@ -16,16 +16,16 @@ export default function HeroSection() {
     restDelta: 0.001
   });
 
-  // Phase 1: Initial view (0-0.4) — bow tie + brand reveal
-  const brandOpacity = useTransform(scrollYProgress, [0, 0.15, 0.4], [1, 1, 0]);
-  const brandScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.92]);
+  // Phase 1: Initial view — bow tie + brand reveal (logo + tagline together)
+  // Perfectly symmetric cross-fade: fades out from 0.2 to 0.55
+  const brandOpacity = useTransform(scrollYProgress, [0.2, 0.55], [1, 0]);
+  const brandScale = useTransform(scrollYProgress, [0.2, 0.55], [1, 0.95]);
+  const brandY = useTransform(scrollYProgress, [0.2, 0.55], ['0px', '-30px']);
 
-  // Phase 2: Tagline slides in (0.3-0.75)
-  const taglineOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.75], [0, 1, 0]);
-  const taglineY = useTransform(scrollYProgress, [0.3, 0.5], [40, 0]);
-
-  // Phase 3: CTA (0.65-1.0)
-  const ctaOpacity = useTransform(scrollYProgress, [0.65, 0.85, 1], [0, 1, 1]);
+  // Phase 2: CTA — Handcrafted reveal
+  // Perfectly symmetric cross-fade: fades in from 0.3 to 0.65 (overlap 0.3 to 0.55 has constant total opacity of 0.714)
+  const ctaOpacity = useTransform(scrollYProgress, [0.3, 0.65], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.3, 0.65], ['30px', '0px']);
 
   // Background text parallax
   const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
@@ -34,11 +34,8 @@ export default function HeroSection() {
   // Bow tie scene fades slightly as text takes over
   const sceneOpacity = useTransform(scrollYProgress, [0, 0.2, 0.6, 1], [1, 1, 0.4, 0.2]);
 
-  // Divider line grows
-  const dividerScale = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
-
   return (
-    <section ref={containerRef} className="relative h-[120vh] bg-deep-walnut grain-overlay -mb-[20vh] sm:-mb-[25vh] md:-mb-[30vh]">
+    <section ref={containerRef} className="relative h-[120svh] sm:h-[120vh] bg-deep-walnut grain-overlay -mb-[20svh] sm:-mb-[25vh] md:-mb-[30vh]">
       {/* h-svh = Safari-safe viewport height (excludes collapsible address bar) */}
       <div className="sticky top-0 h-svh w-full flex items-center justify-center overflow-hidden">
 
@@ -59,36 +56,24 @@ export default function HeroSection() {
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-[8vh] sm:translate-y-[10vh] md:translate-y-[12vh]">
-          <div className="text-center px-6 max-w-3xl w-full">
+          <div className="relative text-center px-6 max-w-3xl w-full">
 
-            {/* Phase 1: Brand name */}
-            <motion.div style={{ opacity: brandOpacity, scale: brandScale }}>
-
+            {/* Phase 1: Brand name & Tagline */}
+            <motion.div style={{ opacity: brandOpacity, scale: brandScale, y: brandY }}>
               <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-champagne-gold font-light tracking-[0.15em] leading-none">
                 G<span className="font-lambda">Λ</span>MÉN
               </h1>
-              <motion.div
-                style={{ scaleX: dividerScale }}
-                className="h-px w-32 bg-champagne-gold/40 mx-auto mt-6 origin-center"
-              />
-            </motion.div>
-
-            {/* Phase 2: Tagline */}
-            <motion.div
-              style={{ opacity: taglineOpacity, y: taglineY }}
-              className="absolute inset-0 flex items-center justify-center px-4"
-            >
-              <p translate="no" className="notranslate font-french italic text-xl sm:text-3xl md:text-5xl text-champagne-gold font-light leading-snug">
+              <p translate="no" className="notranslate font-french italic text-lg sm:text-2xl md:text-3xl lg:text-4xl text-champagne-gold/75 font-light leading-snug mt-3 sm:mt-4 lg:mt-5">
                 L'élégance taillée <span className="text-champagne-gold">en bois.</span>
               </p>
             </motion.div>
 
             {/* Phase 3: CTA */}
             <motion.div
-              style={{ opacity: ctaOpacity }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-8"
+              style={{ opacity: ctaOpacity, y: ctaY }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-8 px-6"
             >
-              <p className="font-display text-2xl sm:text-4xl md:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
+              <p className="font-display text-xl sm:text-4xl md:text-6xl text-champagne-gold font-light tracking-[0.1em] uppercase">
                 H<span className="font-lambda">Λ</span>NDCR<span className="font-lambda">Λ</span>FTED IN EGYPT
               </p>
               <div className="h-px w-16 bg-champagne-gold/30" />
