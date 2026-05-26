@@ -124,20 +124,20 @@ export default function AtelierExperience() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-deep-walnut text-champagne-gold px-4 sm:px-8 py-3 md:py-24 lg:py-32 overflow-hidden min-h-svh md:min-h-0 flex flex-col justify-center"
+      className="relative bg-deep-walnut text-champagne-gold px-4 sm:px-8 py-6 md:py-24 lg:py-32 overflow-hidden min-h-svh md:min-h-0 flex flex-col justify-center"
     >
       {/* Animated light sweep */}
       <div className="absolute inset-0 opacity-15 bg-[linear-gradient(90deg,transparent,rgba(207,197,178,0.16),transparent)] animate-light-sweep pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-3 md:gap-12 lg:gap-16 items-center w-full">
+      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-6 md:gap-12 lg:gap-16 items-center w-full">
         
-        {/* LEFT COLUMN — text + category selectors */}
-        <div className="flex flex-col justify-center order-2 lg:order-none">
+        {/* LEFT COLUMN — text + category selectors (Renders first at the top on mobile) */}
+        <div className="flex flex-col justify-center">
           <motion.h2
             initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={staggerDelay(1)}
-            className="font-header text-lg sm:text-3xl md:text-5xl lg:text-6xl leading-tight mb-1 md:mb-6 text-warm-cream text-center lg:text-left"
+            className="font-header text-xl sm:text-3xl md:text-5xl lg:text-6xl leading-tight mb-2 md:mb-6 text-warm-cream text-center lg:text-left"
           >
             Choose the center<br className="hidden lg:inline" /> of attention.
           </motion.h2>
@@ -146,13 +146,13 @@ export default function AtelierExperience() {
             initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={staggerDelay(2)}
-            className="font-french italic text-xs sm:text-lg lg:text-2xl text-champagne-gold/80 max-w-xl text-center lg:text-left mx-auto lg:mx-0 mb-3 md:mb-8"
+            className="font-french italic text-sm sm:text-lg lg:text-2xl text-champagne-gold/80 max-w-xl text-center lg:text-left mx-auto lg:mx-0 mb-4 md:mb-8"
           >
             Every bow tie keeps the same sculpted silhouette. The emotion changes with the emblem.
           </motion.p>
 
           {/* Category Tabs */}
-          <div className="flex flex-col gap-1.5 max-w-xl mx-auto lg:mx-0 w-full">
+          <div className="flex flex-col gap-2 max-w-xl mx-auto lg:mx-0 w-full">
             {categories.map((cat, i) => {
               const isActive = activeCategoryId === cat.id;
               return (
@@ -187,11 +187,12 @@ export default function AtelierExperience() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative flex flex-col items-center justify-center order-1 lg:order-none min-h-[220px] sm:min-h-[400px] lg:min-h-[500px]"
+          className="relative flex flex-col items-center justify-center min-h-[220px] sm:min-h-[400px] lg:min-h-[500px]"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.12),transparent_60%)] pointer-events-none" />
 
-          <motion.div style={{ y: bgShift }} className="relative w-full max-w-[150px] sm:max-w-[280px] md:max-w-[340px] aspect-square flex flex-col items-center justify-center mx-auto">
+          {/* 1. Aspect-square container for Bow Tie and Orbit Rings ONLY */}
+          <div className="relative w-full max-w-[150px] sm:max-w-[280px] md:max-w-[340px] aspect-square flex items-center justify-center mx-auto">
             {/* Decorative orbit rings */}
             <motion.div
               style={{ rotate: ringRotate, willChange: 'transform' }}
@@ -202,7 +203,7 @@ export default function AtelierExperience() {
               className="absolute inset-[15%] rounded-full border border-champagne-gold/8 border-dashed pointer-events-none"
             />
 
-            {/* Product showcase and description */}
+            {/* Product image crossfade */}
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={activeProduct.id}
@@ -210,7 +211,7 @@ export default function AtelierExperience() {
                 animate={{ opacity: 1, scale: 1, rotateY: 0, z: 0 }}
                 exit={{ opacity: 0, scale: 0.85, rotateY: 15, z: -30 }}
                 transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-                className="relative z-10 flex flex-col items-center will-change-transform"
+                className="relative z-10 flex items-center justify-center will-change-transform w-full h-full"
                 style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden' }}
               >
                 <img
@@ -218,45 +219,38 @@ export default function AtelierExperience() {
                   alt={activeProduct.name}
                   className="w-[105%] max-w-none h-auto object-contain drop-shadow-[0_4px_15px_rgba(0,0,0,0.5)]"
                 />
-                
-                {/* Product Name */}
-                <h3 className="mt-1 text-xs sm:text-lg font-header text-warm-cream tracking-wide text-center">
-                  {activeProduct.name}
-                </h3>
-                
-                {/* Accent text under product */}
-                <motion.p
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="mt-0.5 font-french italic text-[11px] sm:text-sm text-champagne-gold/75 text-center max-w-xs leading-normal"
-                >
-                  {activeProduct.accent}
-                </motion.p>
               </motion.div>
             </AnimatePresence>
-          </motion.div>
+          </div>
 
-          {/* Interactive Sub-Product Thumbnails (The other 2 small ones) */}
-          <div className="mt-2 sm:mt-6 flex justify-center gap-2 sm:gap-4 z-20">
+          {/* 2. Product name and description in natural flex flow (below the image) */}
+          <div className="mt-3 md:mt-6 text-center max-w-xs px-4">
+            <h3 className="text-base sm:text-xl font-header text-warm-cream tracking-wide">
+              {activeProduct.name}
+            </h3>
+            <p className="mt-1 font-french italic text-xs sm:text-sm text-champagne-gold/75 leading-normal">
+              {activeProduct.accent}
+            </p>
+          </div>
+
+          {/* 3. Interactive Sub-Product Thumbnails (No box frames, no text, just clean floating bow ties) */}
+          <div className="relative mt-4 sm:mt-6 flex justify-center gap-6 sm:gap-8 z-20">
             {otherProducts.map((prod) => (
-              <button
+              <motion.button
+                layout
                 key={prod.id}
                 onClick={() => setActiveProductId(prod.id)}
-                className="group relative flex flex-col items-center gap-1 p-1 rounded-sm border border-champagne-gold/15 bg-deep-walnut/60 hover:border-champagne-gold/40 hover:bg-champagne-gold/5 transition-all duration-300 w-[75px] sm:w-[110px]"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative flex items-center justify-center p-1 transition-all duration-300 w-16 sm:w-24 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-champagne-gold/60 rounded-md focus-visible:bg-champagne-gold/5"
+                aria-label={`Switch main display to ${prod.name}`}
               >
-                {/* Glow Ring Effect */}
-                <div className="absolute inset-0 rounded-sm border border-transparent group-hover:border-champagne-gold/20 transition-colors duration-300 pointer-events-none" />
-                
                 <img
                   src={prod.image}
                   alt={prod.name}
-                  className="w-10 h-7.5 sm:w-16 sm:h-12 object-contain group-hover:scale-[1.03] transition-transform duration-300"
+                  className="w-full h-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] group-hover:drop-shadow-[0_4px_12px_rgba(212,175,55,0.35)] group-focus-visible:drop-shadow-[0_4px_12px_rgba(212,175,55,0.35)] transition-all duration-300"
                 />
-                <span className="text-[8px] sm:text-[10px] text-champagne-gold/60 group-hover:text-champagne-gold transition-colors font-body text-center truncate w-full">
-                  {prod.name}
-                </span>
-              </button>
+              </motion.button>
             ))}
           </div>
 
