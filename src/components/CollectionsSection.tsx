@@ -175,10 +175,6 @@ function CollectionItem({ item, index, count, x, vw }: { item: { id: number; nam
     >
       <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 w-full max-w-7xl mx-auto z-10 pointer-events-none">
         
-        {/* Numeric Slide Indicator positioned directly next to the Box */}
-        <div className="font-header text-5xl lg:text-[110px] leading-none text-champagne-gold/20 select-none pointer-events-auto flex items-center justify-center shrink-0 lg:-mr-12">
-          0{item.id}
-        </div>
 
         <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0 pointer-events-auto" style={{ perspective: '1000px' }}>
           <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0">
