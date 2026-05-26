@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import type { Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { MotionValue } from 'motion/react';
+import { useCart } from '../context/CartContext';
 
 const FRAMES = [
   'gamenbox_000000_0015_Layer-1.png',
@@ -36,6 +37,8 @@ export default function CollectionsSection() {
     image: p.image,
     wood: p.wood,
     slug: p.slug,
+    isSoldOut: p.isSoldOut,
+    product: p,
   }));
   
   const count = collections.length;
@@ -48,15 +51,24 @@ export default function CollectionsSection() {
     const handleResize = () => setVw(window.innerWidth);
     window.addEventListener('resize', handleResize);
     
-    // Preload frames and pin to ref to prevent JavaScript garbage collection
-    preloadedImagesRef.current = FRAMES.map(frame => {
+    // Preload unboxing frames and pin to ref to prevent JavaScript garbage collection
+    const unboxingImages = FRAMES.map(frame => {
       const img = new Image();
       img.src = `/unboxing/${frame}`;
       return img;
     });
 
+    // Preload all product images inside the collections (including the GΛMÉN Époque watch)
+    const productImages = collections.map(c => {
+      const img = new Image();
+      img.src = c.image;
+      return img;
+    });
+
+    preloadedImagesRef.current = [...unboxingImages, ...productImages];
+
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [collections]);
 
   const progressWidth = useTransform(
     x,
@@ -118,17 +130,21 @@ export default function CollectionsSection() {
         </motion.div>
       </motion.div>
 
-      {/* Hidden container to absolute pre-render unboxing images to avoid white flash */}
+      {/* Hidden container to absolute pre-render unboxing & product images to avoid white flash */}
       <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {FRAMES.map((frame) => (
           <img key={frame} src={`/unboxing/${frame}`} alt="preload" />
+        ))}
+        {collections.map((item) => (
+          <img key={item.id} src={item.image} alt="preload product" />
         ))}
       </div>
     </section>
   );
 }
 
-function CollectionItem({ item, index, count, x, vw }: { item: any, index: number, count: number, x: MotionValue<number>, vw: number }) {
+function CollectionItem({ item, index, count, x, vw }: { item: { id: number; name: string; tagline: string; image: string; wood: string; slug: string; isSoldOut?: boolean; product: Product }, index: number, count: number, x: MotionValue<number>, vw: number }) {
+  const { addItem } = useCart();
   const centerPosition = -index * vw;
   const startPosition = centerPosition + vw * 0.8;
   const endPosition = centerPosition - vw * 0.8;
@@ -175,6 +191,13 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
               draggable={false}
             />
 
+            {/* Sold Out Badge */}
+            {item.isSoldOut && (
+              <div className="absolute top-4 right-4 z-20 bg-espresso/90 border border-champagne-gold/30 px-3 py-1 rounded-full select-none">
+                <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-champagne-gold">Sold Out</span>
+              </div>
+            )}
+
             {/* The Product Inside */}
             <motion.div
               style={{ scale: productScale, y: productY, opacity: productOpacity }}
@@ -183,7 +206,9 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-full max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl"
+                className={`w-full h-full max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl transition-all duration-300 ${
+                  item.isSoldOut ? 'grayscale opacity-40 contrast-125' : ''
+                }`}
                 loading="lazy"
                 draggable={false}
               />
@@ -203,10 +228,28 @@ function CollectionItem({ item, index, count, x, vw }: { item: any, index: numbe
             {item.tagline}
           </p>
 
-          <Link to={`/product/${item.slug}`} className="mt-4 lg:mt-8 group inline-flex items-center justify-center gap-4 text-warm-cream font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border border-warm-cream/20 hover:border-warm-cream hover:bg-warm-cream/5 transition-colors">
-            <span className="relative z-10">Explore</span>
-            <span className="relative z-10 h-px w-10 bg-warm-cream" />
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 lg:mt-8">
+            <Link to={`/product/${item.slug}`} className="group inline-flex items-center justify-center gap-4 text-warm-cream font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border border-warm-cream/20 hover:border-warm-cream hover:bg-warm-cream/5 transition-colors">
+              <span className="relative z-10">Explore</span>
+              <span className="relative z-10 h-px w-10 bg-warm-cream" />
+            </Link>
+
+            <button
+              disabled={item.isSoldOut}
+              onClick={() => {
+                if (!item.isSoldOut) {
+                  addItem(item.product);
+                }
+              }}
+              className={`group inline-flex items-center justify-center gap-4 font-accent text-[10px] tracking-[0.2em] font-medium uppercase relative overflow-hidden px-6 py-4 border transition-all duration-300 ${
+                item.isSoldOut
+                  ? 'border-warm-cream/10 text-warm-cream/35 cursor-not-allowed bg-transparent'
+                  : 'border-champagne-gold text-deep-walnut bg-champagne-gold hover:bg-warm-cream hover:border-warm-cream'
+              }`}
+            >
+              <span className="relative z-10">{item.isSoldOut ? 'Sold Out' : 'Add to Collection'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
