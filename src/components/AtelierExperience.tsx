@@ -223,14 +223,11 @@ export default function AtelierExperience() {
             </AnimatePresence>
           </div>
 
-          {/* 2. Product name and description in natural flex flow (below the image) */}
+          {/* 2. Product name in natural flex flow (below the image) */}
           <div className="mt-3 md:mt-6 text-center max-w-xs px-4">
             <h3 className="text-base sm:text-xl font-header text-warm-cream tracking-wide">
               {activeProduct.name}
             </h3>
-            <p className="mt-1 font-french italic text-xs sm:text-sm text-champagne-gold/75 leading-normal">
-              {activeProduct.accent}
-            </p>
           </div>
 
           {/* 3. Interactive Sub-Product Thumbnails (No box frames, no text, just clean floating bow ties) */}
