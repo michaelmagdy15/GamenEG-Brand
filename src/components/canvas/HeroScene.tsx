@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 
 export default function HeroScene() {
   return (
-    <div className="relative w-full h-full max-w-2xl aspect-square flex items-center justify-center pointer-events-auto">
+    <div className="relative w-full h-full max-w-[280px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[560px] aspect-square flex items-center justify-center pointer-events-auto">
       {/* Premium ambient gold glow behind the bow tie */}
       <div className="absolute w-[75%] h-[75%] rounded-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.14),transparent_65%)] blur-2xl pointer-events-none" />
 

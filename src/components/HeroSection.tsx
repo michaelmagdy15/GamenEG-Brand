@@ -50,7 +50,7 @@ export default function HeroSection() {
         {/* 3D Scene — fades down as scroll progresses */}
         <motion.div
           style={{ opacity: sceneOpacity }}
-          className="absolute inset-0 flex items-center justify-center -translate-y-12 sm:-translate-y-16 md:-translate-y-20 lg:-translate-y-28"
+          className="absolute inset-0 flex items-center justify-center -translate-y-[15vh] sm:-translate-y-[18vh] md:-translate-y-[20vh]"
         >
           <HeroScene />
         </motion.div>
@@ -58,7 +58,7 @@ export default function HeroSection() {
         {/* ============================================
             SCROLL TEXT SEQUENCE — centered, layered
             ============================================ */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-6 sm:translate-y-8 md:translate-y-12 lg:translate-y-16">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 w-full overflow-hidden translate-y-[8vh] sm:translate-y-[10vh] md:translate-y-[12vh]">
           <div className="text-center px-6 max-w-3xl w-full">
 
             {/* Phase 1: Brand name */}
@@ -103,12 +103,12 @@ export default function HeroSection() {
         {/* Scroll indicator — visible only at start */}
         <motion.div
           style={{ opacity: brandOpacity }}
-          className="absolute bottom-[24vh] sm:bottom-[29vh] md:bottom-[34vh] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
           <p className="font-accent text-[9px] uppercase tracking-[0.25em] text-champagne-gold/30">
             Scroll
           </p>
-          <div className="w-px h-16 bg-champagne-gold/15 overflow-hidden">
+          <div className="w-px h-10 sm:h-16 bg-champagne-gold/15 overflow-hidden">
             <div className="w-full h-1/2 bg-champagne-gold/50 animate-scroll-hint" />
           </div>
         </motion.div>
