@@ -5,7 +5,7 @@ const categories = [
   {
     id: 'classique',
     name: 'I. GΛMÉN Classiques',
-    subtitle: 'Refined essentials',
+    subtitle: 'Refined essentials for distinguished style.',
     products: [
       {
         id: 'classic-walnut',
@@ -33,7 +33,7 @@ const categories = [
   {
     id: 'pharaoh',
     name: 'II. GΛMÉN Héritage',
-    subtitle: 'Ceremonial brass centerpiece',
+    subtitle: 'Where history becomes wearable art',
     products: [
       {
         id: 'lor-royal',
@@ -61,7 +61,7 @@ const categories = [
   {
     id: 'signature',
     name: 'III. GΛMÉN Signature',
-    subtitle: 'Bespoke engravings over walnut',
+    subtitle: 'A signature of individuality and prestige',
     products: [
       {
         id: 'walnut-gold',
@@ -174,7 +174,7 @@ export default function AtelierExperience() {
                       isActive ? 'text-deep-walnut/70' : 'text-champagne-gold/50'
                     }`}
                   >
-                    {isActive ? activeProduct.detail : cat.subtitle}
+                    {cat.subtitle}
                   </span>
                 </motion.button>
               );

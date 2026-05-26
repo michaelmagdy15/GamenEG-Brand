@@ -26,10 +26,70 @@ const FRAMES = [
   'gamenbox_000000_0000_gamenbox_000015.png'
 ];
 
+function CollectionsSkeleton() {
+  return (
+    <div className="relative h-full flex items-center justify-center py-6 px-6 lg:p-24 w-full max-w-7xl mx-auto">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 w-full z-10 pointer-events-none">
+        
+        {/* Left Column: Product Box Skeleton */}
+        <div className="w-4/5 sm:w-1/2 lg:w-1/2 relative group max-h-[40vh] lg:max-h-none flex justify-center shrink-0">
+          <div className="relative w-full max-w-[280px] lg:max-w-[500px] aspect-square flex items-center justify-center shrink-0 bg-espresso/35 rounded-3xl border border-champagne-gold/10 overflow-hidden">
+            {/* Shimmer gradient overlay */}
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-90" />
+            
+            {/* Ambient radial glow */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="w-3/4 h-3/4 rounded-full bg-champagne-gold/5 blur-[40px]" />
+            </div>
+
+            {/* Faint presentation box placeholder outline */}
+            <div className="w-[85%] h-[85%] border border-dashed border-champagne-gold/10 rounded-2xl flex items-center justify-center opacity-30">
+              <div className="w-3/4 h-3/4 border border-dashed border-champagne-gold/10 rounded-full flex items-center justify-center">
+                <div className="w-1/2 h-1/2 border border-dashed border-champagne-gold/10 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Title & Buttons Skeleton */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center text-center justify-center gap-5 lg:gap-7 mt-4 lg:mt-0">
+          {/* Subtitle / Collection */}
+          <div className="h-4 rounded-md w-36 bg-[#180b06] relative overflow-hidden">
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-40" />
+          </div>
+
+          {/* Title */}
+          <div className="h-12 lg:h-16 rounded-lg w-3/4 bg-[#180b06] relative overflow-hidden">
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-60" />
+          </div>
+
+          {/* Description / Tagline */}
+          <div className="h-6 rounded-md w-1/2 bg-[#180b06] relative overflow-hidden">
+            <div className="absolute inset-0 bg-shimmer-espresso opacity-40" />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-center gap-4 mt-4 lg:mt-8 w-full max-w-sm">
+            {/* Explore button placeholder */}
+            <div className="flex-1 h-14 rounded-md border border-champagne-gold/10 relative overflow-hidden">
+              <div className="absolute inset-0 bg-shimmer-espresso opacity-15" />
+            </div>
+            {/* Add to collection button placeholder */}
+            <div className="flex-1 h-14 rounded-md bg-[#180b06] relative overflow-hidden">
+              <div className="absolute inset-0 bg-shimmer-espresso opacity-35" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 export default function CollectionsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
-  const { products } = useProductsContext();
+  const { products, loading } = useProductsContext();
   
   const collections = useMemo(() => {
     return products.map((p) => ({
@@ -54,7 +114,7 @@ export default function CollectionsSection() {
 
   // Track active slide index based on drag/swipe progress
   useMotionValueEvent(x, 'change', (latest) => {
-    const currentIdx = Math.min(count - 1, Math.max(0, Math.round(-latest / vw)));
+    const currentIdx = Math.min(count > 0 ? count - 1 : 0, Math.max(0, Math.round(-latest / vw)));
     if (currentIdx !== activeIndex) {
       setActiveIndex(currentIdx);
     }
@@ -112,79 +172,85 @@ export default function CollectionsSection() {
 
   const progressWidth = useTransform(
     x,
-    [0, -((count - 1) * vw)],
+    [0, -((count > 1 ? count - 1 : 1) * vw)],
     ['0%', '100%']
   );
 
   return (
     <section className="relative bg-espresso py-12 md:py-24 overflow-hidden min-h-[100svh] flex flex-col justify-center">
-      <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-champagne-gold/20">
-        <motion.div className="h-full bg-champagne-gold origin-left" style={{ width: progressWidth }} />
-      </div>
+      {loading ? (
+        <CollectionsSkeleton />
+      ) : (
+        <>
+          <div className="absolute top-28 left-6 right-6 md:left-12 md:right-12 -z-10 h-px bg-champagne-gold/20">
+            <motion.div className="h-full bg-champagne-gold origin-left" style={{ width: progressWidth }} />
+          </div>
 
-      {/* Drag Hint Indicator */}
-      <motion.div 
-        animate={{ opacity: hasDragged ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
-        className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-20 opacity-60"
-      >
-        <motion.div
-          animate={{ x: [-15, 15, -15] }}
-          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-          className="flex items-center gap-4"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70 rotate-180">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-          <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-champagne-gold font-bold">
-            DR<span className="font-lambda">Λ</span>G OR SWIPE
-          </span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </motion.div>
-      </motion.div>
+          {/* Drag Hint Indicator */}
+          <motion.div 
+            animate={{ opacity: hasDragged ? 0 : 1 }}
+            transition={{ duration: 0.5 }}
+            className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-20 opacity-60"
+          >
+            <motion.div
+              animate={{ x: [-15, 15, -15] }}
+              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+              className="flex items-center gap-4"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70 rotate-180">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+              <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-champagne-gold font-bold">
+                DR<span className="font-lambda">Λ</span>G OR SWIPE
+              </span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-champagne-gold opacity-70">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </motion.div>
+          </motion.div>
 
-      <motion.div 
-        ref={containerRef} 
-        className="w-full flex-1 flex items-center"
-      >
-        <motion.div
-          drag="x"
-          dragConstraints={containerRef}
-          dragElastic={0.1}
-          style={{ x }}
-          onDragStart={() => setHasDragged(true)}
-          className="flex items-center h-full cursor-grab active:cursor-grabbing"
-        >
-          {collections.map((item, index) => {
-            const isActive = index === activeIndex;
-            const isAdjacent = Math.abs(index - activeIndex) <= 1;
-            return (
-              <CollectionItem 
-                key={item.id} 
-                item={item} 
-                index={index} 
-                count={count} 
-                x={x} 
-                vw={vw} 
-                isActive={isActive}
-                isAdjacent={isAdjacent}
-              />
-            );
-          })}
-        </motion.div>
-      </motion.div>
+          <motion.div 
+            ref={containerRef} 
+            className="w-full flex-1 flex items-center"
+          >
+            <motion.div
+              drag="x"
+              dragConstraints={containerRef}
+              dragElastic={0.1}
+              style={{ x }}
+              onDragStart={() => setHasDragged(true)}
+              className="flex items-center h-full cursor-grab active:cursor-grabbing"
+            >
+              {collections.map((item, index) => {
+                const isActive = index === activeIndex;
+                const isAdjacent = Math.abs(index - activeIndex) <= 1;
+                return (
+                  <CollectionItem 
+                    key={item.id} 
+                    item={item} 
+                    index={index} 
+                    count={count} 
+                    x={x} 
+                    vw={vw} 
+                    isActive={isActive}
+                    isAdjacent={isAdjacent}
+                  />
+                );
+              })}
+            </motion.div>
+          </motion.div>
 
-      {/* Hidden container to absolute pre-render unboxing & product images to avoid white flash */}
-      <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {FRAMES.map((frame) => (
-          <img key={frame} src={`/unboxing/${frame}`} alt="preload" />
-        ))}
-        {collections.map((item) => (
-          <img key={item.id} src={item.image} alt="preload product" />
-        ))}
-      </div>
+          {/* Hidden container to absolute pre-render unboxing & product images to avoid white flash */}
+          <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            {FRAMES.map((frame) => (
+              <img key={frame} src={`/unboxing/${frame}`} alt="preload" />
+            ))}
+            {collections.map((item) => (
+              <img key={item.id} src={item.image} alt="preload product" />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
