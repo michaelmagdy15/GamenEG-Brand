@@ -81,13 +81,9 @@ export default function ProductDetail() {
               {product.category === 'bow-tie' ? 'Bow Tie Collection' : 'Timepiece Collection'} <span className="mx-2 text-champagne-gold/20">|</span> {product.wood}
             </span>
 
-            <h1 className="font-header text-4xl sm:text-5xl lg:text-6xl text-champagne-gold leading-[0.95] mb-4">
+            <h1 className="font-header text-4xl sm:text-5xl lg:text-6xl text-champagne-gold leading-[0.95] mb-8">
               {product.name}
             </h1>
-
-            <p className="font-french italic text-xl lg:text-2xl text-champagne-gold/70 mb-8">
-              {product.tagline}
-            </p>
 
             <p className="font-body text-sm leading-relaxed text-warm-cream/70 mb-10">
               {product.description}

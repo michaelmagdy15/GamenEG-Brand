@@ -17,7 +17,16 @@ export default function Home() {
         {/* <OriginSection /> */}
         {/* <MarqueeTicker variant="light" speed="slow" /> */}
         <AtelierExperience />
+        {/* Smooth transition from AtelierExperience (deep-walnut) to CollectionsSection (espresso) */}
+        <div className="relative bg-gradient-to-b from-deep-walnut to-espresso pt-20 pb-8 flex flex-col items-center justify-center">
+          <span className="font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-champagne-gold/60 font-bold select-none animate-pulse">
+            DRAG TO VIEW MORE TO THE RIGHT →
+          </span>
+          <div className="h-px w-20 bg-champagne-gold/15 mt-4" />
+        </div>
         <CollectionsSection />
+        {/* Smooth transition back from CollectionsSection (espresso) to deep-walnut */}
+        <div className="h-20 bg-gradient-to-b from-espresso to-deep-walnut" />
         <MarqueeTicker variant="dark" speed="normal" />
         <HeritageSection />
         {/* <RitualSection /> */}{/* hidden — re-enable in a future version */}
