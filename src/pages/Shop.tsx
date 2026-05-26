@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useEffect, memo } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
+import { preload } from 'react-dom';
 import type { ProductCollection, Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
@@ -13,6 +14,46 @@ interface ProductCardProps {
 
 const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: ProductCardProps) {
   const navigate = useNavigate();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
+  const pinnedImagesRef = useRef<HTMLImageElement[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsNearViewport(true);
+
+          // Dynamic cache-pinning: Instantiate Images in memory and pin them to prevent garbage collection
+          const imagesToPin = [product.image, '/unboxing/gamenbox_000000_0000_gamenbox_000015.png'];
+          pinnedImagesRef.current = imagesToPin.map(src => {
+            const img = new Image();
+            img.setAttribute('fetchpriority', 'high');
+            img.src = src;
+            return img;
+          });
+
+          // Priority Preloading (React 19 preload)
+          try {
+            preload(product.image, { as: 'image', fetchPriority: 'high' });
+            preload('/unboxing/gamenbox_000000_0000_gamenbox_000015.png', { as: 'image', fetchPriority: 'high' });
+          } catch (e) {
+            // fallback
+          }
+
+          // Once intersected/near viewport, we can stop observing to optimize performance
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' } // Preload when within 300px (upcoming/adjacent in grid)
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [product.image]);
 
   // Navigate to details on card click
   const handleCardClick = (e: React.MouseEvent) => {
@@ -25,7 +66,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
 
   if (product.isSoldOut) {
     return (
-      <div className="block opacity-80 cursor-not-allowed">
+      <div ref={cardRef} className="block opacity-80 cursor-not-allowed">
         <div className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box ${
           isHeritage ? 'bg-warm-cream/50' : 'bg-espresso/45'
         }`} style={{ perspective: '1200px' }}>
@@ -43,6 +84,8 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
                 alt={`GAMÉN ${product.name} Presentation Box`}
                 className="w-full h-full object-contain opacity-40 grayscale contrast-125"
                 decoding="async"
+                loading={isNearViewport ? "eager" : "lazy"}
+                fetchPriority={isNearViewport ? "high" : "low"}
               />
             </div>
 
@@ -53,6 +96,8 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
                 alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
                 className="w-full h-full max-w-[85%] max-h-[85%] object-contain grayscale contrast-125 opacity-40"
                 decoding="async"
+                loading={isNearViewport ? "eager" : "lazy"}
+                fetchPriority={isNearViewport ? "high" : "low"}
               />
             </div>
 
@@ -94,6 +139,7 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
 
   return (
     <div 
+      ref={cardRef}
       onClick={handleCardClick}
       className="block transition-all duration-500 cursor-pointer hover:-translate-y-2"
     >
@@ -115,6 +161,8 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
                 filter: 'blur(12px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))'
               }}
               decoding="async"
+              loading={isNearViewport ? "eager" : "lazy"}
+              fetchPriority={isNearViewport ? "high" : "low"}
             />
           </div>
 
@@ -133,6 +181,8 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
               className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] filter saturate-[1.1] contrast-[1.05]"
               decoding="async"
+              loading={isNearViewport ? "eager" : "lazy"}
+              fetchPriority={isNearViewport ? "high" : "low"}
             />
           </div>
           
@@ -382,10 +432,12 @@ export default function Shop() {
   const collections: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
   const heritageSectionRef = useRef<HTMLElement>(null);
 
+  const pinnedBoxRef = useRef<HTMLImageElement | null>(null);
   // Preload unboxing frames on mount and hold them in a ref to prevent garbage collection
   useEffect(() => {
     const img = new Image();
     img.src = '/unboxing/gamenbox_000000_0000_gamenbox_000015.png';
+    pinnedBoxRef.current = img;
   }, []);
 
   return (
