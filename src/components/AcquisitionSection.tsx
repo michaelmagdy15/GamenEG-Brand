@@ -19,12 +19,10 @@ export default function AcquisitionSection() {
   return (
     <section className="bg-warm-cream py-32 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="border-b border-espresso/10 pb-8 mb-16 flex flex-col md:flex-row justify-between items-end gap-8">
-          <div>
-            <h2 className="font-header text-5xl lg:text-7xl text-espresso mb-4">The Collection</h2>
-            <p className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-deep-walnut">Select your signature</p>
-          </div>
-          <div className="flex gap-6 font-accent text-[10px] uppercase tracking-[0.2em] font-medium transition-colors">
+        <div className="border-b border-espresso/10 pb-8 mb-16 text-center max-w-3xl mx-auto">
+          <h2 className="font-header text-5xl lg:text-7xl text-espresso mb-4">The Collection</h2>
+          <p className="font-accent text-[10px] uppercase tracking-[0.2em] font-medium text-deep-walnut mb-8">Select your signature</p>
+          <div className="flex justify-center gap-6 font-accent text-[10px] uppercase tracking-[0.2em] font-medium transition-colors">
             <button 
               onClick={() => setActiveFilter('All Pieces')}
               className={activeFilter === 'All Pieces' ? 'border-b border-espresso pb-1 text-espresso' : 'text-deep-walnut/70 hover:text-espresso pb-1'}

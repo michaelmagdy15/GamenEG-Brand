@@ -10,6 +10,7 @@ export interface Product {
   category: ProductCategory;
   collection: ProductCollection;
   price: number;
+  originalPrice?: number;
   tagline: string;
   description: string;
   image: string;
@@ -28,6 +29,7 @@ export const products: Product[] = [
     category: 'bow-tie',
     collection: 'signature',
     price: 149,
+    originalPrice: 199,
     tagline: 'Quiet luxury, loud identity.',
     description:
       'The GΛMÉN Signature is where it all began — a hand-carved walnut bow tie crowned with a solid brass MF monogram. Every curve is sculpted to sit naturally at the collar, turning the ordinary into the unmistakable. Finished with a satin-matte lacquer that deepens with time.',
@@ -139,13 +141,13 @@ export const products: Product[] = [
   {
     id: 'bt-hero',
     slug: 'classic-walnut',
-    name: 'Classic Walnut',
+    name: 'GΛMÉN Classic',
     category: 'bow-tie',
     collection: 'classique',
     price: 129,
     tagline: 'Stand out without saying a word.',
     description:
-      'The entry point to the GΛMÉN universe. Carved from selected walnut with a natural matte finish, the Classic Walnut is understated yet undeniable. The proportions are calibrated for a clean silhouette that complements any collar.',
+      'The entry point to the GΛMÉN universe. Carved from selected walnut with a natural matte finish, the GΛMÉN Classic is understated yet undeniable. The proportions are calibrated for a clean silhouette that complements any collar.',
     image: brandAssets.heroBowTie,
     heroImage: brandAssets.lifestyleBowTieJpg,
     wood: 'Natural Walnut',
@@ -165,6 +167,7 @@ export const products: Product[] = [
     category: 'watch',
     collection: 'watches',
     price: 249,
+    originalPrice: 329,
     tagline: 'Time, carved from nature.',
     description:
       'The GΛMÉN Époque extends our woodcraft philosophy to the wrist. Λ fully handcrafted wooden timepiece featuring a walnut case, stainless steel movement housing, and a multi-link wooden bracelet. The dial face uses a geometric wood inlay pattern that catches light differently with every glance.',

@@ -1,12 +1,43 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 export default function CartDrawer() {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+  const { 
+    items, 
+    isOpen, 
+    setIsOpen, 
+    removeItem, 
+    updateQuantity, 
+    totalPrice, 
+    totalItems,
+    coupon,
+    discountAmount,
+    finalPrice,
+    applyCoupon,
+    removeCoupon
+  } = useCart();
   const navigate = useNavigate();
+
+  const [promoCode, setPromoCode] = useState('');
+  const [promoStatus, setPromoStatus] = useState('');
+
+  const handleApplyPromo = () => {
+    if (!promoCode.trim()) {
+      setPromoStatus('Please enter a code');
+      return;
+    }
+    const success = applyCoupon(promoCode);
+    if (success) {
+      setPromoStatus('Promo applied successfully');
+      setPromoCode('');
+    } else {
+      setPromoStatus('Invalid promo code');
+    }
+  };
+
 
   useEffect(() => {
     if (isOpen) {
@@ -169,9 +200,63 @@ export default function CartDrawer() {
             <div className="px-6 pt-6 pb-[max(env(safe-area-inset-bottom),1.5rem)] border-t border-champagne-gold/15 mt-auto">
               {items.length > 0 && (
                 <>
+                  {/* Coupon Code Entry Box */}
+                  <div className="mb-6">
+                    {!coupon ? (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={promoCode}
+                            onChange={(e) => setPromoCode(e.target.value)}
+                            placeholder="PROMO CODE"
+                            className="flex-1 bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream text-xs font-mono tracking-wider px-3 py-2 outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleApplyPromo}
+                            className="bg-champagne-gold text-deep-walnut font-accent text-[9px] uppercase font-bold px-3 py-2 rounded-sm"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {promoStatus && (
+                          <span className={`text-[10px] ${promoStatus.includes('successfully') ? 'text-emerald-400' : 'text-rose-400'} font-body`}>
+                            {promoStatus}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between bg-warm-cream/5 border border-champagne-gold/15 px-3 py-2 rounded-sm">
+                        <span className="text-[10px] text-champagne-gold font-accent tracking-wider">
+                          Applied: {coupon.code} (-{coupon.discountType === 'percentage' ? coupon.value + '%' : coupon.value + ' EGP'})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            removeCoupon();
+                            setPromoStatus('');
+                          }}
+                          className="text-[9px] text-rose-400 hover:text-rose-350 font-accent uppercase font-bold underline transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-center justify-between mb-6">
                     <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
-                    <span className="font-header text-2xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
+                    <span className="font-header text-2xl text-champagne-gold">
+                      {coupon ? (
+                        <span className="flex items-center gap-2">
+                          <span className="line-through text-warm-cream/40 text-lg">LE {totalPrice.toLocaleString()}</span>
+                          <span>LE {finalPrice.toLocaleString()}</span>
+                        </span>
+                      ) : (
+                        `LE ${totalPrice.toLocaleString()}`
+                      )}
+                    </span>
                   </div>
                   <button
                     onClick={() => { setIsOpen(false); navigate('/checkout'); }}

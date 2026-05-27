@@ -358,8 +358,8 @@ const CollectionItem = memo(function CollectionItem({
 
             {/* Sold Out Badge */}
             {item.isSoldOut && (
-              <div className="absolute top-4 right-4 z-20 bg-espresso/90 border border-champagne-gold/30 px-3 py-1 rounded-full select-none">
-                <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-champagne-gold">Sold Out</span>
+              <div className="absolute top-4 right-4 z-20 bg-espresso/90 border border-red-500/20 px-3 py-1 rounded-full select-none">
+                <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-[#d9534f]">Sold Out</span>
               </div>
             )}
 
@@ -371,9 +371,7 @@ const CollectionItem = memo(function CollectionItem({
               <img
                 src={item.image}
                 alt={item.name}
-                className={`w-full h-full max-w-[80%] max-h-[80%] object-contain pointer-events-none select-none bg-transparent ${
-                  item.isSoldOut ? 'grayscale opacity-40 contrast-125' : ''
-                }`}
+                className="w-full h-full max-w-[80%] max-h-[80%] object-contain pointer-events-none select-none bg-transparent"
                 decoding="sync"
                 loading={isAdjacent ? "eager" : "lazy"}
                 fetchPriority={isActive ? "high" : isAdjacent ? "high" : "low"}

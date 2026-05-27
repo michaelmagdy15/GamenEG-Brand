@@ -57,6 +57,71 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
   const [isUnboxed, setIsUnboxed] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imageRefs = useRef<HTMLImageElement[]>([]);
+  const [zoomStyle, setZoomStyle] = useState<React.CSSProperties>({
+    transform: 'scale(1)',
+    transformOrigin: 'center center',
+  });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isUnboxed) return;
+    const imgElement = e.currentTarget.querySelector('img');
+    if (!imgElement) return;
+
+    const containerRect = e.currentTarget.getBoundingClientRect();
+    const mouseXInContainer = e.clientX - containerRect.left;
+    const mouseYInContainer = e.clientY - containerRect.top;
+
+    const imgLeft = imgElement.offsetLeft;
+    const imgTop = imgElement.offsetTop;
+    const imgWidth = imgElement.offsetWidth;
+    const imgHeight = imgElement.offsetHeight;
+
+    if (imgWidth === 0 || imgHeight === 0) return;
+
+    const x = Math.max(0, Math.min(100, ((mouseXInContainer - imgLeft) / imgWidth) * 100));
+    const y = Math.max(0, Math.min(100, ((mouseYInContainer - imgTop) / imgHeight) * 100));
+
+    setZoomStyle({
+      transform: 'scale(2.2)',
+      transformOrigin: `${x}% ${y}%`,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setZoomStyle({
+      transform: 'scale(1)',
+      transformOrigin: 'center center',
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isUnboxed) return;
+    if (e.cancelable) {
+      e.preventDefault(); // Block default scroll behaviors
+    }
+    const imgElement = e.currentTarget.querySelector('img');
+    if (!imgElement) return;
+
+    const touch = e.touches[0];
+    const containerRect = e.currentTarget.getBoundingClientRect();
+    const touchXInContainer = touch.clientX - containerRect.left;
+    const touchYInContainer = touch.clientY - containerRect.top;
+
+    const imgLeft = imgElement.offsetLeft;
+    const imgTop = imgElement.offsetTop;
+    const imgWidth = imgElement.offsetWidth;
+    const imgHeight = imgElement.offsetHeight;
+
+    if (imgWidth === 0 || imgHeight === 0) return;
+
+    const x = Math.max(0, Math.min(100, ((touchXInContainer - imgLeft) / imgWidth) * 100));
+    const y = Math.max(0, Math.min(100, ((touchYInContainer - imgTop) / imgHeight) * 100));
+
+    setZoomStyle({
+      transform: 'scale(2.2)',
+      transformOrigin: `${x}% ${y}%`,
+    });
+  };
 
   useEffect(() => {
     // Preload images (both unboxing frames and the product image)
@@ -211,7 +276,9 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
             variants={productVariants}
             initial="initial"
             animate={getAnimationState()}
-            className="absolute z-10 max-w-[75%] max-h-[75%] flex items-center justify-center pointer-events-none select-none"
+            className={`absolute z-10 max-w-[75%] max-h-[75%] flex items-center justify-center select-none ${
+              isUnboxed ? 'pointer-events-auto' : 'pointer-events-none'
+            }`}
           >
             {/* Spectacular Multi-Layered Radial Shimmer Glow Backdrop */}
             {isUnboxed && (
@@ -285,19 +352,42 @@ export default function UnboxingExperience({ productImage, productName }: Unboxi
               className="relative flex items-center justify-center p-2"
             >
               {/* Image container holds the sweep shimmer sheen */}
-              <div className="relative overflow-hidden rounded-2xl flex items-center justify-center p-2">
+              <div 
+                className={`relative overflow-hidden rounded-2xl flex items-center justify-center p-2 ${
+                  isUnboxed ? 'cursor-zoom-in' : ''
+                }`}
+                style={{ touchAction: isUnboxed ? 'none' : 'auto' }}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseLeave}
+              >
                 <img
                   src={productImage}
                   alt={productName}
+                  style={{
+                    ...(isUnboxed ? zoomStyle : {}),
+                    transition: 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+                  }}
                   className="max-w-full max-h-[280px] lg:max-h-[320px] object-contain z-10"
                 />
-
-
               </div>
             </motion.div>
           </motion.div>
         )}
       </div>
+
+      {isUnboxed && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="mt-6 font-accent text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 flex items-center gap-2 border border-champagne-gold/10 bg-warm-cream/5 px-4 py-2 rounded-full pointer-events-none select-none"
+        >
+          <span className="hidden md:inline">Hover over the creation to zoom & inspect details</span>
+          <span className="md:hidden">Touch & drag across the creation to zoom & inspect details</span>
+        </motion.div>
+      )}
 
       <div className="absolute w-0 h-0 opacity-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {FRAMES.map((frame) => (

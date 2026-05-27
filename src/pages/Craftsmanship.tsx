@@ -5,26 +5,31 @@ const steps = [
   {
     num: '01',
     title: 'Selection',
+    /* PENDING COPY UPDATE: Selection Step Description */
     text: 'Each bow tie begins with the wood. We source sustainably from trusted suppliers across Africa and Europe, selecting pieces with the most expressive grain patterns and tonal depth.',
   },
   {
     num: '02',
     title: 'Shaping',
+    /* PENDING COPY UPDATE: Shaping Step Description */
     text: 'Using hand chisels and rotary tools, the raw block is sculpted into the iconic bow tie silhouette. No CNC machines. No templates. Every curve is guided by the natural grain of the wood.',
   },
   {
     num: '03',
     title: 'Detailing',
+    /* PENDING COPY UPDATE: Detailing Step Description */
     text: 'Motifs like the Eye of Horus are micro-engraved by hand, then filled with sand-cast brass. Every inlay is polished individually until it sits flush with the surrounding wood surface.',
   },
   {
     num: '04',
     title: 'Finishing',
+    /* PENDING COPY UPDATE: Finishing Step Description */
     text: 'Multiple rounds of hand-sanding (up to 2000 grit) create a surface that feels like silk. The piece is then treated with natural oils or lacquer depending on the desired finish.',
   },
   {
     num: '05',
     title: 'Assembly',
+    /* PENDING COPY UPDATE: Assembly Step Description */
     text: 'The adjustable neckband is hand-stitched and attached. The piece is inspected under magnification for any imperfections before being placed in its presentation box.',
   },
 ];
@@ -79,7 +84,9 @@ export default function Craftsmanship() {
             Made by <span className="italic font-light">Hand</span>
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
+          {/* PENDING COPY UPDATE: Hero Description */}
           <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
+            {/* PLACEHOLDER: Enter the new hero description below */}
             From raw timber to finished masterpiece, every GΛMÉN piece passes through over 20 stages of handcraft 
             in our Cairo atelier. Here is how each one comes to life.
           </p>
@@ -168,10 +175,30 @@ export default function Craftsmanship() {
         <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 text-center mb-12">Our Materials</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { name: 'Walnut', origin: 'Egypt & Turkey', note: 'Rich, warm tones with deep grain character' },
-            { name: 'Mahogany', origin: 'West Africa', note: 'Dense hardwood with a reddish-brown hue' },
-            { name: 'Sycamore', origin: 'Mediterranean', note: 'Light, blonde wood for contrast inlays' },
-            { name: 'Brass', origin: 'Cairo Foundries', note: 'Sand-cast and hand-polished for every inlay' },
+            { 
+              name: 'Walnut', 
+              origin: 'Egypt & Turkey', 
+              /* PENDING COPY UPDATE: Walnut Note */
+              note: 'Rich, warm tones with deep grain character' 
+            },
+            { 
+              name: 'Mahogany', 
+              origin: 'West Africa', 
+              /* PENDING COPY UPDATE: Mahogany Note */
+              note: 'Dense hardwood with a reddish-brown hue' 
+            },
+            { 
+              name: 'Sycamore', 
+              origin: 'Mediterranean', 
+              /* PENDING COPY UPDATE: Sycamore Note */
+              note: 'Light, blonde wood for contrast inlays' 
+            },
+            { 
+              name: 'Brass', 
+              origin: 'Cairo Foundries', 
+              /* PENDING COPY UPDATE: Brass Note */
+              note: 'Sand-cast and hand-polished for every inlay' 
+            },
           ].map((m) => (
             <div key={m.name} className="border border-champagne-gold/10 rounded-xl p-6">
               <h3 className="font-header text-lg text-champagne-gold mb-1 font-semibold">{m.name}</h3>

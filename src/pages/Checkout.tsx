@@ -17,7 +17,7 @@ interface CheckoutForm {
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, coupon, discountAmount, finalPrice, applyCoupon, removeCoupon } = useCart();
   const [form, setForm] = useState<CheckoutForm>({
     name: '',
     email: '',
@@ -29,6 +29,8 @@ export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [subscribe, setSubscribe] = useState(true);
+  const [promoInput, setPromoInput] = useState('');
+  const [promoMessage, setPromoMessage] = useState({ text: '', isError: false });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -93,10 +95,10 @@ export default function Checkout() {
           quantity: i.quantity,
           image: i.product.image,
         })),
-        totalPrice,
+        totalPrice: finalPrice,
       };
       await saveOrder(newOrder);
-      logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${totalPrice} EGP)`);
+      logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${finalPrice} EGP)`);
 
       // Save newsletter subscription if checked
       if (subscribe) {
@@ -328,18 +330,84 @@ export default function Checkout() {
                 ))}
               </div>
 
+              {/* Promo Code Box */}
+              <div className="mb-6 pt-4 border-t border-champagne-gold/10">
+                {!coupon ? (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="PROMO CODE"
+                        value={promoInput}
+                        onChange={(e) => {
+                          setPromoInput(e.target.value);
+                          if (promoMessage.text) setPromoMessage({ text: '', isError: false });
+                        }}
+                        className="flex-1 bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream text-xs uppercase font-mono tracking-widest px-3 py-2 outline-none focus:border-champagne-gold/40 rounded-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!promoInput.trim()) return;
+                          const success = applyCoupon(promoInput);
+                          if (success) {
+                            setPromoMessage({ text: 'Coupon applied successfully', isError: false });
+                            setPromoInput('');
+                          } else {
+                            setPromoMessage({ text: 'Invalid or expired coupon', isError: true });
+                          }
+                        }}
+                        className="bg-champagne-gold/80 hover:bg-champagne-gold text-deep-walnut font-accent text-[9px] uppercase tracking-wider px-4 rounded-sm font-bold transition-colors"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {promoMessage.text && (
+                      <p className={`text-[10px] font-body ${promoMessage.isError ? 'text-red-400' : 'text-emerald-400'}`}>
+                        {promoMessage.text}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-warm-cream/5 border border-champagne-gold/15 px-3 py-2.5 rounded-sm">
+                    <div className="flex flex-col">
+                      <span className="font-accent text-[8px] uppercase tracking-widest text-warm-cream/40">Promo Applied</span>
+                      <span className="font-mono text-xs uppercase tracking-widest text-champagne-gold font-bold">
+                        Applied: {coupon.code}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeCoupon();
+                        setPromoMessage({ text: '', isError: false });
+                      }}
+                      className="text-red-400 hover:text-red-300 font-accent text-[9px] uppercase tracking-wider font-bold transition-colors min-h-[32px] px-2 flex items-center"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="pt-4 border-t border-champagne-gold/10 space-y-2">
                 <div className="flex justify-between">
                   <span className="font-body text-xs text-warm-cream/40">Subtotal</span>
                   <span className="font-body text-xs text-warm-cream/70">LE {totalPrice.toLocaleString()}</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between">
+                    <span className="font-body text-xs text-emerald-400">Discount (Coupon)</span>
+                    <span className="font-body text-xs text-emerald-400">- LE {discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="font-body text-xs text-warm-cream/40">Shipping</span>
                   <span className="font-body text-xs text-warm-cream/40">Arranged on confirmation</span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-champagne-gold/10">
                   <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-warm-cream/60">Total</span>
-                  <span className="font-header text-xl text-champagne-gold">LE {totalPrice.toLocaleString()}</span>
+                  <span className="font-header text-xl text-champagne-gold">LE {finalPrice.toLocaleString()}</span>
                 </div>
               </div>
             </div>

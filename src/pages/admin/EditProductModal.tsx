@@ -17,11 +17,13 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
     tagline: product.tagline || '',
     description: product.description || '',
     price: product.price ?? '',
+    originalPrice: product.originalPrice ?? '',
     wood: product.wood || '',
     collection: (product.collection || 'classique') as ProductCollection,
     category: (product.category || 'bow-tie') as ProductCategory,
     image: product.image || '',
     careNote: product.careNote || '',
+    isSoldOut: !!product.isSoldOut,
   });
   
   const [details, setDetails] = useState<string[]>(product.details && product.details.length > 0 ? product.details : ['']);
@@ -30,6 +32,23 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const insertText = (fieldName: 'description' | 'careNote', textToInsert: string) => {
+    const textarea = document.getElementsByName(fieldName)[0] as HTMLTextAreaElement;
+    if (!textarea) {
+      setForm((prev) => ({ ...prev, [fieldName]: prev[fieldName] + textToInsert }));
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentVal = form[fieldName];
+    const newVal = currentVal.substring(0, start) + textToInsert + currentVal.substring(end);
+    setForm((prev) => ({ ...prev, [fieldName]: newVal }));
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + textToInsert.length, start + textToInsert.length);
+    }, 0);
   };
 
   const updateDetail = (i: number, val: string) => {
@@ -60,6 +79,7 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
         tagline: form.tagline,
         description: form.description,
         price: parsedPrice,
+        originalPrice: form.originalPrice ? parseInt(form.originalPrice.toString(), 10) : undefined,
         wood: form.wood,
         collection: form.collection,
         category: form.category,
@@ -67,6 +87,7 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
         heroImage: form.image || '/placeholder-bowTie.png',
         details: details.filter(Boolean),
         careNote: form.careNote,
+        isSoldOut: form.isSoldOut,
       });
       onUpdated();
     } catch {
@@ -99,21 +120,24 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
-          {/* Name & Price */}
+          {/* Name */}
+          <Field label="Product Name *" name="name" value={form.name} onChange={handleChange} placeholder="Product Name" />
+
+          {/* Pricing */}
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Product Name *" name="name" value={form.name} onChange={handleChange} placeholder="Bow Tie Name" />
             <Field label="Price (EGP) *" name="price" type="number" value={form.price.toString()} onChange={handleChange} placeholder="2500" />
+            <Field label="Original Price (EGP) - Optional" name="originalPrice" type="number" value={form.originalPrice.toString()} onChange={handleChange} placeholder="Compare-at price (e.g. 3500)" />
           </div>
 
-          {/* Collection & Category */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Collection, Category & Stock Status */}
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">Collection</label>
               <select
                 name="collection"
                 value={form.collection}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40"
+                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40 rounded-sm"
               >
                 <option value="classique">I. GΛMÉN Classiques</option>
                 <option value="heritage">II. GΛMÉN Héritage</option>
@@ -127,10 +151,22 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40"
+                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40 rounded-sm"
               >
                 <option value="bow-tie">Bow Tie</option>
                 <option value="watch">Watch</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">Stock Status</label>
+              <select
+                name="isSoldOut"
+                value={form.isSoldOut ? 'true' : 'false'}
+                onChange={(e) => setForm((prev) => ({ ...prev, isSoldOut: e.target.value === 'true' }))}
+                className="w-full bg-gray-800 border border-gray-700 text-gray-200 text-xs px-3 py-2.5 focus:outline-none focus:border-amber-500/40 rounded-sm"
+              >
+                <option value="false">In Stock</option>
+                <option value="true">Sold Out</option>
               </select>
             </div>
           </div>
@@ -143,7 +179,60 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
 
           {/* Description */}
           <div>
-            <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">Description</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em]">Description</label>
+              <div className="flex items-center gap-1.5 bg-gray-955 px-2 py-0.5 border border-gray-800 rounded-sm">
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '• ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-1 rounded transition-colors font-accent"
+                  title="Insert Bullet Point"
+                >
+                  • Bullet
+                </button>
+                <span className="text-gray-800 text-[9px]">|</span>
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '⚜️ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Fleur ⚜️"
+                >
+                  ⚜️
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '✨ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Sparkle ✨"
+                >
+                  ✨
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '🪵 ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Wood 🪵"
+                >
+                  🪵
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '⌚ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Watch ⌚"
+                >
+                  ⌚
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('description', '📐 ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Ruler 📐"
+                >
+                  📐
+                </button>
+              </div>
+            </div>
             <textarea
               name="description"
               value={form.description}
@@ -189,7 +278,60 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
 
           {/* Care Note */}
           <div>
-            <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em] mb-1.5">Care Note</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-gray-500 text-[10px] uppercase tracking-[0.15em]">Care Note</label>
+              <div className="flex items-center gap-1.5 bg-gray-955 px-2 py-0.5 border border-gray-800 rounded-sm">
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '• ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-1 rounded transition-colors font-accent"
+                  title="Insert Bullet Point"
+                >
+                  • Bullet
+                </button>
+                <span className="text-gray-800 text-[9px]">|</span>
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '⚜️ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Fleur ⚜️"
+                >
+                  ⚜️
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '✨ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Sparkle ✨"
+                >
+                  ✨
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '🪵 ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Wood 🪵"
+                >
+                  🪵
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '⌚ ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Watch ⌚"
+                >
+                  ⌚
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertText('careNote', '📐 ')}
+                  className="text-[9px] text-amber-500/70 hover:text-amber-400 px-0.5 rounded transition-colors"
+                  title="Insert Ruler 📐"
+                >
+                  📐
+                </button>
+              </div>
+            </div>
             <textarea
               name="careNote"
               value={form.careNote}

@@ -9,7 +9,7 @@ const categories = [
     products: [
       {
         id: 'classic-walnut',
-        name: 'Classic Walnut',
+        name: 'GΛMÉN Classic',
         image: '/Images/NEW/gamen classic.png',
         detail: 'Hand-selected walnut grain',
         accent: 'Refined essentials for distinguished style.',

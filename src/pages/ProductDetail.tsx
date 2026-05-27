@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, ShoppingBag, Shield, Truck, Leaf } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Shield, Truck, Leaf, Ruler } from 'lucide-react';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 import UnboxingExperience from '../components/UnboxingExperience';
@@ -91,7 +91,14 @@ export default function ProductDetail() {
 
             {/* Price + Add to Bag */}
             <div className="flex items-end gap-8 mb-12">
-              <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
+              {product.originalPrice ? (
+                <div className="flex items-baseline gap-3">
+                  <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
+                  <span className="font-accent text-lg line-through text-champagne-gold/40">LE {product.originalPrice.toLocaleString()}</span>
+                </div>
+              ) : (
+                <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
+              )}
               <button
                 disabled={product.isSoldOut}
                 onClick={() => addItem(product)}
@@ -115,6 +122,26 @@ export default function ProductDetail() {
                 </div>
               ))}
             </div>
+
+            {/* Product Measurements HUD */}
+            <div className="mt-8 border-t border-champagne-gold/10 pt-6">
+              <div className="flex items-start gap-3 bg-warm-cream/5 border border-champagne-gold/10 rounded-lg p-4">
+                <Ruler size={16} strokeWidth={1.5} className="text-champagne-gold/50 mt-0.5 flex-shrink-0" />
+                <div className="flex flex-col gap-1">
+                  <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-champagne-gold/60">
+                    {product.category === 'bow-tie' ? 'Bowtie Measurements' : 'Watch Measurements'}
+                  </span>
+                  <p className="font-body text-xs text-warm-cream/80 leading-relaxed">
+                    {product.category === 'bow-tie'
+                      ? "Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars"
+                      : "42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)"}
+                  </p>
+                  <p className="font-french italic text-[10px] text-champagne-gold/60 mt-2 border-t border-champagne-gold/5 pt-2">
+                    * Note: Chaque pièce est unique. As each item is individually handcrafted from natural wood, grain patterns and textures vary, making your piece entirely unique.
+                  </p>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -135,7 +162,19 @@ export default function ProductDetail() {
           </div>
           <div>
             <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6 font-semibold">Care</h2>
-            <p className="font-body text-sm leading-relaxed text-warm-cream/70">{product.careNote}</p>
+            <ul className="space-y-3">
+              {product.careNote
+                .split(/\r?\n|(?<=\.)\s+/)
+                .map((step) => step.trim())
+                .map((step) => step.replace(/^[•\-\*\s⚜️✨🪵⌚📐]+\s*/, '')) // Strip leading bullets/emojis
+                .filter((step) => step.length > 0)
+                .map((step, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="w-1 h-1 rounded-full bg-champagne-gold/40 mt-2 flex-shrink-0" />
+                    <span className="font-body text-sm text-warm-cream/70">{step}</span>
+                  </li>
+                ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -158,7 +197,14 @@ export default function ProductDetail() {
                   </div>
                   <h4 className="font-header text-lg text-champagne-gold">{p.name}</h4>
                   <p className="font-body text-xs text-warm-cream/50 mt-1">{p.wood}</p>
-                  <p className="font-accent text-sm text-champagne-gold/70 mt-2">LE {p.price.toLocaleString()}</p>
+                  {p.originalPrice ? (
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <span className="font-accent text-sm text-champagne-gold">LE {p.price.toLocaleString()}</span>
+                      <span className="font-accent text-xs line-through text-champagne-gold/40">LE {p.originalPrice.toLocaleString()}</span>
+                    </div>
+                  ) : (
+                    <p className="font-accent text-sm text-champagne-gold/70 mt-2">LE {p.price.toLocaleString()}</p>
+                  )}
                 </Link>
               ))}
             </div>

@@ -6,6 +6,25 @@ import type { ProductCollection, Product } from '../data/products';
 import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 
+const UNBOXING_FRAMES = [
+  '/unboxing/gamenbox_000000_0000_gamenbox_000015.png',
+  '/unboxing/gamenbox_000000_0001_gamenbox_000014.png',
+  '/unboxing/gamenbox_000000_0002_gamenbox_000013.png',
+  '/unboxing/gamenbox_000000_0003_gamenbox_000012.png',
+  '/unboxing/gamenbox_000000_0004_gamenbox_000011.png',
+  '/unboxing/gamenbox_000000_0005_gamenbox_000010.png',
+  '/unboxing/gamenbox_000000_0006_gamenbox_000009.png',
+  '/unboxing/gamenbox_000000_0007_gamenbox_000008.png',
+  '/unboxing/gamenbox_000000_0008_gamenbox_000007.png',
+  '/unboxing/gamenbox_000000_0009_gamenbox_000006.png',
+  '/unboxing/gamenbox_000000_0010_gamenbox_000005.png',
+  '/unboxing/gamenbox_000000_0011_gamenbox_000004.png',
+  '/unboxing/gamenbox_000000_0012_gamenbox_000003.png',
+  '/unboxing/gamenbox_000000_0013_gamenbox_000002.png',
+  '/unboxing/gamenbox_000000_0014_gamenbox_000001.png',
+  '/unboxing/gamenbox_000000_0015_Layer-1.png'
+];
+
 interface ProductCardProps {
   product: Product;
   isHeritage: boolean;
@@ -18,27 +37,127 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
   const [isNearViewport, setIsNearViewport] = useState(false);
   const pinnedImagesRef = useRef<HTMLImageElement[]>([]);
 
+  // Hover frame-by-frame unboxing animation states/refs
+  const [frameIndex, setFrameIndex] = useState(0);
+  const frameRef = useRef(0);
+  const requestRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number>(0);
+  const isHoveringRef = useRef(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      setIsTouchDevice(isTouch);
+      if (isTouch) {
+        setFrameIndex(15);
+        frameRef.current = 15;
+      }
+    }
+  }, []);
+
+  const updateFrame = (newFrame: number) => {
+    frameRef.current = newFrame;
+    setFrameIndex(newFrame);
+  };
+
+  const tick = (timestamp: number) => {
+    if (!lastTimeRef.current) {
+      lastTimeRef.current = timestamp;
+    }
+    const elapsed = timestamp - lastTimeRef.current;
+    const frameDuration = 32; // ~32ms per frame (within 30-35ms range)
+
+    if (elapsed >= frameDuration) {
+      const current = frameRef.current;
+      if (isHoveringRef.current) {
+        if (current < 15) {
+          updateFrame(current + 1);
+          lastTimeRef.current = timestamp;
+        }
+      } else {
+        if (current > 0) {
+          updateFrame(current - 1);
+          lastTimeRef.current = timestamp;
+        }
+      }
+    }
+
+    const current = frameRef.current;
+    const needsMore = (isHoveringRef.current && current < 15) || (!isHoveringRef.current && current > 0);
+    if (needsMore) {
+      requestRef.current = requestAnimationFrame(tick);
+    } else {
+      requestRef.current = null;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (isTouchDevice) return;
+    isHoveringRef.current = true;
+    lastTimeRef.current = 0;
+    if (!requestRef.current) {
+      requestRef.current = requestAnimationFrame(tick);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isTouchDevice) return;
+    isHoveringRef.current = false;
+    lastTimeRef.current = 0;
+    if (!requestRef.current) {
+      requestRef.current = requestAnimationFrame(tick);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsNearViewport(true);
 
-          // Dynamic cache-pinning: Instantiate Images in memory and pin them to prevent garbage collection
-          const imagesToPin = [product.image, '/unboxing/gamenbox_000000_0000_gamenbox_000015.png'];
-          pinnedImagesRef.current = imagesToPin.map(src => {
-            const img = new Image();
-            img.setAttribute('fetchpriority', 'high');
-            img.src = src;
-            return img;
-          });
+          const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+          if (isTouch) {
+            // Touch device: only pin/preload product image and open box frame to conserve bandwidth
+            const openFrame = UNBOXING_FRAMES[15];
+            const imagesToPin = [product.image, openFrame];
+            pinnedImagesRef.current = imagesToPin.map(src => {
+              const img = new Image();
+              img.setAttribute('fetchpriority', 'high');
+              img.src = src;
+              return img;
+            });
+            try {
+              preload(product.image, { as: 'image', fetchPriority: 'high' });
+              preload(openFrame, { as: 'image', fetchPriority: 'high' });
+            } catch (e) {}
+          } else {
+            // Dynamic cache-pinning: Instantiate Images in memory and pin them to prevent garbage collection
+            const imagesToPin = [product.image, ...UNBOXING_FRAMES];
+            pinnedImagesRef.current = imagesToPin.map(src => {
+              const img = new Image();
+              img.setAttribute('fetchpriority', 'high');
+              img.src = src;
+              return img;
+            });
 
-          // Priority Preloading (React 19 preload)
-          try {
-            preload(product.image, { as: 'image', fetchPriority: 'high' });
-            preload('/unboxing/gamenbox_000000_0000_gamenbox_000015.png', { as: 'image', fetchPriority: 'high' });
-          } catch (e) {
-            // fallback
+            // Priority Preloading (React 19 preload)
+            try {
+              preload(product.image, { as: 'image', fetchPriority: 'high' });
+              UNBOXING_FRAMES.forEach(src => {
+                preload(src, { as: 'image', fetchPriority: 'high' });
+              });
+            } catch (e) {
+              // fallback
+            }
           }
 
           // Once intersected/near viewport, we can stop observing to optimize performance
@@ -64,94 +183,72 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
     navigate(`/product/${product.slug}`);
   };
 
-  if (product.isSoldOut) {
-    return (
-      <div ref={cardRef} className="block opacity-80 cursor-not-allowed">
-        <div className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box bg-transparent`} style={{ perspective: '1200px' }}>
-          <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
-            
-            {/* Sold Out Badge */}
-            <div className="absolute top-4 right-4 z-30 bg-espresso/90 border border-champagne-gold/30 px-3 py-1 rounded-full">
-              <span className="font-accent text-[8px] uppercase tracking-[0.2em] text-champagne-gold">Sold Out</span>
-            </div>
+  // Dynamic style values based on current frameIndex
+  let imgScale = 0.5;
+  let imgY = 100;
+  let imgOpacity = 0;
 
-            {/* The Opened Box Background */}
-            <div className="absolute inset-0 flex items-center justify-center z-0 p-8 pointer-events-none">
-              <img
-                src="/unboxing/gamenbox_000000_0000_gamenbox_000015.png"
-                alt={`GAMÉN ${product.name} Presentation Box`}
-                className="w-full h-full object-contain opacity-40 grayscale contrast-125"
-                decoding="async"
-                loading={isNearViewport ? "eager" : "lazy"}
-                fetchPriority={isNearViewport ? "high" : "low"}
-              />
-            </div>
+  if (frameIndex >= 10) {
+    const t = (frameIndex - 10) / 5;
+    imgScale = 0.5 + 0.6 * t;
+    imgY = 100 - 120 * t;
+    imgOpacity = t;
+  }
 
-            {/* The Product Image */}
-            <div className="absolute inset-0 flex items-center justify-center p-8 z-10 pointer-events-none">
-              <motion.img
-                src={product.image}
-                alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
-                className="w-full h-full max-w-[85%] max-h-[85%] object-contain grayscale contrast-125 opacity-40"
-                decoding="async"
-                loading={isNearViewport ? "eager" : "lazy"}
-                fetchPriority={isNearViewport ? "high" : "low"}
-              />
-            </div>
+  let boxBlur = 0;
+  let boxScale = 1;
+  let boxOpacity = 1;
 
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="flex flex-col min-[380px]:flex-row items-start justify-between gap-2 px-2">
-          <div>
-            <h3 className={`font-header text-lg sm:text-xl transition-colors ${
-              isHeritage ? 'text-espresso' : 'text-champagne-gold'
-            }`}>
-              {product.name}
-            </h3>
-          </div>
-          <div className="text-left min-[380px]:text-right flex-shrink-0">
-            <span className={`block font-accent text-sm sm:text-base ${
-              isHeritage ? 'text-espresso' : 'text-champagne-gold'
-            }`}>LE {product.price.toLocaleString()}</span>
-            <span className="text-[10px] text-espresso uppercase tracking-tighter line-through opacity-45">Archived</span>
-          </div>
-        </div>
-
-        {/* Quick Action Button */}
-        <div className="mt-6 px-2">
-          <button
-            disabled
-            className="w-full min-h-[48px] flex items-center justify-center py-4 rounded-xl font-accent text-[10px] uppercase tracking-[0.3em] transition-all duration-300 border border-espresso/10 text-espresso/20 cursor-not-allowed bg-transparent"
-          >
-            Nul Part Ailleurs
-          </button>
-        </div>
-      </div>
-    );
+  if (frameIndex >= 13) {
+    const tb = (frameIndex - 13) / 2;
+    boxBlur = 6 * tb;
+    boxScale = 1 - 0.05 * tb;
+    boxOpacity = 1 - 0.4 * tb;
   }
 
   return (
     <div 
       ref={cardRef}
       onClick={handleCardClick}
-      className="block transition-all duration-500 cursor-pointer hover:-translate-y-2"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="block transition-all duration-500 cursor-pointer hover:-translate-y-2 group/card"
     >
       <div 
         className={`aspect-[4/5] rounded-2xl mb-6 relative overflow-hidden group/box transition-all duration-500 bg-transparent`}
-        style={{ perspective: '1200px' }}
       >
-        <div className="relative w-full h-full rounded-2xl bg-transparent transform-style-3d">
+        <div className="relative w-full h-full bg-transparent">
           
+          {/* Sold Out Badge */}
+          {product.isSoldOut && (
+            <div className="text-[#d9534f] font-accent uppercase tracking-widest text-[9px] font-bold absolute top-4 right-4 z-20 bg-espresso/90 border border-red-500/20 px-3 py-1 rounded-full">
+              Sold Out
+            </div>
+          )}
+
+          {/* Subtle radial light/glow (mimicking AtelierExperience) */}
+          <div className={`absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(${
+            isHeritage ? '101,67,33,0.05' : '207,197,178,0.08'
+          }),transparent_70%)] pointer-events-none`} />
+
+          {/* Decorative orbit rings */}
+          <div className={`absolute inset-[6%] rounded-full border pointer-events-none transition-transform duration-700 group-hover/box:rotate-45 ${
+            isHeritage ? 'border-deep-walnut/10' : 'border-champagne-gold/10'
+          }`} />
+          <div className={`absolute inset-[15%] rounded-full border border-dashed pointer-events-none transition-transform duration-700 group-hover/box:-rotate-45 ${
+            isHeritage ? 'border-deep-walnut/8' : 'border-champagne-gold/8'
+          }`} />
+
           {/* Box Sequence Background (Blury Presentation Box) */}
           <div className="absolute inset-0 flex items-center justify-center z-0 p-8 pointer-events-none">
             <img
-              src="/unboxing/gamenbox_000000_0000_gamenbox_000015.png"
+              src={UNBOXING_FRAMES[frameIndex]}
               alt={`GAMÉN ${product.name} Presentation Box`}
-              className="w-full h-full object-contain opacity-85 scale-100"
+              className="w-full h-full object-contain"
               style={{
-                filter: 'blur(12px) drop-shadow(0 0 2.5px rgba(26, 16, 11, 0.95)) drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6))'
+                filter: `blur(${boxBlur}px)`,
+                opacity: boxOpacity,
+                transform: `scale(${boxScale})`
               }}
               decoding="async"
               loading={isNearViewport ? "eager" : "lazy"}
@@ -159,20 +256,16 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
             />
           </div>
 
-          {/* Premium Ambient Radial Glow */}
-          <div className="absolute inset-0 z-5 pointer-events-none flex items-center justify-center">
-            <div className="w-4/5 h-4/5 rounded-full bg-champagne-gold/15 blur-[45px] animate-pulse" />
-          </div>
-
           {/* The Product Image - Immediately sharp, unblurred, and visible */}
           <div className="absolute inset-0 flex items-center justify-center p-8 z-10 pointer-events-none">
             <motion.img
               src={product.image}
               alt={`GAMÉN ${product.name} - Handcrafted ${product.wood}`}
-              initial={{ opacity: 1, y: -20, scale: 1.08 }}
-              whileHover={{ y: -30, scale: 1.18 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-              className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.65)] filter saturate-[1.1] contrast-[1.05]"
+              style={{
+                transform: `translateY(${imgY}px) scale(${imgScale})`,
+                opacity: imgOpacity
+              }}
+              className="w-full h-full max-w-[85%] max-h-[85%] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.2)] filter saturate-[1.1] contrast-[1.05]"
               decoding="async"
               loading={isNearViewport ? "eager" : "lazy"}
               fetchPriority={isNearViewport ? "high" : "low"}
@@ -194,27 +287,45 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
           </h3>
         </div>
         <div className="text-left min-[380px]:text-right flex-shrink-0">
-          <span className={`block font-accent text-sm sm:text-base ${
-            isHeritage ? 'text-espresso' : 'text-champagne-gold'
-          }`}>LE {product.price.toLocaleString()}</span>
+          {product.originalPrice ? (
+            <div className="flex flex-row min-[380px]:flex-col items-baseline min-[380px]:items-end gap-1.5 min-[380px]:gap-0">
+              <span className={`text-[10px] sm:text-xs line-through opacity-50 font-accent ${
+                isHeritage ? 'text-espresso' : 'text-champagne-gold'
+              }`}>
+                LE {product.originalPrice.toLocaleString()}
+              </span>
+              <span className={`block font-accent text-sm sm:text-base font-semibold ${
+                isHeritage ? 'text-espresso' : 'text-champagne-gold'
+              }`}>
+                LE {product.price.toLocaleString()}
+              </span>
+            </div>
+          ) : (
+            <span className={`block font-accent text-sm sm:text-base ${
+              isHeritage ? 'text-espresso' : 'text-champagne-gold'
+            }`}>LE {product.price.toLocaleString()}</span>
+          )}
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="mt-6 px-2 flex flex-col min-[480px]:flex-row gap-2 min-[480px]:gap-4">
         <button
+          disabled={product.isSoldOut}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             addItem(product);
           }}
           className={`flex-1 py-4 min-h-[48px] flex items-center justify-center rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
-            isHeritage
+            product.isSoldOut
+              ? 'border-red-500/10 text-red-500/30 cursor-not-allowed bg-transparent'
+              : isHeritage
               ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
               : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
           }`}
         >
-          Add
+          {product.isSoldOut ? 'Sold Out' : 'Add'}
         </button>
         <Link
           to={`/product/${product.slug}`}
@@ -404,11 +515,11 @@ const collectionTitles: Record<ProductCollection, { title: string; subtitle: str
 };
 
 const collectionsFilter: { key: 'all' | ProductCollection; label: string }[] = [
-  { key: 'all', label: 'All Creations' },
-  { key: 'signature', label: 'Signature' },
-  { key: 'classique', label: 'Classique' },
-  { key: 'heritage', label: 'Héritage' },
-  { key: 'watches', label: 'Horlogerie' }
+  { key: 'all', label: 'All GΛMÉN Creations' },
+  { key: 'signature', label: 'GΛMÉN Signature' },
+  { key: 'classique', label: 'GΛMÉN Classics' },
+  { key: 'heritage', label: 'GΛMÉN Heritage' },
+  { key: 'watches', label: 'GΛMÉN Watches' }
 ];
 
 export default function Shop() {
@@ -417,31 +528,45 @@ export default function Shop() {
   
   // States for filtering & sorting
   const [selectedCollection, setSelectedCollection] = useState<'all' | ProductCollection>('all');
-  const [selectedWood, setSelectedWood] = useState<'all' | 'walnut' | 'mahogany' | 'sycamore' | 'ebony'>('all');
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
 
   // Signature first — client requirement: bespoke tier shown prominently at top
   const collectionsList: ProductCollection[] = ['signature', 'classique', 'heritage', 'watches'];
   const heritageSectionRef = useRef<HTMLElement>(null);
 
-  const pinnedBoxRef = useRef<HTMLImageElement | null>(null);
+  const pinnedBoxesRef = useRef<HTMLImageElement[]>([]);
   // Preload unboxing frames on mount and hold them in a ref to prevent garbage collection
   useEffect(() => {
-    const img = new Image();
-    img.src = '/unboxing/gamenbox_000000_0000_gamenbox_000015.png';
-    pinnedBoxRef.current = img;
-  }, []);
+    const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+    if (isTouch) {
+      // Only preload the active open frame on touch viewports
+      const openFrame = UNBOXING_FRAMES[15];
+      const img = new Image();
+      img.src = openFrame;
+      pinnedBoxesRef.current = [img];
+      try {
+        preload(openFrame, { as: 'image', fetchPriority: 'high' });
+      } catch (e) {}
+      return;
+    }
 
-  // Filter products based on selected parameters
+    pinnedBoxesRef.current = UNBOXING_FRAMES.map(src => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
+
+    try {
+      UNBOXING_FRAMES.forEach(src => {
+        preload(src, { as: 'image', fetchPriority: 'high' });
+      });
+    } catch (e) {
+      // fallback
+    }
+  }, []);
   const filteredProducts = products.filter(product => {
     // 1. Collection filter
-    const matchesCollection = selectedCollection === 'all' || product.collection === selectedCollection;
-    
-    // 2. Wood filter
-    const matchesWood = selectedWood === 'all' || 
-      product.wood.toLowerCase().includes(selectedWood.toLowerCase());
-      
-    return matchesCollection && matchesWood;
+    return selectedCollection === 'all' || product.collection === selectedCollection;
   });
 
   return (
@@ -453,21 +578,21 @@ export default function Shop() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-16 flex flex-col items-center"
         >
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[0.9] text-champagne-gold tracking-tighter mb-4">
             The <span className="italic font-light">Collection</span>
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-6" />
-          <p className="font-body text-warm-cream/60 text-sm max-w-md mx-auto uppercase tracking-widest">
+          <p className="font-body text-warm-cream/60 text-sm max-w-md text-center mx-auto uppercase tracking-widest">
             Hand-carved excellence. Egyptian soul.
           </p>
         </motion.div>
 
         {/* Filters and Sorting controls */}
-        <div className="mb-16 flex flex-col lg:flex-row gap-6 items-center justify-between border-y border-champagne-gold/10 py-6">
+        <div className="mb-16 flex flex-col items-center gap-6 border-y border-champagne-gold/10 py-6">
           {/* Main Filters (Chips) */}
-          <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start w-full lg:w-auto">
+          <div className="flex flex-wrap gap-2.5 justify-center w-full">
             {collectionsFilter.map((opt) => {
               const isActive = selectedCollection === opt.key;
               return (
@@ -487,32 +612,13 @@ export default function Shop() {
           </div>
 
           {/* Dropdown Filters */}
-          <div className="flex flex-col min-[380px]:flex-row gap-3 items-center justify-center w-full lg:w-auto">
-            {/* Wood Dropdown */}
-            <div className="relative w-full min-[380px]:w-[180px] h-12">
-              <select
-                value={selectedWood}
-                onChange={(e) => setSelectedWood(e.target.value as any)}
-                className="w-full h-full px-4 rounded-xl bg-espresso border border-champagne-gold/15 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] appearance-none cursor-pointer focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 pr-10"
-              >
-                <option value="all">All Woods</option>
-                <option value="walnut">Walnut</option>
-                <option value="mahogany">Mahogany</option>
-                <option value="sycamore">Sycamore</option>
-              </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-champagne-gold/60">
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
-                  <path d="M5.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.576 0 0.436 0.445 0.408 1.197 0 1.615l-4.695 4.502c-0.218 0.219-0.57 0.219-0.788 0l-4.695-4.502c-0.408-0.418-0.436-1.17 0-1.615z"/>
-                </svg>
-              </div>
-            </div>
-
+          <div className="flex flex-col min-[380px]:flex-row gap-3 items-center justify-center w-full">
             {/* Sort Dropdown */}
             <div className="relative w-full min-[380px]:w-[180px] h-12">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full h-full px-4 rounded-xl bg-espresso border border-champagne-gold/15 text-champagne-gold font-accent text-[10px] uppercase tracking-[0.2em] appearance-none cursor-pointer focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 pr-10"
+                className="w-full h-full px-4 rounded-xl bg-espresso border border-champagne-gold/15 text-champagne-gold font-accent text-[16px] lg:text-[10px] uppercase tracking-[0.2em] appearance-none cursor-pointer focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 pr-10"
               >
                 <option value="default">Default Sort</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -538,12 +644,11 @@ export default function Shop() {
           >
             <p className="font-display text-2xl text-champagne-gold mb-2">No matching creations found</p>
             <p className="font-body text-warm-cream/40 text-xs uppercase tracking-widest mb-6">
-              Try adjusting your filter selection or wood type
+              Try adjusting your filter selection
             </p>
             <button
               onClick={() => {
                 setSelectedCollection('all');
-                setSelectedWood('all');
                 setSortBy('default');
               }}
               className="px-6 py-3 min-h-[48px] rounded-full bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-warm-cream inline-flex items-center justify-center"

@@ -6,16 +6,19 @@ const story = [
   {
     year: '2023',
     title: 'The First Cut',
+    /* PENDING COPY UPDATE: 2023 Timeline Description */
     text: 'In the beating heart of Cairo, Egypt, the first GΛMÉN bow tie was carved from a single piece of walnut in a small workshop. What began as a personal project became an obsession with the intersection of Egyptian heritage and modern luxury.',
   },
   {
     year: '2024',
     title: 'The Craft Deepens',
+    /* PENDING COPY UPDATE: 2024 Timeline Description */
     text: 'The collection expanded with Egyptian motifs -- the Eye of Horus, pharaonic geometry -- hand-engraved into brass and inlaid into exotic woods. Each piece became a story told through material.',
   },
   {
     year: '2025',
     title: 'Beyond the Bow Tie',
+    /* PENDING COPY UPDATE: 2025 Timeline Description */
     text: 'The GΛMÉN Epoque timepiece launched, extending our woodcraft philosophy to the wrist. The vision crystallised: not a brand, but a movement -- where ancient craft meets contemporary identity.',
   },
 ];
@@ -31,7 +34,9 @@ export default function OurStory() {
             Carved from <span className="italic font-light">Heritage</span>
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
+          {/* PENDING COPY UPDATE: Hero Description */}
           <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
+            {/* PLACEHOLDER: Enter the new hero description below */}
             Born and raised in Cairo, Egypt -- GΛMÉN grew from a simple belief: that accessories should carry the weight of identity, not just aesthetics. 
             Rooted in the heart of one of the world's oldest civilisations, every piece we create bridges thousands of years of Egyptian craftsmanship with the quiet confidence of modern luxury.
           </p>
@@ -100,16 +105,19 @@ export default function OurStory() {
               { 
                 title: 'Heritage', 
                 icon: Landmark,
+                /* PENDING COPY UPDATE: Heritage Value Description */
                 text: 'Every motif we use carries millennia of meaning. We do not borrow aesthetics -- we honour lineage.' 
               },
               { 
                 title: 'Craft', 
                 icon: PenTool,
+                /* PENDING COPY UPDATE: Craft Value Description */
                 text: 'No machines decide our curves. Every piece is hand-carved, hand-sanded, and hand-finished by artisans.' 
               },
               { 
                 title: 'Identity', 
                 icon: Fingerprint,
+                /* PENDING COPY UPDATE: Identity Value Description */
                 text: 'A GΛMÉN piece is not decoration. It is a declaration -- a quiet signal of taste that cannot be replicated.' 
               },
             ].map((v) => {
