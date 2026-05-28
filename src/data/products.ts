@@ -18,6 +18,7 @@ export interface Product {
   wood: string;
   details: string[];
   careNote: string;
+  measurements?: string;
   isSoldOut?: boolean;
 }
 

@@ -62,11 +62,21 @@ function PageFallback() {
 }
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+    if (hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        const scrollTimeout = setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+        return () => clearTimeout(scrollTimeout);
+      }
+    }
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 

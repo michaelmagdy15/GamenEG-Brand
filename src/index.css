@@ -272,7 +272,7 @@ span.font-lambda {
   body > #root > * { display: none !important; }
 
   /* Show only the how-to-wear section */
-  #how-to-wear-print-section {
+  #how-to-use {
     display: block !important;
     position: static !important;
     background: white !important;
@@ -281,12 +281,12 @@ span.font-lambda {
   }
 
   /* Make sure nested children are visible */
-  #how-to-wear-print-section * {
+  #how-to-use * {
     display: revert !important;
   }
 
   /* Remove decorative overlays that don't print well */
-  #how-to-wear-print-section .pointer-events-none {
+  #how-to-use .pointer-events-none {
     display: none !important;
   }
 }

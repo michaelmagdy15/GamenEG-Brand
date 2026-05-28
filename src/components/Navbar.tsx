@@ -10,6 +10,7 @@ import MagneticWrapper from './MagneticWrapper';
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/shop', label: 'Shop' },
+  { to: '/#how-to-use', label: 'How to Use' },
   { to: '/craftsmanship', label: 'Craftsmanship' },
   { to: '/our-story', label: 'Our Story' },
   { to: '/contact', label: 'Contact' },

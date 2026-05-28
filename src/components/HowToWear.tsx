@@ -286,7 +286,7 @@ export default function HowToWear() {
 
   if (!isDesktop) {
     return (
-      <section id="how-to-wear-print-section" ref={containerRef} className="relative bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
+      <section id="how-to-use" ref={containerRef} className="relative bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
@@ -333,7 +333,7 @@ export default function HowToWear() {
   }
 
   return (
-    <section id="how-to-wear-print-section" ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream print:bg-white print:text-black print:py-8 print:h-auto">
+    <section id="how-to-use" ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream print:bg-white print:text-black print:py-8 print:h-auto">
       <div className="sticky top-0 h-svh w-full flex flex-col justify-center overflow-hidden py-12 lg:py-24 print:static print:h-auto print:overflow-visible">
       {/* Subtle radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.06),transparent_65%)] pointer-events-none" />

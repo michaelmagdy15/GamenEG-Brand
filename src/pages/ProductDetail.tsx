@@ -132,11 +132,11 @@ export default function ProductDetail() {
                     {product.category === 'bow-tie' ? 'Bowtie Measurements' : 'Watch Measurements'}
                   </span>
                   <p className="font-body text-xs text-warm-cream/80 leading-relaxed">
-                    {product.category === 'bow-tie'
+                    {product.measurements || (product.category === 'bow-tie'
                       ? "Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars"
-                      : "42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)"}
+                      : "42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)")}
                   </p>
-                  <p className="font-french italic text-[10px] text-champagne-gold/60 mt-2 border-t border-champagne-gold/5 pt-2">
+                  <p className="font-french italic text-xs text-champagne-gold/70 mt-2 border-t border-champagne-gold/5 pt-2 leading-relaxed">
                     * Note: Chaque pièce est unique. As each item is individually handcrafted from natural wood, grain patterns and textures vary, making your piece entirely unique.
                   </p>
                 </div>
