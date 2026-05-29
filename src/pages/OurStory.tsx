@@ -1,53 +1,33 @@
 import { motion } from 'motion/react';
 import { Landmark, PenTool, Fingerprint } from 'lucide-react';
-import { brandAssets } from '../brandAssets';
-
-const story = [
-  {
-    year: '2023',
-    title: 'The First Cut',
-    /* PENDING COPY UPDATE: 2023 Timeline Description */
-    text: 'In the beating heart of Cairo, Egypt, the first GΛMÉN bow tie was carved from a single piece of walnut in a small workshop. What began as a personal project became an obsession with the intersection of Egyptian heritage and modern luxury.',
-  },
-  {
-    year: '2024',
-    title: 'The Craft Deepens',
-    /* PENDING COPY UPDATE: 2024 Timeline Description */
-    text: 'The collection expanded with Egyptian motifs -- the Eye of Horus, pharaonic geometry -- hand-engraved into brass and inlaid into exotic woods. Each piece became a story told through material.',
-  },
-  {
-    year: '2025',
-    title: 'Beyond the Bow Tie',
-    /* PENDING COPY UPDATE: 2025 Timeline Description */
-    text: 'The GΛMÉN Epoque timepiece launched, extending our woodcraft philosophy to the wrist. The vision crystallised: not a brand, but a movement -- where ancient craft meets contemporary identity.',
-  },
-];
 
 export default function OurStory() {
   return (
     <main className="min-h-screen bg-deep-walnut pt-36 pb-24">
       {/* Hero */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto text-center mb-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: '-50px' }} transition={{ duration: 0.8 }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true }} 
+          transition={{ duration: 0.8 }}
+        >
           <span className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 block mb-4">Our Origin</span>
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl text-champagne-gold leading-[0.9] tracking-tighter mb-6">
-            Carved from <span className="italic font-light">Heritage</span>
+            Our <span className="italic font-light">Story</span>
           </h1>
           <div className="w-24 h-px bg-gold-gradient mx-auto mb-8" />
-          {/* PENDING COPY UPDATE: Hero Description */}
-          <p className="font-body text-warm-cream/60 text-sm max-w-xl mx-auto leading-relaxed">
-            {/* PLACEHOLDER: Enter the new hero description below */}
-            Born and raised in Cairo, Egypt -- GΛMÉN grew from a simple belief: that accessories should carry the weight of identity, not just aesthetics. 
-            Rooted in the heart of one of the world's oldest civilisations, every piece we create bridges thousands of years of Egyptian craftsmanship with the quiet confidence of modern luxury.
+          <p className="font-body text-warm-cream/80 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+            Born and raised in Cairo, Egypt, GΛMÉN began in May 2025 from a simple yet powerful belief: accessories should carry identity, not just aesthetics.
           </p>
         </motion.div>
       </section>
 
-      {/* 3D Model Display replaced with premium spinning GIF */}
+      {/* Signature Spin GIF Showcase */}
       <section className="px-6 sm:px-10 max-w-5xl mx-auto mb-24 h-[50vh] sm:h-[70vh]">
         <div className="w-full h-full rounded-xl overflow-hidden border border-champagne-gold/10 bg-warm-cream/5 relative flex items-center justify-center p-8 group">
           {/* Ambient lighting / luxury gold glow */}
-          <div className="absolute w-[60%] h-[60%] rounded-full bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.11),transparent_70%)] blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.11),transparent_70%)] blur-3xl pointer-events-none" />
           
           <motion.div 
             whileHover={{ scale: 1.04, rotate: 1.5 }}
@@ -67,27 +47,76 @@ export default function OurStory() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="px-6 sm:px-10 max-w-4xl mx-auto">
-        <div className="space-y-20">
-          {story.map((item, i) => (
-            <motion.div
-              key={item.year}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, margin: '-100px' }}
-              transition={{ duration: 0.7, delay: i * 0.1 }}
-              className="flex flex-col md:flex-row gap-8 md:gap-16"
-            >
-              <div className="md:w-32 flex-shrink-0">
-                <span className="font-header text-5xl text-champagne-gold/20">{item.year}</span>
-              </div>
-              <div className="flex-1 border-l border-champagne-gold/15 pl-8">
-                <h2 className="font-header text-2xl text-champagne-gold mb-3 font-semibold">{item.title}</h2>
-                <p className="font-body text-sm leading-relaxed text-warm-cream/60">{item.text}</p>
-              </div>
-            </motion.div>
-          ))}
+      {/* Narrative Section */}
+      <section className="px-6 sm:px-10 max-w-4xl mx-auto mb-32">
+        <div className="space-y-16 text-warm-cream/70 font-body text-sm sm:text-base leading-relaxed">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 items-start"
+          >
+            <div className="md:col-span-4 font-display text-lg sm:text-xl text-champagne-gold font-light tracking-wide md:text-right pt-0.5">
+              Inspired Heritage
+            </div>
+            <div className="md:col-span-8">
+              <p>
+                Inspired by the richness of Egyptian heritage and the elegance of contemporary luxury, the brand was created to transform timeless craftsmanship into modern statement pieces. What started as a personal vision in a small Cairo workshop soon evolved into an obsession with detail, material, and design.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 items-start"
+          >
+            <div className="md:col-span-4 font-display text-lg sm:text-xl text-champagne-gold font-light tracking-wide md:text-right pt-0.5">
+              The Woodcraft Philosophy
+            </div>
+            <div className="md:col-span-8">
+              <p>
+                The first GΛMÉN bow tie was carved from a single piece of Beech wood, a moment that defined the philosophy of the brand. Every curve, texture, and finish was designed to express individuality, confidence, and sophistication.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 items-start"
+          >
+            <div className="md:col-span-4 font-display text-lg sm:text-xl text-champagne-gold font-light tracking-wide md:text-right pt-0.5">
+              Bridging Centuries
+            </div>
+            <div className="md:col-span-8">
+              <p>
+                Rooted in one of the world’s oldest civilizations, GΛMÉN bridges centuries of artistry with modern refinement. Our creations blend sculptural design, natural materials, and understated luxury to create pieces that feel both timeless and distinctive.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 items-start"
+          >
+            <div className="md:col-span-4 font-display text-lg sm:text-xl text-champagne-gold font-light tracking-wide md:text-right pt-0.5">
+              Wearable Expressions
+            </div>
+            <div className="md:col-span-8">
+              <p>
+                More than accessories, GΛMÉN pieces are wearable expressions of character, crafted for individuals who understand that true luxury lives in the details.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -105,19 +134,16 @@ export default function OurStory() {
               { 
                 title: 'Heritage', 
                 icon: Landmark,
-                /* PENDING COPY UPDATE: Heritage Value Description */
                 text: 'Every motif we use carries millennia of meaning. We do not borrow aesthetics -- we honour lineage.' 
               },
               { 
                 title: 'Craft', 
                 icon: PenTool,
-                /* PENDING COPY UPDATE: Craft Value Description */
                 text: 'No machines decide our curves. Every piece is hand-carved, hand-sanded, and hand-finished by artisans.' 
               },
               { 
                 title: 'Identity', 
                 icon: Fingerprint,
-                /* PENDING COPY UPDATE: Identity Value Description */
                 text: 'A GΛMÉN piece is not decoration. It is a declaration -- a quiet signal of taste that cannot be replicated.' 
               },
             ].map((v) => {
