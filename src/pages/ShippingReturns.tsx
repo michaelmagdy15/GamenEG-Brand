@@ -75,18 +75,16 @@ export default function ShippingReturns() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="p-6 rounded-xl border border-champagne-gold/10">
               <RotateCcw size={20} strokeWidth={1} className="text-champagne-gold/50 mb-4" />
-              <h3 className="font-header text-lg text-champagne-gold mb-2">14-Day Returns</h3>
+              <h3 className="font-header text-lg text-champagne-gold mb-2">Standard Products</h3>
               <p className="font-body text-xs text-warm-cream/60 leading-relaxed">
-                We accept returns within 14 days of delivery for non-custom items. Pieces must be unworn and in original packaging. 
-                Contact us to initiate a return and we will provide a prepaid shipping label.
+                Strictly <strong>No Cash Refunds</strong>. Returns or exchanges are <em>only</em> permitted within 14 days of delivery, and <em>exclusively</em> if the item possesses a verified manufacturing defect.
               </p>
             </div>
             <div className="p-6 rounded-xl border border-champagne-gold/10">
               <Shield size={20} strokeWidth={1} className="text-champagne-gold/50 mb-4" />
-              <h3 className="font-header text-lg text-champagne-gold mb-2">Quality Guarantee</h3>
+              <h3 className="font-header text-lg text-champagne-gold mb-2">Custom-Made / Bespoke Pieces</h3>
               <p className="font-body text-xs text-warm-cream/60 leading-relaxed">
-                Every GΛMÉN piece is backed by a 1-year craftsmanship guarantee. If you discover a defect in materials 
-                or workmanship, we will repair or replace the piece at no cost.
+                Strictly <strong>No Refunds and No Exchanges</strong> under any circumstances, unless a clear, verifiable manufacturing defect is present upon delivery.
               </p>
             </div>
           </div>

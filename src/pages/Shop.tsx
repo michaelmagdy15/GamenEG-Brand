@@ -311,7 +311,6 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
       {/* Action Buttons */}
       <div className="mt-6 px-2 flex flex-col min-[480px]:flex-row gap-2 min-[480px]:gap-4">
         <button
-          disabled={product.isSoldOut}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -319,13 +318,13 @@ const ProductCard = memo(function ProductCard({ product, isHeritage, addItem }: 
           }}
           className={`flex-1 py-4 min-h-[48px] flex items-center justify-center rounded-xl font-accent text-[10px] uppercase tracking-[0.2em] transition-all duration-300 border ${
             product.isSoldOut
-              ? 'border-red-500/10 text-red-500/30 cursor-not-allowed bg-transparent'
+              ? 'border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-deep-walnut hover:border-amber-500 bg-amber-500/5 shadow-[0_0_10px_rgba(245,158,11,0.05)]'
               : isHeritage
               ? 'border-deep-walnut/30 text-espresso hover:bg-espresso hover:text-warm-cream hover:border-espresso'
               : 'border-champagne-gold/20 text-champagne-gold hover:bg-champagne-gold hover:text-deep-walnut hover:border-champagne-gold'
           }`}
         >
-          {product.isSoldOut ? 'Sold Out' : 'Add'}
+          {product.isSoldOut ? 'Pre-Order' : 'Add'}
         </button>
         <Link
           to={`/product/${product.slug}`}

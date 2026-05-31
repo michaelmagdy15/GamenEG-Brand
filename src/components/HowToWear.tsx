@@ -255,230 +255,60 @@ const steps = [
 /* ─── Main Component ──────────────────────────────────────────────── */
 
 export default function HowToWear() {
-  const isDesktop = useMedia('(min-width: 1024px)', true);
-  const [activeStep, setActiveStep] = useState(0);
-  const totalSteps = steps.length;
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress: rawScrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-
-  const scrollYProgress = useSpring(rawScrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // latest goes from 0 to 1
-    // map 0..1 to 0..totalSteps-1
-    // Add a tiny buffer so reaching exactly 1 doesn't go out of bounds
-    const step = Math.min(Math.floor(latest * totalSteps), totalSteps - 1);
-    if (step !== activeStep) {
-      setActiveStep(step);
-    }
-  });
-
-  const currentStep = steps[activeStep];
-  const IllustrationComponent = currentStep.illustration;
-
-  if (!isDesktop) {
-    return (
-      <section id="how-to-use" ref={containerRef} className="relative bg-deep-walnut text-warm-cream py-24 px-6 sm:px-10 print:bg-white print:text-black">
-        <div className="max-w-3xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-16">
-            <p className="font-accent text-[10px] uppercase tracking-[0.28em] text-champagne-gold mb-6 print:text-gray-500">The Ritual</p>
-            <h2 className="font-header text-4xl sm:text-5xl mb-6 text-champagne-gold print:text-4xl leading-tight">How to Wear</h2>
-            <p className="font-french italic text-xl text-champagne-gold/80 print:text-gray-700">A seamless connection between craft and collar.</p>
-          </div>
-
-          {/* List of Steps */}
-          <div className="space-y-16">
-            {steps.map((step, i) => {
-              const StepIllustration = step.illustration;
-              return (
-                <div key={step.num} className="border-b border-champagne-gold/10 pb-12 last:border-b-0 last:pb-0">
-                  <div className="aspect-square max-w-xs mx-auto rounded-2xl border border-champagne-gold/20 bg-warm-cream/5 flex items-center justify-center p-8 mb-6 overflow-hidden">
-                    <StepIllustration isActive={true} />
-                  </div>
-                  <div className="px-2">
-                    <span className="font-header text-4xl text-champagne-gold/25 block mb-2">{step.num}</span>
-                    <span className="font-accent text-[9px] uppercase tracking-[0.3em] text-champagne-gold/40 block mb-2">{step.subtitle}</span>
-                    <h3 className="font-header text-2xl text-champagne-gold mb-4 font-semibold">{step.title}</h3>
-                    <p className="font-body text-sm leading-relaxed text-warm-cream/70 mb-4">{step.description}</p>
-                    <p className="font-french italic text-lg text-champagne-gold/60">{step.accent}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Print Button */}
-          <div className="mt-20 text-center print:hidden">
-            <p className="font-french italic text-lg text-champagne-gold/80 mb-8">Prefer a physical guide? Print your instruction card.</p>
-            <button
-              onClick={() => window.print()}
-              className="group inline-flex items-center gap-4 text-champagne-gold font-accent text-[10px] tracking-[0.2em] uppercase px-8 py-4 border border-champagne-gold/30 hover:border-champagne-gold transition-colors"
-            >
-              <span>Print Instruction Card</span>
-              <span className="h-px w-8 bg-champagne-gold transition-all group-hover:w-12" />
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section id="how-to-use" ref={containerRef} className="relative h-[400vh] bg-deep-walnut text-warm-cream print:bg-white print:text-black print:py-8 print:h-auto">
-      <div className="sticky top-0 h-svh w-full flex flex-col justify-center overflow-hidden py-12 lg:py-24 print:static print:h-auto print:overflow-visible">
+    <section id="how-to-use" className="relative bg-deep-walnut text-warm-cream py-24 sm:py-32 px-6 sm:px-10 print:bg-white print:text-black">
       {/* Subtle radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(207,197,178,0.06),transparent_65%)] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-
+      <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20 print:mb-12">
-          <motion.p
-            className="font-accent text-[10px] uppercase tracking-[0.28em] text-champagne-gold mb-6 print:text-gray-500"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            The Ritual
-          </motion.p>
-          <motion.h2
-            className="font-header text-5xl lg:text-7xl mb-8 print:text-4xl text-champagne-gold"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            How to Wear
-          </motion.h2>
-          <motion.p
-            className="font-french italic text-xl lg:text-2xl text-champagne-gold/80 print:text-gray-700"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            A seamless connection between craft and collar.
-          </motion.p>
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <p className="font-accent text-[10px] uppercase tracking-[0.28em] text-champagne-gold mb-6 print:text-gray-500">The Ritual</p>
+          <h2 className="font-header text-4xl sm:text-5xl lg:text-6xl mb-6 text-champagne-gold leading-tight">How to Wear</h2>
+          <p className="font-french italic text-xl text-champagne-gold/80 print:text-gray-700">A seamless connection between craft and collar.</p>
         </div>
 
-        {/* Main Interactive Area */}
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 max-w-5xl mx-auto">
-
-          {/* Illustration Panel */}
-          <motion.div
-            className="w-full max-w-[18rem] sm:max-w-xs lg:max-w-sm flex-shrink-0"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="aspect-square relative min-h-[240px] sm:min-h-0">
-              {/* Step number badge */}
-              <div className="absolute -top-4 -left-4 z-10 w-12 h-12 bg-champagne-gold rounded-full flex items-center justify-center">
-                <span className="font-header text-deep-walnut text-lg font-bold">{activeStep + 1}</span>
-              </div>
-              {/* Illustration container */}
-              <div className="w-full h-full rounded-2xl border border-champagne-gold/20 bg-warm-cream/5 flex items-center justify-center p-8 overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStep}
-                    className="w-full h-full"
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.1 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <IllustrationComponent isActive={true} />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Content + Controls */}
-          <div className="flex-1 flex flex-col justify-center text-center lg:text-left">
-
-            {/* Step text */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeStep}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        {/* List of Steps */}
+        <div className="space-y-24 md:space-y-32">
+          {steps.map((step, i) => {
+            const StepIllustration = step.illustration;
+            const isEven = i % 2 === 0;
+            return (
+              <div 
+                key={step.num} 
+                className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-10 lg:gap-16 border-b border-champagne-gold/10 pb-16 last:border-b-0 last:pb-0`}
               >
-                <span className="font-accent text-[9px] uppercase tracking-[0.3em] text-champagne-gold/40 block mb-3">
-                  {currentStep.subtitle}
-                </span>
-                <h3 className="font-header text-4xl lg:text-5xl text-champagne-gold mb-6">
-                  {currentStep.title}
-                </h3>
-                <p className="font-body text-sm leading-relaxed text-warm-cream/60 max-w-sm mx-auto lg:mx-0 mb-6">
-                  {currentStep.description}
-                </p>
-                <p className="font-french italic text-lg text-champagne-gold/50">
-                  {currentStep.accent}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+                {/* Illustration Card */}
+                <div className="w-full max-w-sm aspect-square rounded-2xl border border-champagne-gold/20 bg-warm-cream/5 flex items-center justify-center p-8 overflow-hidden flex-shrink-0">
+                  <div className="w-full h-full max-w-[280px] max-h-[280px]">
+                    <StepIllustration isActive={true} />
+                  </div>
+                </div>
 
-            {/* Scroll Indicator */}
-            <div className="mt-8 flex justify-center lg:justify-start print:hidden">
-              <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/40 border border-champagne-gold/20 rounded-full px-4 py-2">
-                Scroll to animate
-              </span>
-            </div>
-          </div>
+                {/* Instruction Text */}
+                <div className="flex-1 text-center lg:text-left px-2">
+                  <span className="font-header text-5xl text-champagne-gold/25 block mb-2">{step.num}</span>
+                  <span className="font-accent text-[9px] uppercase tracking-[0.3em] text-champagne-gold/40 block mb-2">{step.subtitle}</span>
+                  <h3 className="font-header text-2xl sm:text-3xl text-champagne-gold mb-4 font-semibold">{step.title}</h3>
+                  <p className="font-body text-sm leading-relaxed text-warm-cream/70 mb-4 max-w-xl mx-auto lg:mx-0">{step.description}</p>
+                  <p className="font-french italic text-lg text-champagne-gold/60">{step.accent}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Progress bar */}
-        <div className="max-w-5xl mx-auto mt-16 print:hidden">
-          <div className="h-px bg-champagne-gold/10 relative overflow-hidden">
-            <motion.div
-              className="absolute inset-y-0 left-0 bg-champagne-gold"
-              animate={{ width: `${((activeStep + 1) / totalSteps) * 100}%` }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            />
-          </div>
-          <div className="flex justify-between mt-3">
-            {steps.map((s, i) => (
-              <span
-                key={i}
-                className={`font-accent text-[8px] uppercase tracking-[0.1em] transition-colors duration-300 ${
-                  i <= activeStep ? 'text-champagne-gold' : 'text-champagne-gold/20'
-                }`}
-              >
-                {s.num}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Print / Download */}
+        {/* Print Button */}
         <div className="mt-24 text-center print:hidden">
-          <p className="font-french italic text-lg text-champagne-gold/80 mb-8">
-            Prefer a physical guide? Print your instruction card.
-          </p>
+          <p className="font-french italic text-lg text-champagne-gold/80 mb-8">Prefer a physical guide? Print your instruction card.</p>
           <button
             onClick={() => window.print()}
             className="group inline-flex items-center gap-4 text-champagne-gold font-accent text-[10px] tracking-[0.2em] uppercase px-8 py-4 border border-champagne-gold/30 hover:border-champagne-gold transition-colors"
           >
-            <Printer size={14} />
             <span>Print Instruction Card</span>
             <span className="h-px w-8 bg-champagne-gold transition-all group-hover:w-12" />
           </button>
         </div>
-      </div>
       </div>
     </section>
   );

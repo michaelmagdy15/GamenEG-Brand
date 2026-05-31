@@ -694,7 +694,23 @@ export default function AdminDashboard() {
     setLoadingProds(true);
     try {
       const prods = await getAdminProducts();
-      setProducts(prods);
+      // Ensure all products have a display_order
+      const sortedProds = [...prods].sort((a, b) => {
+        const orderA = a.display_order ?? 9999;
+        const orderB = b.display_order ?? 9999;
+        return orderA - orderB;
+      });
+      
+      const mappedProds = sortedProds.map((p, idx) => {
+        if (p.display_order === undefined) {
+          p.display_order = idx;
+          // Asynchronously update in Firestore
+          updateAdminProduct(p.id, { display_order: idx }).catch(console.error);
+        }
+        return p;
+      });
+      
+      setProducts(mappedProds);
     } finally {
       setLoadingProds(false);
     }
@@ -847,6 +863,37 @@ export default function AdminDashboard() {
     await refreshProducts();
   };
 
+  // Move product display order (reordering)
+  const moveProductOrder = async (index: number, direction: 'up' | 'down') => {
+    const newProducts = [...products];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= newProducts.length) return;
+    
+    const currentProd = newProducts[index];
+    const targetProd = newProducts[targetIndex];
+    
+    const currentOrder = currentProd.display_order ?? index;
+    const targetOrder = targetProd.display_order ?? targetIndex;
+    
+    // Swap display orders
+    currentProd.display_order = targetOrder;
+    targetProd.display_order = currentOrder;
+    
+    try {
+      await updateAdminProduct(currentProd.id, { display_order: targetOrder });
+      await updateAdminProduct(targetProd.id, { display_order: currentOrder });
+      
+      // Swap local state elements
+      newProducts[index] = targetProd;
+      newProducts[targetIndex] = currentProd;
+      setProducts(newProducts);
+      await refreshProducts();
+    } catch (err) {
+      console.error("Failed to update product display order:", err);
+      alert("Failed to save new product order.");
+    }
+  };
+
   const handleAddSubscriber = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = newSubEmail.trim();
@@ -952,6 +999,7 @@ export default function AdminDashboard() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-800 text-gray-500 text-[10px] uppercase tracking-widest">
+                        <th className="text-left px-4 py-3">Order</th>
                         <th className="text-left px-4 py-3">Product</th>
                         <th className="text-left px-4 py-3">Collection</th>
                         <th className="text-left px-4 py-3">Price (EGP)</th>
@@ -961,8 +1009,35 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map((p) => (
+                      {products.map((p, index) => (
                         <tr key={p.id} className="border-b border-gray-800/50 hover:bg-gray-800/40 transition-colors">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[11px] font-mono text-gray-500 w-5 text-center">
+                                {(p.display_order ?? index) + 1}
+                              </span>
+                              <div className="flex flex-col gap-0.5">
+                                <button
+                                  type="button"
+                                  disabled={index === 0}
+                                  onClick={() => moveProductOrder(index, 'up')}
+                                  className="text-gray-500 hover:text-amber-400 disabled:opacity-20 disabled:hover:text-gray-500 transition-colors px-1 text-[10px]"
+                                  title="Move Up"
+                                >
+                                  ▲
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={index === products.length - 1}
+                                  onClick={() => moveProductOrder(index, 'down')}
+                                  className="text-gray-500 hover:text-amber-400 disabled:opacity-20 disabled:hover:text-gray-500 transition-colors px-1 text-[10px]"
+                                  title="Move Down"
+                                >
+                                  ▼
+                                </button>
+                              </div>
+                            </div>
+                          </td>
                           <td className="px-4 py-3">
                             <div>
                               <p className="text-gray-200 font-medium text-xs">{p.name}</p>

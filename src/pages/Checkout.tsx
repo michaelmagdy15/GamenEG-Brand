@@ -94,8 +94,10 @@ export default function Checkout() {
           price: i.product.price,
           quantity: i.quantity,
           image: i.product.image,
+          is_preorder: !!i.product.isSoldOut,
         })),
         totalPrice: finalPrice,
+        is_preorder: items.some((i) => i.product.isSoldOut),
       };
       await saveOrder(newOrder);
       logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${finalPrice} EGP)`);
@@ -309,6 +311,15 @@ export default function Checkout() {
               <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-6 pb-3 border-b border-champagne-gold/10">
                 Order Summary ({items.reduce((s, i) => s + i.quantity, 0)} items)
               </p>
+              
+              {items.some(i => i.product.isSoldOut) && (
+                <div className="mb-6 bg-amber-500/10 border border-amber-500/30 rounded p-4 text-xs text-amber-400 leading-normal font-body">
+                  <div className="font-semibold uppercase tracking-wider text-[10px] mb-1 font-accent text-amber-300">
+                    Pre-Order Notice
+                  </div>
+                  Your order contains pre-order items. Pre-orders require payment of the <strong>Full Amount (100% upfront)</strong> to confirm production.
+                </div>
+              )}
               
               <div className="space-y-4 mb-6">
                 {items.map((item) => (

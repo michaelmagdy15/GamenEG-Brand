@@ -96,7 +96,7 @@ export async function sendEmailNotification(order: Order, ownerEmail: string = '
 // ─── PRODUCTS ──────────────────────────────────────────────────────────────────
 
 export async function getProducts(): Promise<Product[]> {
-  const q = query(collection(db, 'gamen_products'), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, 'gamen_products'), orderBy('display_order', 'asc'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
 }
@@ -125,7 +125,7 @@ export interface AdminProduct extends Partial<Product> {
 }
 
 export async function getAdminProducts(): Promise<AdminProduct[]> {
-  const q = query(collection(db, 'gamen_products'), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, 'gamen_products'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as AdminProduct));
 }

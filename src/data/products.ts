@@ -20,6 +20,7 @@ export interface Product {
   careNote: string;
   measurements?: string;
   isSoldOut?: boolean;
+  display_order?: number;
 }
 
 export const products: Product[] = [

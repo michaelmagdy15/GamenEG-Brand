@@ -100,12 +100,11 @@ export default function ProductDetail() {
                 <span className="font-header text-4xl text-champagne-gold">LE {product.price.toLocaleString()}</span>
               )}
               <button
-                disabled={product.isSoldOut}
                 onClick={() => addItem(product)}
-                className="flex-1 max-w-xs flex items-center justify-center gap-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 max-w-xs flex items-center justify-center gap-3 py-4 bg-champagne-gold text-deep-walnut font-accent text-[10px] uppercase tracking-[0.2em] font-semibold hover:bg-warm-cream transition-colors"
               >
                 <ShoppingBag size={16} strokeWidth={1.5} />
-                {product.isSoldOut ? 'Sold Out' : 'Add to Bag'}
+                {product.isSoldOut ? 'Pre-Order' : 'Add to Bag'}
               </button>
             </div>
 
@@ -161,19 +160,25 @@ export default function ProductDetail() {
             </ul>
           </div>
           <div>
-            <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6 font-semibold">Care</h2>
+            <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 mb-6 font-semibold">General Care Guide</h2>
+            <p className="font-body text-xs text-warm-cream/50 mb-4 leading-relaxed">
+              Your GΛMÉN piece is crafted from natural materials that will age beautifully with proper care. Follow these guidelines to preserve its character for years to come.
+            </p>
             <ul className="space-y-3">
-              {product.careNote
-                .split(/\r?\n|(?<=\.)\s+/)
-                .map((step) => step.trim())
-                .map((step) => step.replace(/^[•\-\*\s⚜️✨🪵⌚📐]+\s*/, '')) // Strip leading bullets/emojis
-                .filter((step) => step.length > 0)
-                .map((step, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="w-1 h-1 rounded-full bg-champagne-gold/40 mt-2 flex-shrink-0" />
-                    <span className="font-body text-sm text-warm-cream/70">{step}</span>
-                  </li>
-                ))}
+              {[
+                "Store in its box or in a dry protective case after use",
+                "Avoid direct exposure to water, perfumes, and harsh chemicals",
+                "Clean gently using a soft microfiber cloth",
+                "Handle with care to preserve the sculpted finish and detailing",
+                "Keep away from excessive heat or prolonged sunlight exposure",
+                "Brass piece should be stored face-up in the presentation box.",
+                "Use a soft cloth to remove fingerprints."
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="w-1 h-1 rounded-full bg-champagne-gold/40 mt-2 flex-shrink-0" />
+                  <span className="font-body text-sm text-warm-cream/70">{step}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

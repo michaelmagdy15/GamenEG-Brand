@@ -37,6 +37,7 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [showFallbackUrl, setShowFallbackUrl] = useState(false);
 
   const handleFileUpload = (file: File) => {
     if (!file) return;
@@ -150,6 +151,8 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
       setSaving(false);
     }
   };
+
+  const isUrlFieldExposed = !!uploadError || showFallbackUrl || !!form.image;
 
   return (
     <motion.div
@@ -381,18 +384,30 @@ export default function EditProductModal({ product, onClose, onUpdated }: Props)
               </div>
             )}
 
-            <div className="mt-3">
-              <Field
-                label="Direct Image URL (Alternative / Fallback)"
-                name="image"
-                value={form.image}
-                onChange={handleChange}
-                placeholder="https://imgbb.com/..."
-              />
-              <p className="text-[9px] text-gray-500 mt-1 leading-normal">
-                * Note: You can paste a direct URL here if you prefer using free hosts like <a href="https://imgbb.com" target="_blank" rel="noopener noreferrer" className="text-amber-500/70 hover:underline">ImgBB</a> or <a href="https://postimages.org" target="_blank" rel="noopener noreferrer" className="text-amber-500/70 hover:underline">Postimages</a>.
-              </p>
-            </div>
+            {isUrlFieldExposed ? (
+              <div className="mt-3 p-3 bg-amber-500/5 border border-amber-500/20 rounded-sm">
+                <Field
+                  label="Direct Image URL (Alternative / Fallback)"
+                  name="image"
+                  value={form.image}
+                  onChange={handleChange}
+                  placeholder="https://imgbb.com/..."
+                />
+                <p className="text-[9px] text-gray-500 mt-1 leading-normal">
+                  * Note: You can paste a direct URL here if you prefer using free hosts like <a href="https://imgbb.com" target="_blank" rel="noopener noreferrer" className="text-amber-500/70 hover:underline">ImgBB</a> or <a href="https://postimages.org" target="_blank" rel="noopener noreferrer" className="text-amber-500/70 hover:underline">Postimages</a>.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-2 text-right">
+                <button
+                  type="button"
+                  onClick={() => setShowFallbackUrl(true)}
+                  className="text-[10px] text-amber-500/60 hover:text-amber-400 font-accent uppercase tracking-wider transition-colors py-1 px-2 border border-amber-500/10 hover:border-amber-500/25 rounded-sm"
+                >
+                  or paste direct image URL instead
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Details */}
