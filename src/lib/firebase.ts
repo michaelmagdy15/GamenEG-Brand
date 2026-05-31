@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: 'AIzaSyAUvzDIKoTvtbMEWaP1pDSyNfqpS3_11wI',
   authDomain: 'faa-test-guide-v2.firebaseapp.com',
   projectId: 'faa-test-guide-v2',
-  storageBucket: 'faa-test-guide-v2.firebasestorage.app',
+  storageBucket: 'gamen-world.appspot.com',
   messagingSenderId: '492280162134',
   appId: '1:492280162134:web:13744335fae3c3d52d98f7',
 };
@@ -16,4 +16,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const storage = getStorage(app, 'gs://gamen-world');
