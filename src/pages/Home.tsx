@@ -5,7 +5,7 @@ import HeritageSection from '../components/HeritageSection';
 import RitualSection from '../components/RitualSection';
 import HowToWear from '../components/HowToWear';
 import AtelierExperience from '../components/AtelierExperience';
-import AcquisitionSection from '../components/AcquisitionSection';
+// import AcquisitionSection from '../components/AcquisitionSection';
 import MarqueeTicker from '../components/MarqueeTicker';
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
         <HeritageSection />
         {/* <RitualSection /> */}{/* hidden — re-enable in a future version */}
         <HowToWear />
-        <AcquisitionSection />
+        {/* <AcquisitionSection /> */}
       </div>
     </main>
   );
