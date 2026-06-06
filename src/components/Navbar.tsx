@@ -80,6 +80,20 @@ export default function Navbar() {
     return () => clearTimeout(focusTimeout);
   }, [mobileOpen]);
 
+  const handleNavLinkClick = (to: string, e: React.MouseEvent) => {
+    if (to.includes('#')) {
+      const [path, hash] = to.split('#');
+      if (location.pathname === path || (path === '/' && location.pathname === '')) {
+        e.preventDefault();
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+    setMobileOpen(false);
+  };
+
   return (
     <>
       <nav
@@ -95,16 +109,17 @@ export default function Navbar() {
           >
             <Menu size={24} strokeWidth={1} />
           </button>
-
+ 
           <Link to="/" className="flex-shrink-0 text-center mr-auto lg:mr-0 pl-4 lg:pl-0 min-h-[48px] flex items-center" aria-label="Gamen brand logo">
             <BrandWordmark className="block text-2xl tracking-[0.3em] text-champagne-gold" />
           </Link>
-
+ 
           <div className="hidden lg:flex items-center gap-10 font-accent text-[10px] tracking-[0.2em] font-medium uppercase text-champagne-gold">
             {navLinks.map((link) => (
               <MagneticWrapper key={link.to} strength={0.25}>
                 <Link
                   to={link.to}
+                  onClick={(e) => handleNavLinkClick(link.to, e)}
                   className={`nav-link hover:text-warm-cream transition-colors ${
                     location.pathname === link.to ? 'nav-link active text-warm-cream' : ''
                   }`}
@@ -114,9 +129,9 @@ export default function Navbar() {
               </MagneticWrapper>
             ))}
           </div>
-
+ 
           <div className="hidden lg:block bg-gold-gradient w-12 h-[1px]" />
-
+ 
           <button
             className="text-champagne-gold flex items-center gap-2 relative p-2 min-w-[48px] min-h-[48px] justify-center"
             aria-label="Open cart"
@@ -130,10 +145,10 @@ export default function Navbar() {
             )}
           </button>
         </div>
-
+ 
         {isScrolled && <div className="absolute inset-x-0 bottom-0 h-px bg-champagne-gold/20" />}
       </nav>
-
+ 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
@@ -169,6 +184,7 @@ export default function Navbar() {
                   <Link
                     key={link.to}
                     to={link.to}
+                    onClick={(e) => handleNavLinkClick(link.to, e)}
                     className={`font-header text-2xl py-4 min-h-[52px] flex items-center transition-colors ${
                       location.pathname === link.to ? 'text-champagne-gold' : 'text-warm-cream/60 hover:text-champagne-gold'
                     }`}

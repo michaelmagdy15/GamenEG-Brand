@@ -67,18 +67,35 @@ function ScrollToTop() {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
     if (hash) {
-      const element = document.getElementById(hash.substring(1));
-      if (element) {
-        const scrollTimeout = setTimeout(() => {
+      const id = hash.substring(1);
+      
+      const scroll = () => {
+        const element = document.getElementById(id);
+        if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 150);
-        return () => clearTimeout(scrollTimeout);
+          return true;
+        }
+        return false;
+      };
+
+      // Try scrolling immediately
+      if (!scroll()) {
+        let attempts = 0;
+        const interval = setInterval(() => {
+          attempts++;
+          if (scroll() || attempts > 20) {
+            clearInterval(interval);
+          }
+        }, 100);
+        return () => clearInterval(interval);
       }
+    } else {
+      window.scrollTo(0, 0);
     }
-    window.scrollTo(0, 0);
   }, [pathname, hash]);
   return null;
 }
+
 
 function AnalyticsTracker() {
   const { pathname } = useLocation();

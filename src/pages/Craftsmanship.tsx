@@ -170,44 +170,6 @@ export default function Craftsmanship() {
         </div>
       </section>
 
-      {/* Materials */}
-      <section className="px-6 sm:px-10 max-w-5xl mx-auto mt-32">
-        <h2 className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/50 text-center mb-12">Our Materials</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            { 
-              name: 'Walnut', 
-              origin: 'Egypt & Turkey', 
-              /* PENDING COPY UPDATE: Walnut Note */
-              note: 'Rich, warm tones with deep grain character' 
-            },
-            { 
-              name: 'Mahogany', 
-              origin: 'West Africa', 
-              /* PENDING COPY UPDATE: Mahogany Note */
-              note: 'Dense hardwood with a reddish-brown hue' 
-            },
-            { 
-              name: 'Sycamore', 
-              origin: 'Mediterranean', 
-              /* PENDING COPY UPDATE: Sycamore Note */
-              note: 'Light, blonde wood for contrast inlays' 
-            },
-            { 
-              name: 'Brass', 
-              origin: 'Cairo Foundries', 
-              /* PENDING COPY UPDATE: Brass Note */
-              note: 'Sand-cast and hand-polished for every inlay' 
-            },
-          ].map((m) => (
-            <div key={m.name} className="border border-champagne-gold/10 rounded-xl p-6">
-              <h3 className="font-header text-lg text-champagne-gold mb-1 font-semibold">{m.name}</h3>
-              <span className="font-accent text-[9px] uppercase tracking-[0.15em] text-champagne-gold/40 block mb-3">{m.origin}</span>
-              <p className="font-body text-xs text-warm-cream/50 leading-relaxed">{m.note}</p>
-            </div>
-          ))}
-        </div>
-      </section>
     </main>
   );
 }
