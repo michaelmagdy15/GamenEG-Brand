@@ -7,22 +7,22 @@ import { useProductsContext } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 
 const UNBOXING_FRAMES = [
-  '/unboxing/gamenbox_000000_0000_gamenbox_000015.png',
-  '/unboxing/gamenbox_000000_0001_gamenbox_000014.png',
-  '/unboxing/gamenbox_000000_0002_gamenbox_000013.png',
-  '/unboxing/gamenbox_000000_0003_gamenbox_000012.png',
-  '/unboxing/gamenbox_000000_0004_gamenbox_000011.png',
-  '/unboxing/gamenbox_000000_0005_gamenbox_000010.png',
-  '/unboxing/gamenbox_000000_0006_gamenbox_000009.png',
-  '/unboxing/gamenbox_000000_0007_gamenbox_000008.png',
-  '/unboxing/gamenbox_000000_0008_gamenbox_000007.png',
-  '/unboxing/gamenbox_000000_0009_gamenbox_000006.png',
-  '/unboxing/gamenbox_000000_0010_gamenbox_000005.png',
-  '/unboxing/gamenbox_000000_0011_gamenbox_000004.png',
-  '/unboxing/gamenbox_000000_0012_gamenbox_000003.png',
-  '/unboxing/gamenbox_000000_0013_gamenbox_000002.png',
+  '/unboxing/gamenbox_000000_0015_Layer-1.png',
   '/unboxing/gamenbox_000000_0014_gamenbox_000001.png',
-  '/unboxing/gamenbox_000000_0015_Layer-1.png'
+  '/unboxing/gamenbox_000000_0013_gamenbox_000002.png',
+  '/unboxing/gamenbox_000000_0012_gamenbox_000003.png',
+  '/unboxing/gamenbox_000000_0011_gamenbox_000004.png',
+  '/unboxing/gamenbox_000000_0010_gamenbox_000005.png',
+  '/unboxing/gamenbox_000000_0009_gamenbox_000006.png',
+  '/unboxing/gamenbox_000000_0008_gamenbox_000007.png',
+  '/unboxing/gamenbox_000000_0007_gamenbox_000008.png',
+  '/unboxing/gamenbox_000000_0006_gamenbox_000009.png',
+  '/unboxing/gamenbox_000000_0005_gamenbox_000010.png',
+  '/unboxing/gamenbox_000000_0004_gamenbox_000011.png',
+  '/unboxing/gamenbox_000000_0003_gamenbox_000012.png',
+  '/unboxing/gamenbox_000000_0002_gamenbox_000013.png',
+  '/unboxing/gamenbox_000000_0001_gamenbox_000014.png',
+  '/unboxing/gamenbox_000000_0000_gamenbox_000015.png'
 ];
 
 interface ProductCardProps {

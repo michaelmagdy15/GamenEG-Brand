@@ -1,7 +1,7 @@
 import HeroSection from '../components/HeroSection';
 import OriginSection from '../components/OriginSection';
 import CollectionsSection from '../components/CollectionsSection';
-import HeritageSection from '../components/HeritageSection';
+// import HeritageSection from '../components/HeritageSection';
 import RitualSection from '../components/RitualSection';
 import HowToWear from '../components/HowToWear';
 import AtelierExperience from '../components/AtelierExperience';
@@ -28,7 +28,7 @@ export default function Home() {
         {/* Smooth transition back from CollectionsSection (espresso) to deep-walnut */}
         <div className="h-20 bg-gradient-to-b from-espresso to-deep-walnut" />
         <MarqueeTicker variant="dark" speed="normal" />
-        <HeritageSection />
+        {/* <HeritageSection /> */}
         {/* <RitualSection /> */}{/* hidden — re-enable in a future version */}
         <HowToWear />
         {/* <AcquisitionSection /> */}

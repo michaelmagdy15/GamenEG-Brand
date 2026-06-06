@@ -41,9 +41,7 @@ export default function OurStory() {
               style={{ clipPath: 'inset(0% 3% 0% 3%)' }}
             />
           </motion.div>
-          <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
-            <span className="font-accent text-[9px] uppercase tracking-[0.2em] text-champagne-gold/50">Signature Bow Tie Rotation</span>
-          </div>
+
         </div>
       </section>
 
