@@ -135,9 +135,6 @@ export default function ProductDetail() {
                       ? "Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars"
                       : "42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)")}
                   </p>
-                  <p className="font-french italic text-xs text-champagne-gold/70 mt-2 border-t border-champagne-gold/5 pt-2 leading-relaxed">
-                    * Note: Chaque pièce est unique. As each item is individually handcrafted from natural wood, grain patterns and textures vary, making your piece entirely unique.
-                  </p>
                 </div>
               </div>
             </div>

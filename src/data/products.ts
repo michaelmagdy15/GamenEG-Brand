@@ -47,6 +47,7 @@ export const products: Product[] = [
     ],
     careNote:
       'Wipe gently with a dry microfiber cloth. Λvoid prolonged moisture exposure. Store in the included wooden case.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'bt-two-tone',
@@ -70,6 +71,7 @@ export const products: Product[] = [
     ],
     careNote:
       'Λpply a drop of tung oil every 6 months to maintain lustre. Λvoid direct sunlight for extended periods.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'bt-eye-of-horus',
@@ -93,6 +95,7 @@ export const products: Product[] = [
     ],
     careNote:
       'The antiqued brass patina will evolve naturally over time. To preserve the original finish, avoid contact with water or cologne.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'bt-pharaoh',
@@ -116,6 +119,7 @@ export const products: Product[] = [
     ],
     careNote:
       'High-gloss pieces should be stored face-up in the presentation box. Use a soft cloth to remove fingerprints.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'bt-dark-classic',
@@ -139,6 +143,7 @@ export const products: Product[] = [
     ],
     careNote:
       'Re-oil with natural tung oil every 3–4 months for optimal depth. Λvoid chemical cleaners.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'bt-hero',
@@ -161,6 +166,7 @@ export const products: Product[] = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Wipe with a dry cloth after wear. Store in a cool, dry place away from direct heat.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'w-epoque',
@@ -186,6 +192,7 @@ export const products: Product[] = [
     ],
     careNote:
       'Λvoid submerging in water. Wipe with a slightly damp cloth if needed. Λpply wood conditioner every 6 months. Store in the included box when not worn.',
+    measurements: '42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)',
   },
   {
     id: 'w-forme-du-temps',
@@ -210,6 +217,7 @@ export const products: Product[] = [
     ],
     careNote:
       'Keep away from strong magnetic fields. Wipe gently to clean. Store in its box to prevent scratches.',
+    measurements: '40 mm × 40 mm Case Dimensions × 11 mm Thickness × 24 cm Strap Length (Adjustable links)',
   },
 ];
 

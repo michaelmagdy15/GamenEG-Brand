@@ -34,6 +34,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Wipe with a dry cloth after wear. Store in a cool, dry place away from direct heat.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'l-eclat',
@@ -55,6 +56,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Apply a drop of tung oil every 6 months to maintain lustre. Avoid direct sunlight for extended periods.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'eclipse-du-bois',
@@ -76,6 +78,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Re-oil with natural tung oil every 3–4 months for optimal depth. Avoid chemical cleaners.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
     isSoldOut: true,
   },
   {
@@ -98,6 +101,7 @@ const staticProducts = [
       'Comes in premium collector\'s presentation box',
     ],
     careNote: 'High-gloss pieces should be stored face-up in the presentation box. Use a soft cloth to remove fingerprints.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'ankh-eternel',
@@ -119,6 +123,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'The antiqued brass patina will evolve naturally over time. To preserve the original finish, avoid contact with water or cologne.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'ra-en',
@@ -140,6 +145,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Store in its box to protect the intricate carving. Clean with a dry microfiber cloth.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'gamen-signature',
@@ -161,6 +167,7 @@ const staticProducts = [
       'Comes in signature GΛMÉN presentation box',
     ],
     careNote: 'Wipe gently with a dry microfiber cloth. Avoid prolonged moisture exposure. Store in the included wooden case.',
+    measurements: 'Width: 11.5 cm × Height: 6 cm × Edge Thickness: 0.51 cm // Adjustable neckband fits 36 cm – 50 cm collars',
   },
   {
     id: 'w-epoque',
@@ -183,6 +190,7 @@ const staticProducts = [
       'Comes in luxury GΛMÉN collector\'s box',
     ],
     careNote: 'Avoid submerging in water. Wipe with a slightly damp cloth if needed. Apply wood conditioner every 6 months. Store in the included box when not worn.',
+    measurements: '42 mm Case Diameter × 11 mm Thickness × 24 cm Strap Length (Adjustable links)',
   },
   {
     id: 'w-forme-du-temps',
@@ -205,6 +213,7 @@ const staticProducts = [
       'Comes in luxury GΛMÉN collector\'s box',
     ],
     careNote: 'Keep away from strong magnetic fields. Wipe gently to clean. Store in its box to prevent scratches.',
+    measurements: '40 mm × 40 mm Case Dimensions × 11 mm Thickness × 24 cm Strap Length (Adjustable links)',
   }
 ];
 
