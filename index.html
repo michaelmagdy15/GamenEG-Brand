@@ -2,15 +2,84 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover ensures content extends under iPhone notch/Dynamic Island -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>GAMÉN | L'élégance taillée en bois</title>
-    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="description" content="GAMÉN wooden bow ties. Handcrafted from Cairo's finest ancient timber. Quiet luxury, loud identity." />
+    <!-- iPhone: status bar and home bar blends with brand dark background -->
+    <meta name="theme-color" content="#462718" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://gamen.eg" />
+
+    <!-- OpenGraph Metadata -->
     <meta property="og:title" content="GAMÉN | L'élégance taillée en bois" />
     <meta property="og:description" content="GAMÉN wooden bow ties. Handcrafted from Cairo's finest ancient timber. Quiet luxury, loud identity." />
     <meta property="og:type" content="website" />
-    <script type="module" crossorigin src="./assets/index-Oc5kCFqV.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CR-4Vzxj.css">
+    <meta property="og:image" content="https://gamen.eg/Images/TRANSPARENT/PNG/IMG_2220_transparent.webp" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:alt" content="GAMÉN Signature Handcrafted Wooden Bow Tie" />
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GAMÉN | Handcrafted Luxury Wooden Bow Ties" />
+    <meta name="twitter:description" content="Sculpted in Cairo. Handcrafted from premium walnut and sand-cast brass. Quiet luxury, loud identity." />
+    <meta name="twitter:image" content="https://gamen.eg/Images/TRANSPARENT/PNG/IMG_2220_transparent.webp" />
+
+    <!-- Structured Schema Markup (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ClothingStore",
+      "name": "GAMÉN",
+      "image": "https://gamen.eg/Images/TRANSPARENT/PNG/IMG_2220_transparent.webp",
+      "@id": "https://gamen.eg/#store",
+      "url": "https://gamen.eg",
+      "telephone": "+201000000000",
+      "priceRange": "$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "GAMÉN Cairo Atelier, Zamalek",
+        "addressLocality": "Cairo",
+        "addressRegion": "Cairo Governorate",
+        "postalCode": "11561",
+        "addressCountry": "EG"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 30.0596,
+        "longitude": 31.2222
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday"
+          ],
+          "opens": "10:00",
+          "closes": "20:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/gamen.eg"
+      ]
+    }
+    </script>
+    <script type="module" crossorigin src="/assets/index-KCuBnPJ2.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-DDd7CG68.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-three-CixUgoXH.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-DAjrDw02.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-motion-CWfrBoMy.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-icons-DmeWj7w7.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-67IQlWXA.css">
   </head>
   <body>
     <div id="root"></div>
