@@ -10,6 +10,23 @@ document.addEventListener('touchstart', (event) => {
   }
 }, { passive: false });
 
+// Force page reload on dynamic import/chunk failures (happens when new deployment deletes old chunks)
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload();
+});
+
+window.addEventListener('error', (e) => {
+  const isChunkError = e.message && (
+    e.message.includes('chunk') || 
+    e.message.includes('Loading chunk') || 
+    e.message.includes('Failed to fetch dynamically imported module')
+  );
+  if (isChunkError) {
+    window.location.reload();
+  }
+}, true);
+
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
