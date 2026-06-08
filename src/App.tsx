@@ -29,6 +29,7 @@ const CareInstructions = lazy(() => import('./pages/CareInstructions'));
 const ShippingReturns  = lazy(() => import('./pages/ShippingReturns'));
 const Checkout         = lazy(() => import('./pages/Checkout'));
 const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'));
+const PaymentMock      = lazy(() => import('./pages/PaymentMock'));
 
 /* Admin pages — also lazy */
 const AdminLogin     = lazy(() => import('./pages/admin/AdminLogin'));
@@ -197,6 +198,7 @@ function AppContent() {
                 <Route path="/care"              element={<CareInstructions />} />
                 <Route path="/shipping"          element={<ShippingReturns />} />
                 <Route path="/checkout"          element={<Checkout />} />
+                <Route path="/payment-mock"      element={<PaymentMock />} />
                 <Route path="/order-confirmation" element={<OrderConfirmation />} />
                 {/* Catch-all global routes */}
                 <Route path="*"                  element={<Navigate to="/" replace />} />

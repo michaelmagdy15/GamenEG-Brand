@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, ShoppingBag, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { saveOrder, sendEmailNotification, subscribeToNewsletter, logTrafficEvent } from '../lib/firestore';
+import { createPaymobSession } from '../services/paymob';
 
 interface CheckoutForm {
   name: string;
@@ -31,6 +32,7 @@ export default function Checkout() {
   const [subscribe, setSubscribe] = useState(true);
   const [promoInput, setPromoInput] = useState('');
   const [promoMessage, setPromoMessage] = useState({ text: '', isError: false });
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'paymob'>('cod');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -98,35 +100,88 @@ export default function Checkout() {
         })),
         totalPrice: finalPrice,
         is_preorder: items.some((i) => i.product.isSoldOut),
+        paymentMethod,
+        paymentStatus: paymentMethod === 'cod' ? ('pending_cod' as const) : ('unpaid' as const),
       };
-      await saveOrder(newOrder);
-      logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${finalPrice} EGP)`);
 
-      // Save newsletter subscription if checked
-      if (subscribe) {
-        try {
-          await subscribeToNewsletter(form.email, 'checkout');
-        } catch (subErr) {
-          console.error('Failed to subscribe to newsletter:', subErr);
+      if (paymentMethod === 'cod') {
+        await saveOrder(newOrder);
+        logTrafficEvent('/order-confirmation', `Placed order ${orderRef} (${finalPrice} EGP)`);
+
+        // Save newsletter subscription if checked
+        if (subscribe) {
+          try {
+            await subscribeToNewsletter(form.email, 'checkout');
+          } catch (subErr) {
+            console.error('Failed to subscribe to newsletter:', subErr);
+          }
         }
-      }
-      
-      // Attempt to send email, but don't fail the checkout if it errors
-      try {
-        await sendEmailNotification(newOrder);
-      } catch (emailErr) {
-        console.error('Failed to send email notification:', emailErr);
-      }
+        
+        // Attempt to send email, but don't fail the checkout if it errors
+        try {
+          await sendEmailNotification({
+            ...newOrder,
+            paymentMethod,
+            paymentStatus: 'pending_cod',
+          });
+        } catch (emailErr) {
+          console.error('Failed to send email notification:', emailErr);
+        }
 
-      // Save order details to sessionStorage for page-refresh resilience
-      try {
-        sessionStorage.setItem('last_order', JSON.stringify({ orderRef, customerName: trimmedName }));
-      } catch (sessErr) {
-        console.warn('Failed to cache order receipt:', sessErr);
-      }
+        // Save order details to sessionStorage for page-refresh resilience
+        try {
+          sessionStorage.setItem('last_order', JSON.stringify({ orderRef, customerName: trimmedName }));
+        } catch (sessErr) {
+          console.warn('Failed to cache order receipt:', sessErr);
+        }
 
-      clearCart();
-      navigate('/order-confirmation', { state: { orderRef, customerName: trimmedName } });
+        clearCart();
+        navigate('/order-confirmation', { state: { orderRef, customerName: trimmedName } });
+      } else {
+        // Save initial unpaid order
+        await saveOrder(newOrder);
+        logTrafficEvent('/checkout', `Initiated card payment for order ${orderRef} (${finalPrice} EGP)`);
+
+        // Save newsletter subscription if checked
+        if (subscribe) {
+          try {
+            await subscribeToNewsletter(form.email, 'checkout');
+          } catch (subErr) {
+            console.error('Failed to subscribe to newsletter:', subErr);
+          }
+        }
+
+        // Save order details to sessionStorage for page-refresh resilience
+        try {
+          sessionStorage.setItem('last_order', JSON.stringify({ orderRef, customerName: trimmedName }));
+          sessionStorage.setItem('gamen_pending_order', JSON.stringify(newOrder));
+        } catch (sessErr) {
+          console.warn('Failed to cache order receipt:', sessErr);
+        }
+
+        // Generate Paymob Session
+        const paymobItems = items.map((i) => ({
+          productName: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+        }));
+
+        const session = await createPaymobSession(
+          orderRef,
+          finalPrice,
+          {
+            name: trimmedName,
+            email: form.email.trim(),
+            phone: cleanEGPhone,
+            city: form.city.trim(),
+            address: form.address.trim(),
+          },
+          paymobItems
+        );
+
+        // Redirect to Paymob secure checkout iframe/mock simulator
+        window.location.href = session.iframeUrl;
+      }
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');
@@ -229,6 +284,58 @@ export default function Checkout() {
                 aria-label="Order Notes"
                 className="w-full bg-warm-cream/5 border border-champagne-gold/15 text-warm-cream font-body text-base md:text-sm px-4 py-3.5 placeholder:text-warm-cream/40 focus:outline-none focus:border-champagne-gold/40 focus:ring-1 focus:ring-champagne-gold/40 transition-colors resize-none min-h-[60px]"
               />
+            </div>
+
+            {/* Payment Method Selector */}
+            <div>
+              <p className="font-accent text-[10px] uppercase tracking-[0.2em] text-champagne-gold/60 mb-4 pb-3 border-b border-champagne-gold/10">
+                Payment Method
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                {/* Cash on Delivery */}
+                <div
+                  onClick={() => setPaymentMethod('cod')}
+                  className={`border p-4 cursor-pointer transition-all flex flex-col justify-between min-h-[90px] ${
+                    paymentMethod === 'cod'
+                      ? 'border-champagne-gold bg-champagne-gold/5 text-warm-cream'
+                      : 'border-champagne-gold/15 bg-warm-cream/3 text-warm-cream/60 hover:border-champagne-gold/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-accent text-xs uppercase tracking-wider font-semibold">Cash on Delivery</span>
+                    <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                      paymentMethod === 'cod' ? 'border-champagne-gold' : 'border-warm-cream/30'
+                    }`}>
+                      {paymentMethod === 'cod' && <div className="w-1.5 h-1.5 rounded-full bg-champagne-gold" />}
+                    </div>
+                  </div>
+                  <p className="font-body text-[10px] text-warm-cream/40 mt-2">
+                    Pay in cash upon receiving your order.
+                  </p>
+                </div>
+
+                {/* Credit/Debit Card via Paymob */}
+                <div
+                  onClick={() => setPaymentMethod('paymob')}
+                  className={`border p-4 cursor-pointer transition-all flex flex-col justify-between min-h-[90px] ${
+                    paymentMethod === 'paymob'
+                      ? 'border-champagne-gold bg-champagne-gold/5 text-warm-cream'
+                      : 'border-champagne-gold/15 bg-warm-cream/3 text-warm-cream/60 hover:border-champagne-gold/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-accent text-xs uppercase tracking-wider font-semibold">Credit or Debit Card</span>
+                    <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                      paymentMethod === 'paymob' ? 'border-champagne-gold' : 'border-warm-cream/30'
+                    }`}>
+                      {paymentMethod === 'paymob' && <div className="w-1.5 h-1.5 rounded-full bg-champagne-gold" />}
+                    </div>
+                  </div>
+                  <p className="font-body text-[10px] text-warm-cream/40 mt-2">
+                    Pay securely via Paymob Accept gateway.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Premium custom-styled newsletter checkbox */}

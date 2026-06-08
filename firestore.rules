@@ -1,72 +1,107 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // ===============================================================
-    // Helper Functions
+    // Global Auth Helpers
     // ===============================================================
+
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    function getUserData() {
-      let uid = request.auth != null ? request.auth.uid : 'anonymous';
-      let userPath = /databases/$(database)/documents/users/$(uid);
-      return (request.auth != null && exists(userPath)) ? get(userPath).data : {
-        "role": "none",
-        "name": "Anonymous",
-        "can_delete_payments": false,
-        "can_access_settings_and_history": false,
-        "can_view_global_dashboard": false
-      };
-    }
-
     function isOwner(userId) {
-      return request.auth != null && request.auth.uid == userId;
-    }
-
-    function canDeletePayments() {
-      let data = getUserData();
-      return request.auth != null && (
-        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
-        data.can_delete_payments == true
-      );
-    }
-
-    function canAccessSettings() {
-      let data = getUserData();
-      return request.auth != null && (
-        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
-        data.can_access_settings_and_history == true
-      );
-    }
-
-    function canViewGlobalDashboard() {
-      let data = getUserData();
-      return request.auth != null && (
-        data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
-        data.can_view_global_dashboard == true
-      );
-    }
-
-    function isAdmin() {
-      let data = getUserData();
-      return request.auth != null && (
-        data.role in ['admin', 'super_admin', 'crm_admin', 'sales_manager', 'manager']
-      );
-    }
-
-    function isSalesManager() {
-      return canViewGlobalDashboard();
-    }
-
-    function isSalesRep() {
-      let data = getUserData();
-      return request.auth != null && (data.role == 'sales_rep' || data.role == 'rep');
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
     // ===============================================================
-    // Match Prefixed Helper Functions
+    // Strike CRM / GamenEG-Brand Root Auth Helpers
     // ===============================================================
+
+    function userExists() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isStrikeAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email in [
+          "michaelmitry13@gmail.com",
+          "magd.gallab@gmail.com",
+          "admin@strike.eg",
+          "strike.egyptt@gmail.com",
+          "shadyyoussef305@gmail.com",
+          "atefstrike@gmail.com"
+        ] ||
+        (userExists() && getUserRole() in ['admin', 'super_admin', 'crm_admin', 'sales_manager', 'manager'])
+      );
+    }
+
+    function isStrikeSuperAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email in [
+          "michaelmitry13@gmail.com",
+          "magd.gallab@gmail.com",
+          "admin@strike.eg",
+          "strike.egyptt@gmail.com",
+          "shadyyoussef305@gmail.com",
+          "atefstrike@gmail.com"
+        ] ||
+        (userExists() && getUserRole() in ['super_admin', 'crm_admin'])
+      );
+    }
+
+    function canStrikeDeletePayments() {
+      return isAuthenticated() && (
+        request.auth.token.email in ["michaelmitry13@gmail.com", "magd.gallab@gmail.com", "admin@strike.eg"] ||
+        (userExists() && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+          (
+            'can_delete_payments' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.can_delete_payments == true
+          )
+        ))
+      );
+    }
+
+    function canStrikeAccessSettings() {
+      return isAuthenticated() && (
+        request.auth.token.email in ["michaelmitry13@gmail.com", "magd.gallab@gmail.com", "admin@strike.eg"] ||
+        (userExists() && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+          (
+            'can_access_settings_and_history' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.can_access_settings_and_history == true
+          )
+        ))
+      );
+    }
+
+    function canStrikeViewGlobalDashboard() {
+      return isAuthenticated() && (
+        request.auth.token.email in ["michaelmitry13@gmail.com", "magd.gallab@gmail.com", "admin@strike.eg"] ||
+        (userExists() && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'crm_admin', 'sales_manager', 'manager'] ||
+          (
+            'can_view_global_dashboard' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.can_view_global_dashboard == true
+          )
+        ))
+      );
+    }
+
+    function isStrikeSalesRep() {
+      return userExists() && (getUserRole() == 'sales_rep' || getUserRole() == 'rep');
+    }
+
+
+    // ===============================================================
+    // Matchmaking Helper Functions & Auth
+    // ===============================================================
+
     function getMatchUserData() {
       let uid = request.auth != null ? request.auth.uid : 'anonymous';
       let userPath = /databases/$(database)/documents/match_users/$(uid);
@@ -95,19 +130,145 @@ service cloud.firestore {
     }
 
     // ===============================================================
-    // Entity Validators
+    // ATPL Vector Helper Functions & Auth
     // ===============================================================
+
+    function isAtplSuperAdmin() {
+      return isAuthenticated() && request.auth.token.email == "michaelmitry13@gmail.com" && request.auth.token.email_verified == true;
+    }
+
+    function isAtplAdmin() {
+      return isAtplSuperAdmin() || (
+        isAuthenticated() && (
+          (exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+           get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.is_admin == true) ||
+          (exists(/databases/$(database)/documents/atpl_profiles/$(request.auth.uid)) &&
+           get(/databases/$(database)/documents/atpl_profiles/$(request.auth.uid)).data.is_admin == true)
+        )
+      );
+    }
+
+    // ===============================================================
+    // GAMÉN Helper Functions & Auth
+    // ===============================================================
+
+    function isGamenAdmin() {
+      return request.auth != null 
+             && (request.auth.token.email == 'michaelmitry13@gmail.com' || request.auth.token.email == 'admin@gamen.eg');
+    }
+
+    // ===============================================================
+    // General Validation Helpers
+    // ===============================================================
+
+    function isNonEmptyString(val) {
+      return val is string && val.size() > 0;
+    }
+
+    function isValidBranding(data) {
+      return data.keys().hasAny(['companyName', 'logoUrl', 'kioskPin', 'dailyCheckinPin']) &&
+             (!('companyName' in data) || isNonEmptyString(data.companyName)) &&
+             (!('logoUrl' in data) || data.logoUrl is string);
+    }
+
+    function isSafeUserSelfEdit() {
+      let allowed = ['name', 'email', 'lastSeen', 'mustChangePassword', 'photoURL'];
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
+    }
+
+    // ===============================================================
+    // Entity Validators (Strike CRM)
+    // ===============================================================
+
+    function isValidRole(role) {
+      return role in ['rep', 'manager', 'admin', 'super_admin', 'crm_admin'];
+    }
+
     function isValidClient(data) {
       return data.name is string && data.name.size() > 0 &&
-             data.phone is string && data.phone.size() > 0 &&
+             data.phone is string && data.phone.size() >= 7 &&
              data.status in ["Lead", "Active", "Nearly Expired", "Expired", "Hold"];
     }
 
-    function isValidPayment(data) {
+    function isValidPaymentCreate(data) {
       return data.clientId is string &&
              data.amount_paid is number && data.amount_paid >= 0 &&
              data.sales_rep_id is string;
     }
+
+    function paymentImmutableFieldsUnchanged() {
+      let immutable = ['clientId', 'client_name', 'amount', 'sales_rep_id', 'created_at', 'package_category_type'];
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(immutable);
+    }
+
+    // Sessions status validation helper
+    function isValidSession(data) {
+      return isNonEmptyString(data.clientId) &&
+             data.status in ['Scheduled', 'Attended', 'No Show', 'Cancelled'];
+    }
+
+    function isValidInteraction(data) {
+      return isNonEmptyString(data.date) &&
+             data.type in ['Call', 'WhatsApp', 'Email', 'Visit'] &&
+             data.outcome in ['Interested', 'Not Answered', 'Scheduled Trial', 'Rejected', 'Other'] &&
+             isNonEmptyString(data.author);
+    }
+
+    function isValidAttendance(data) {
+      return isNonEmptyString(data.clientId) &&
+             isNonEmptyString(data.branch) &&
+             isNonEmptyString(data.date) &&
+             isNonEmptyString(data.recordedBy);
+    }
+
+    function isValidTask(data) {
+      return isNonEmptyString(data.title) &&
+             isNonEmptyString(data.dueDate) &&
+             data.status in ['Pending', 'In Progress', 'Completed'] &&
+             data.priority in ['Low', 'Medium', 'High'] &&
+             isNonEmptyString(data.assignedTo) &&
+             isNonEmptyString(data.createdBy) &&
+             isNonEmptyString(data.createdAt);
+    }
+
+    function isTaskCreator() {
+      return isAuthenticated() &&
+             resource != null &&
+             resource.data.createdBy == request.auth.uid;
+    }
+
+    function isValidPackage(data) {
+      return isNonEmptyString(data.name) &&
+             data.price is number && data.price >= 0 &&
+             data.sessions is number && data.sessions >= 0 &&
+             data.expiryDays is number && data.expiryDays >= 0 &&
+             data.type in ['Private', 'Group', 'Other'];
+    }
+
+    function isValidCoach(data) {
+      return isNonEmptyString(data.name) &&
+             data.active is bool;
+    }
+
+    function isValidTarget(data) {
+      return isNonEmptyString(data.userId) &&
+             data.targetAmount is number && data.targetAmount >= 0 &&
+             isNonEmptyString(data.month) &&
+             data.month.matches('^[0-9]{4}-[0-9]{2}$');
+    }
+
+    function isValidAuditLog(data) {
+      return isNonEmptyString(data.userId) &&
+             data.action in ['CREATE', 'UPDATE', 'DELETE'] &&
+             data.entityType in ['CLIENT', 'PAYMENT', 'PACKAGE_RECORD', 'LEAD',
+                                 'TARGET', 'ATTENDANCE', 'COACH', 'SYSTEM', 'BRANCH', 'SESSION'] &&
+             isNonEmptyString(data.entityId) &&
+             isNonEmptyString(data.timestamp);
+    }
+
+    // ===============================================================
+    // Entity Validators (Matchmaking)
+    // ===============================================================
 
     function isValidMatch(data) {
       return data.maleId is string && data.maleId.size() > 0 &&
@@ -124,91 +285,86 @@ service cloud.firestore {
     }
 
     // ===============================================================
-    // Rules
-    // ===============================================================
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isOwner(userId) || isAdmin();
-      allow update: if isOwner(userId) || isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    match /targets/{targetId} {
-      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.sales_rep_id == request.auth.uid);
-      allow list: if canViewGlobalDashboard() || isSalesRep();
-      allow write: if isSalesManager();
-    }
-
-    match /userTargets/{targetId} {
-      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.userId == request.auth.uid);
-      allow list: if canViewGlobalDashboard() || isSalesRep();
-      allow write: if isSalesManager();
-    }
-
-    match /payments/{paymentId} {
-      allow get: if canViewGlobalDashboard() || (isSalesRep() && resource.data.sales_rep_id == request.auth.uid);
-      allow list: if canViewGlobalDashboard() || isSalesRep();
-      allow create: if isAuthenticated() && isValidPayment(request.resource.data);
-      allow update, delete: if canDeletePayments();
-    }
-
-    match /settings/{settingId} {
-      allow read: if canAccessSettings();
-      allow write: if canAccessSettings();
-    }
-
-    match /auditLogs/{logId} {
-      allow read: if canAccessSettings();
-      allow create: if isAuthenticated();
-      allow delete: if canAccessSettings();
-    }
-
-    // ===============================================================
     // Collection Group Rules
     // ===============================================================
+
     match /{path=**}/comments/{commentId} {
       allow read, create: if isAuthenticated();
-      allow delete: if isAdmin();
+      allow delete: if isStrikeAdmin() || isMatchAdmin();
     }
 
     match /{path=**}/interactions/{interactionId} {
       allow read, create: if isAuthenticated();
-      allow delete: if isAdmin();
+      allow delete: if isStrikeAdmin() || isMatchAdmin();
+    }
+
+    match /{path=**}/attendance/{attendanceId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isValidAttendance(request.resource.data);
+    }
+
+    // ===============================================================
+    // PROJECT 1: STRIKE CRM (Root Collections, Flat Structure)
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) || isStrikeAdmin();
+      allow update: if isOwner(userId) || isStrikeAdmin();
+      allow delete: if isStrikeSuperAdmin();
+    }
+
+    match /targets/{targetId} {
+      allow get: if canStrikeViewGlobalDashboard() || (isStrikeSalesRep() && resource.data.sales_rep_id == request.auth.uid);
+      allow list: if canStrikeViewGlobalDashboard() || isStrikeSalesRep();
+      allow write: if canStrikeViewGlobalDashboard();
+    }
+
+    match /userTargets/{targetId} {
+      allow get: if canStrikeViewGlobalDashboard() || (isStrikeSalesRep() && resource.data.userId == request.auth.uid);
+      allow list: if canStrikeViewGlobalDashboard() || isStrikeSalesRep();
+      allow write: if canStrikeViewGlobalDashboard();
+    }
+
+    match /payments/{paymentId} {
+      allow get: if canStrikeViewGlobalDashboard() || (isStrikeSalesRep() && resource.data.sales_rep_id == request.auth.uid);
+      allow list: if canStrikeViewGlobalDashboard() || isStrikeSalesRep();
+      allow create: if isAuthenticated() && isValidPaymentCreate(request.resource.data);
+      allow update, delete: if canStrikeDeletePayments();
+    }
+
+    match /settings/{settingId} {
+      allow read: if settingId == 'branding' || canStrikeAccessSettings();
+      allow write: if canStrikeAccessSettings() && (settingId != 'branding' || isValidBranding(request.resource.data));
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if canStrikeAccessSettings();
+      allow create: if isAuthenticated();
+      allow delete: if canStrikeAccessSettings();
     }
 
     match /clients/{clientId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isValidClient(request.resource.data);
       allow update: if isAuthenticated();
-      allow delete: if isAdmin();
+      allow delete: if isStrikeAdmin();
     }
 
     match /packages/{packageId} {
       allow read: if isAuthenticated();
-      allow write: if isAdmin();
+      allow write: if isStrikeAdmin();
     }
 
     match /coaches/{coachId} {
       allow read: if isAuthenticated();
-      allow write: if isAdmin();
+      allow write: if isStrikeAdmin();
     }
 
     match /sessions/{sessionId} {
       allow read: if isAuthenticated();
       allow create, update: if isAuthenticated();
-      allow delete: if isAdmin();
-    }
-
-    match /matches/{matchId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidMatch(request.resource.data);
-      allow update: if isAuthenticated();
-      allow delete: if isAdmin();
-    }
-
-    match /attendance/{attendanceId} {
-      allow read, create: if isAuthenticated();
-      allow delete: if isAdmin();
+      allow delete: if isStrikeAdmin();
     }
 
     match /tasks/{taskId} {
@@ -220,74 +376,167 @@ service cloud.firestore {
     }
 
     match /importBatches/{batchId} {
-      allow read, write: if isAdmin();
+      allow read, write: if isStrikeAdmin();
+    }
+
+    match /pendingAccounts/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isStrikeAdmin();
+    }
+
+    match /passwordResetRequests/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isStrikeAdmin();
     }
 
     // ===============================================================
-    // Duplicated Rules for Prefixed collections (match_*)
+    // PROJECT 2: MATCHMAKING (Prefixed match_* Collections)
     // ===============================================================
+
     match /match_users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isOwner(userId) || isMatchAdmin();
-      allow update: if isOwner(userId) || isMatchAdmin();
-      allow delete: if isMatchAdmin();
+      allow read, write: if true;
+    }
+
+    match /match_profiles/{profileId} {
+      allow read, write: if true;
     }
 
     match /match_clients/{clientId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidClient(request.resource.data);
-      allow update: if isAuthenticated();
-      allow delete: if isMatchAdmin();
+      allow read, write: if true;
     }
 
     match /match_matches/{matchId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidMatch(request.resource.data);
-      allow update: if isAuthenticated();
-      allow delete: if isMatchAdmin();
+      allow read, write: if true;
     }
 
     match /{path=**}/match_comments/{commentId} {
-      allow read, create: if isAuthenticated();
-      allow delete: if isMatchAdmin();
+      allow read, write: if true;
     }
 
     match /{path=**}/match_interactions/{interactionId} {
-      allow read, create: if isAuthenticated();
-      allow delete: if isMatchAdmin();
+      allow read, write: if true;
     }
 
     match /match_tasks/{taskId} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true;
+    }
+
+    // Match both camelCase and snake_case versions
+    match /match_audit_logs/{logId} {
+      allow read, write: if true;
     }
 
     match /match_auditLogs/{logId} {
-      allow read: if canMatchAccessSettings();
-      allow create: if isAuthenticated();
-      allow delete: if canMatchAccessSettings();
+      allow read, write: if true;
     }
 
     match /match_importBatches/{batchId} {
-      allow read, write: if isMatchAdmin();
+      allow read, write: if true;
     }
 
     match /match_counters/{counterId} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true;
+    }
+
+    match /match_favorites/{favId} {
+      allow read, write: if true;
+    }
+
+    match /match_announcements/{annId} {
+      allow read, write: if true;
+    }
+
+    match /match_messages/{msgId} {
+      allow read, write: if true;
+    }
+
+
+    // ===============================================================
+    // PROJECT 3: ATPL VECTOR (Prefixed atpl_* & Non-Prefixed Profiles/Subs)
+    // ===============================================================
+
+    // Common root models for ATPL Vector
+    match /profiles/{userId} {
+      allow read: if isOwner(userId) || isAtplAdmin() || request.auth == null;
+      allow create: if (isOwner(userId) && (!('is_admin' in request.resource.data) || request.resource.data.is_admin == false)) || request.auth == null;
+      allow update: if (isOwner(userId) && (!('is_admin' in request.resource.data) || request.resource.data.is_admin == resource.data.is_admin)) || isAtplAdmin() || request.auth == null;
+      allow delete: if isAtplAdmin() || request.auth == null;
+    }
+    
+    match /subscriptions/{subscriptionId} {
+      allow read: if isOwner(subscriptionId) || isAtplAdmin() || request.auth == null;
+      allow create: if (isOwner(subscriptionId) && (!('plan' in request.resource.data) || (request.resource.data.plan != 'PRO' && request.resource.data.plan != 'PREMIUM'))) || request.auth == null;
+      allow update: if (isOwner(subscriptionId) && (!('plan' in request.resource.data) || request.resource.data.plan == resource.data.plan || (request.resource.data.plan != 'PRO' && request.resource.data.plan != 'PREMIUM'))) || isAtplAdmin() || request.auth == null;
+      allow delete: if isAtplAdmin() || request.auth == null;
+    }
+
+    match /interactions/{interactionId} {
+      allow read: if isOwner(resource.data.userId) || isAtplAdmin();
+      allow create: if isOwner(request.resource.data.userId);
+      allow update, delete: if isOwner(resource.data.userId) || isAtplAdmin();
+    }
+
+    // Prefixed collections
+    match /atpl_profiles/{userId} {
+      allow read: if isOwner(userId) || isAtplAdmin() || request.auth == null;
+      allow create: if (isOwner(userId) && (!('is_admin' in request.resource.data) || request.resource.data.is_admin == false)) || request.auth == null;
+      allow update: if (isOwner(userId) && (!('is_admin' in request.resource.data) || request.resource.data.is_admin == resource.data.is_admin)) || isAtplAdmin() || request.auth == null;
+      allow delete: if isAtplAdmin() || request.auth == null;
+    }
+    
+    match /atpl_subscriptions/{subscriptionId} {
+      allow read: if isOwner(subscriptionId) || isAtplAdmin() || request.auth == null;
+      allow create: if (isOwner(subscriptionId) && (!('plan' in request.resource.data) || (request.resource.data.plan != 'PRO' && request.resource.data.plan != 'PREMIUM'))) || request.auth == null;
+      allow update: if (isOwner(subscriptionId) && (!('plan' in request.resource.data) || request.resource.data.plan == resource.data.plan || (request.resource.data.plan != 'PRO' && request.resource.data.plan != 'PREMIUM'))) || isAtplAdmin() || request.auth == null;
+      allow delete: if isAtplAdmin() || request.auth == null;
+    }
+
+    match /atpl_counters/{counterId} {
+      allow read: if isAuthenticated() || request.auth == null;
+      allow write: if isAtplAdmin() || request.auth == null;
+    }
+
+    match /atpl_interactions/{interactionId} {
+      allow read: if isOwner(resource.data.userId) || isAtplAdmin() || request.auth == null;
+      allow create: if isOwner(request.resource.data.userId) || request.auth == null;
+      allow update, delete: if isOwner(resource.data.userId) || isAtplAdmin() || request.auth == null;
+    }
+    
+    match /atpl_settings/{settingId} {
+      allow read: if isAuthenticated() || request.auth == null;
+      allow write: if isAtplAdmin() || request.auth == null;
+    }
+
+    match /atpl_packages/{packageId} {
+      allow read: if isAuthenticated() || request.auth == null;
+      allow write: if isAtplAdmin() || request.auth == null;
+    }
+    
+    match /atpl_tasks/{taskId} {
+      allow read: if isAuthenticated() || request.auth == null;
+      allow write: if isAtplAdmin() || request.auth == null;
+    }
+
+    match /atpl_testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if request.auth == null || isAuthenticated() || isAtplAdmin();
+    }
+
+    match /atpl_access_codes/{codeId} {
+      allow read, write: if true;
+    }
+
+    match /atpl_flashcards/{cardId} {
+      allow read: if true;
+      allow write: if request.auth == null || isAuthenticated() || isAtplAdmin();
     }
 
     // ===============================================================
-    // GAMÉN Luxury Brand Collections
+    // PROJECT 4: GAMÉN Luxury Brand (Prefixed gamen_* Collections)
     // ===============================================================
 
-    // Helper function to check if the user is the authenticated gamen admin
-    function isGamenAdmin() {
-      return request.auth != null 
-             && (request.auth.token.email == 'michaelmitry13@gmail.com' || request.auth.token.email == 'admin@gamen.eg');
-    }
-
-    // Orders: anyone can create, but only with valid pending schema, mathematical security, and basic type checks
     match /gamen_orders/{orderId} {
-      allow create: if request.resource.data.keys().hasAll(['orderRef', 'status', 'customer', 'items', 'totalPrice'])
+      allow create: if request.resource.data.keys().hasAll(['orderRef', 'status', 'customer', 'items', 'totalPrice', 'paymentMethod', 'paymentStatus'])
                     && request.resource.data.status == 'pending'
                     && request.resource.data.totalPrice is number
                     && request.resource.data.totalPrice > 0
@@ -299,22 +548,32 @@ service cloud.firestore {
                     && request.resource.data.customer.email.matches('.+@.+')
                     && request.resource.data.customer.phone is string
                     && request.resource.data.customer.phone.size() >= 10;
-      allow read, update, delete: if isGamenAdmin();
+      allow read, delete: if isGamenAdmin();
+      allow update: if isGamenAdmin() || (
+                      // Allow client-side status updates on card transactions
+                      resource.data.status == 'pending'
+                      && (request.resource.data.status == 'confirmed' || request.resource.data.status == 'pending')
+                      && (request.resource.data.paymentStatus == 'paid' || request.resource.data.paymentStatus == 'failed')
+                      && request.resource.data.paymentMethod == 'paymob'
+                      // Prevent modification of vital order details
+                      && request.resource.data.orderRef == resource.data.orderRef
+                      && request.resource.data.totalPrice == resource.data.totalPrice
+                      && request.resource.data.items == resource.data.items
+                      && request.resource.data.customer.email == resource.data.customer.email
+                      && request.resource.data.customer.phone == resource.data.customer.phone
+                    );
     }
 
-    // Products: anyone can read, only gamen admin can write
     match /gamen_products/{productId} {
       allow read: if true;
       allow write: if isGamenAdmin();
     }
 
-    // Product Overrides: anyone can read, only gamen admin can write (kept for backward compatibility)
     match /gamen_productOverrides/{overrideId} {
       allow read: if true;
       allow write: if isGamenAdmin();
     }
 
-    // Mail: restrict writing to order templates to prevent open relay spam, while allowing gamen admin unrestricted creation
     match /gamen_mail/{mailId} {
       allow create: if isGamenAdmin() || (
                       request.resource.data.keys().hasAll(['to', 'message'])
@@ -330,7 +589,6 @@ service cloud.firestore {
       allow read, update, delete: if isGamenAdmin();
     }
 
-    // Subscribers: allow public signup with valid email, restricted full access to gamen admin
     match /gamen_subscribers/{subId} {
       allow create: if request.resource.data.email is string
                     && request.resource.data.email.size() > 5
@@ -338,10 +596,16 @@ service cloud.firestore {
       allow read, update, delete: if isGamenAdmin();
     }
 
-    // Traffic Analytics: anyone can create page view logs, but only admin can read/manage
     match /gamen_traffic/{logId} {
       allow create: if true;
       allow read, update, delete: if isGamenAdmin();
+    }
+
+    // ===============================================================
+    // Platform Fallback / Super Admin Bypass
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if isStrikeSuperAdmin();
     }
   }
 }

@@ -25,6 +25,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  is_preorder?: boolean;
 }
 
 export interface Order {
@@ -41,6 +42,11 @@ export interface Order {
   };
   items: OrderItem[];
   totalPrice: number;
+  paymentMethod: 'cod' | 'paymob';
+  paymentStatus: 'unpaid' | 'paid' | 'failed' | 'pending_cod';
+  paymobOrderId?: string;
+  paymobTxnId?: string;
+  is_preorder?: boolean;
   createdAt?: Timestamp;
 }
 
@@ -62,6 +68,25 @@ export async function getOrders(): Promise<Order[]> {
 
 export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<void> {
   await updateDoc(doc(db, 'gamen_orders', orderId), { status });
+}
+
+export async function updateOrderPaymentStatus(
+  orderRef: string,
+  paymentStatus: Order['paymentStatus'],
+  status: Order['status'],
+  paymobTxnId?: string
+): Promise<void> {
+  const q = query(collection(db, 'gamen_orders'), where('orderRef', '==', orderRef), limit(1));
+  const snap = await getDocs(q);
+  if (snap.empty) {
+    throw new Error(`Order with reference ${orderRef} not found.`);
+  }
+  const orderDoc = snap.docs[0];
+  const updateData: Record<string, any> = { paymentStatus, status };
+  if (paymobTxnId) {
+    updateData.paymobTxnId = paymobTxnId;
+  }
+  await updateDoc(doc(db, 'gamen_orders', orderDoc.id), updateData);
 }
 
 export async function sendEmailNotification(order: Order, ownerEmail: string = 'info@gamen.world') {
